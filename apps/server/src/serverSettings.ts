@@ -237,6 +237,9 @@ const PersistedOptionalProviderSettings = Schema.Struct({
       cursor: Schema.optionalKey(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) })),
       grok: Schema.optionalKey(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) })),
       opencode: Schema.optionalKey(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) })),
+      antigravity: Schema.optionalKey(
+        Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }),
+      ),
     }),
   ),
 });
@@ -264,7 +267,8 @@ function restoreUsedProviders(
       instance.enabled === undefined &&
       (instance.driver === "cursor" ||
         instance.driver === "grok" ||
-        instance.driver === "opencode") &&
+        instance.driver === "opencode" ||
+        instance.driver === "antigravity") &&
       usedProviderInstances.has(instanceId)
         ? { ...instance, enabled: true }
         : instance,
@@ -286,6 +290,10 @@ function restoreUsedProviders(
       opencode: {
         ...settings.providers.opencode,
         enabled: persisted.providers?.opencode?.enabled ?? usedProviders.has("opencode"),
+      },
+      antigravity: {
+        ...settings.providers.antigravity,
+        enabled: persisted.providers?.antigravity?.enabled ?? usedProviders.has("antigravity"),
       },
     },
     providerInstances,
@@ -334,6 +342,7 @@ const PERSISTED_SERVER_SETTINGS_DEFAULTS = {
     cursor: { ...DEFAULT_SERVER_SETTINGS.providers.cursor, enabled: undefined },
     grok: { ...DEFAULT_SERVER_SETTINGS.providers.grok, enabled: undefined },
     opencode: { ...DEFAULT_SERVER_SETTINGS.providers.opencode, enabled: undefined },
+    antigravity: { ...DEFAULT_SERVER_SETTINGS.providers.antigravity, enabled: undefined },
   },
 };
 
