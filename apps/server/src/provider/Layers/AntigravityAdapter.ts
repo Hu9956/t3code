@@ -460,6 +460,7 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
       let hasEmittedDelta = false;
       // Track in-flight tool items for deduplication
       const toolItemStarted = new Set<string>();
+      const reasoningItemStarted = new Set<string>();
 
       yield* context.child.stdout.pipe(
         Stream.decodeText(),
@@ -496,19 +497,61 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
               }
               if (su.thinking && su.thinking.trim().length > 0) {
                 hasEmittedDelta = true;
+                const reasoningItemId = RuntimeItemId.make(
+                  `agy-think-${turnId}-${su.step_index ?? 0}`,
+                );
+                const reasoningKey = reasoningItemId as unknown as string;
+                if (!reasoningItemStarted.has(reasoningKey)) {
+                  reasoningItemStarted.add(reasoningKey);
+                  yield* offerRuntimeEvent({
+                    eventId: yield* nextEventId,
+                    createdAt: yield* nowIso,
+                    provider: PROVIDER,
+                    threadId: context.threadId,
+                    turnId,
+                    itemId: reasoningItemId,
+                    type: "item.started",
+                    payload: {
+                      itemType: "reasoning",
+                      status: "running",
+                      title: "Thinking",
+                    } as unknown as any,
+                  });
+                }
                 yield* offerRuntimeEvent({
                   eventId: yield* nextEventId,
                   createdAt: yield* nowIso,
                   provider: PROVIDER,
                   threadId: context.threadId,
                   turnId,
-                  itemId: RuntimeItemId.make(`agy-think-${turnId}-${su.step_index ?? 0}`),
+                  itemId: reasoningItemId,
                   type: "content.delta",
                   payload: {
                     streamKind: "reasoning_text",
                     delta: su.thinking,
                   },
                 });
+              }
+              // Complete reasoning item when its step finishes (state DONE/ERROR)
+              if ((su.state === "DONE" || su.state === "ERROR") && reasoningItemStarted.size > 0) {
+                const rid = RuntimeItemId.make(`agy-think-${turnId}-${su.step_index ?? 0}`);
+                const rkey = rid as unknown as string;
+                if (reasoningItemStarted.has(rkey)) {
+                  reasoningItemStarted.delete(rkey);
+                  yield* offerRuntimeEvent({
+                    eventId: yield* nextEventId,
+                    createdAt: yield* nowIso,
+                    provider: PROVIDER,
+                    threadId: context.threadId,
+                    turnId,
+                    itemId: rid,
+                    type: "item.completed",
+                    payload: {
+                      itemType: "reasoning",
+                      status: su.state === "DONE" ? "completed" : "failed",
+                    } as unknown as any,
+                  });
+                }
               }
               // tool lifecycle
               if (su.step_type === "tool" && su.tool_name) {
