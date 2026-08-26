@@ -162,27 +162,27 @@ const PAIRING_SCOPE_OPTIONS: ReadonlyArray<{
 }> = [
   {
     scope: AuthOrchestrationReadScope,
-    title: "View environment",
-    description: "Read threads, status, diffs, and configuration.",
+    title: i18next.t("View environment"),
+    description: i18next.t("Read threads, status, diffs, and configuration."),
   },
   {
     scope: AuthOrchestrationOperateScope,
     title: i18next.t("Operate tasks"),
-    description: "Start tasks and perform changes in the environment.",
+    description: i18next.t("Start tasks and perform changes in the environment."),
   },
   {
     scope: AuthTerminalOperateScope,
-    title: "Use terminals",
-    description: "Create terminals and send input to running shells.",
+    title: i18next.t("Use terminals"),
+    description: i18next.t("Create terminals and send input to running shells."),
   },
   {
     scope: AuthReviewWriteScope,
-    title: "Write reviews",
-    description: "Create comments while reviewing changes.",
+    title: i18next.t("Write reviews"),
+    description: i18next.t("Create comments while reviewing changes."),
   },
   {
     scope: AuthAccessReadScope,
-    title: "View access",
+    title: i18next.t("View access"),
     description: i18next.t("Inspect pairing links and authorized clients."),
   },
   {
@@ -192,13 +192,13 @@ const PAIRING_SCOPE_OPTIONS: ReadonlyArray<{
   },
   {
     scope: AuthRelayReadScope,
-    title: "View relay",
+    title: i18next.t("View relay"),
     description: i18next.t("Inspect managed relay connectivity."),
   },
   {
     scope: AuthRelayWriteScope,
     title: i18next.t("Manage relay"),
-    description: "Change managed tunnel connectivity.",
+    description: i18next.t("Change managed tunnel connectivity."),
   },
 ];
 
@@ -233,7 +233,7 @@ function AccessScopeSummary({
         tooltipStyle
         className="w-max max-w-80 whitespace-normal"
       >
-        <p className="mb-1 font-medium">Granted scopes</p>
+        <p className="mb-1 font-medium">{i18next.t("Granted scopes")}</p>
         <div className="flex flex-col gap-0.5">
           {scopes.map((scope) => (
             <code key={scope} className="font-mono text-foreground/85">
@@ -701,7 +701,10 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
               <TooltipPopup side="top">{expiresAbsolute}</TooltipPopup>
             </Tooltip>
             <span aria-hidden> · </span>
-            <AccessScopeSummary scopes={pairingLink.scopes} label="Pairing link scopes" />
+            <AccessScopeSummary
+              scopes={pairingLink.scopes}
+              label={i18next.t("Pairing link scopes")}
+            />
           </p>
           {shareablePairingUrl === null ? (
             <p className="text-[11px] text-muted-foreground/70">
@@ -719,7 +722,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
               onClick={() => setIsQrPanelOpen((open) => !open)}
             >
               <QrCodeIcon aria-hidden />
-              Share
+              {i18next.t("Share")}
             </Button>
           ) : null}
           <Dialog
@@ -773,14 +776,14 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
                       size={132}
                       level="M"
                       marginSize={2}
-                      title="Pairing link — scan to open on another device"
+                      title={i18next.t("Pairing link — scan to open on another device")}
                     />
                   </div>
                 ) : null}
               </DialogPanel>
               <DialogFooter variant="bare">
                 <Button variant="outline" onClick={() => setIsRevealDialogOpen(false)}>
-                  Done
+                  {i18next.t("Done")}
                 </Button>
                 {canCopyToClipboard ? (
                   <Button variant="outline" size="xs" onClick={handleCopyCode}>
@@ -810,9 +813,11 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
               <div
                 className="space-y-1.5"
                 role="radiogroup"
-                aria-label="Endpoint the pairing QR code and URL use"
+                aria-label={i18next.t("Endpoint the pairing QR code and URL use")}
               >
-                <p className="text-[11px] text-muted-foreground/70">Reach this machine via</p>
+                <p className="text-[11px] text-muted-foreground/70">
+                  {i18next.t("Reach this machine via")}
+                </p>
                 {endpointCopyOptions.map((option) => {
                   const isSelected = option.id === selectedQrOption?.id;
                   return (
@@ -864,7 +869,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
                 className="shrink-0"
                 onClick={() => copyPairingValue(qrPairingUrl, copyKindForUrl(qrPairingUrl))}
               >
-                Copy link
+                {i18next.t("Copy link")}
               </Button>
             </div>
             <Button size="xs" variant="ghost" onClick={handleCopyCode}>
@@ -878,7 +883,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
                 size={168}
                 level="M"
                 marginSize={1}
-                title="Pairing link — scan to open on another device"
+                title={i18next.t("Pairing link — scan to open on another device")}
               />
             </div>
           ) : (
@@ -955,7 +960,7 @@ const ConnectedClientListRow = memo(function ConnectedClientListRow({
                 <span aria-hidden> · </span>
               </>
             ) : null}
-            <AccessScopeSummary scopes={clientSession.scopes} label="Client scopes" />
+            <AccessScopeSummary scopes={clientSession.scopes} label={i18next.t("Client scopes")} />
           </p>
         </div>
         <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
@@ -1005,7 +1010,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not create pairing URL",
+          title: i18next.t("Could not create pairing URL"),
           description: message,
         }),
       );
@@ -1052,7 +1057,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
         />
         <DialogPopup className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Create pairing link</DialogTitle>
+            <DialogTitle>{i18next.t("Create pairing link")}</DialogTitle>
             <DialogDescription>
               Generate a one-time link that another device can use to pair with this backend as an
               authorized client.
@@ -1066,7 +1071,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
               <Input
                 value={pairingLabel}
                 onChange={(event) => setPairingLabel(event.target.value)}
-                placeholder="e.g. Living room iPad"
+                placeholder={i18next.t("e.g. Living room iPad")}
                 disabled={isCreatingPairingLink}
                 autoFocus
               />
@@ -1074,7 +1079,9 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
             <section className="space-y-3">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-xs font-medium text-foreground">Permissions</h3>
+                  <h3 className="text-xs font-medium text-foreground">
+                    {i18next.t("Permissions")}
+                  </h3>
                   <p className="text-xs text-muted-foreground">
                     Limit what the paired client can do.
                   </p>
@@ -1094,7 +1101,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
                     disabled={isCreatingPairingLink}
                     onClick={() => setPairingScopes([...AuthStandardClientScopes])}
                   >
-                    Standard
+                    {i18next.t("Standard")}
                   </Button>
                 </div>
               </div>
@@ -1120,7 +1127,9 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
                 ))}
               </div>
               {pairingScopes.length === 0 ? (
-                <p className="text-xs text-destructive">Select at least one permission.</p>
+                <p className="text-xs text-destructive">
+                  {i18next.t("Select at least one permission.")}
+                </p>
               ) : pairingScopes.includes(AuthAccessWriteScope) ? (
                 <p className="text-xs text-warning">
                   This client can create or revoke access for other devices.
@@ -1134,7 +1143,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
               disabled={isCreatingPairingLink}
               onClick={() => setDialogOpen(false)}
             >
-              Cancel
+              {i18next.t("Cancel")}
             </Button>
             <Button
               disabled={isCreatingPairingLink || pairingScopes.length === 0}
@@ -1203,7 +1212,9 @@ const PairingClientsList = memo(function PairingClientsList({
 
       {pairingLinks.length === 0 && clientSessions.length === 0 && !isLoading ? (
         <div className={accessRowClassName(presentation)}>
-          <p className="text-xs text-muted-foreground/60">No pairing links or client sessions.</p>
+          <p className="text-xs text-muted-foreground/60">
+            {i18next.t("No pairing links or client sessions.")}
+          </p>
         </div>
       ) : null}
     </>
@@ -1332,7 +1343,7 @@ function NetworkAccessDescription({
 
   return (
     <span className="inline-flex min-w-0 max-w-full items-baseline gap-1">
-      <span className="shrink-0">Reachable at</span>
+      <span className="shrink-0">{i18next.t("Reachable at")}</span>
       {hiddenEndpointCount > 0 ? (
         <button
           type="button"
@@ -1381,7 +1392,7 @@ function SavedBackendListRow({
     onCopy: ({ traceId }) => {
       toastManager.add({
         type: "success",
-        title: "Trace ID copied",
+        title: i18next.t("Trace ID copied"),
         description: traceId,
       });
     },
@@ -1389,7 +1400,7 @@ function SavedBackendListRow({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not copy trace ID",
+          title: i18next.t("Could not copy trace ID"),
           description: error.message,
         }),
       );
@@ -1413,7 +1424,7 @@ function SavedBackendListRow({
       : null;
   const metadataBits = [
     sshTarget ? `SSH ${formatDesktopSshTarget(sshTarget)}` : null,
-    environment.relayManaged ? "T3 Connect" : null,
+    environment.relayManaged ? i18next.t("T3 Connect") : null,
   ].filter((value): value is string => value !== null);
 
   // The WSL backend is a desktop-managed local backend (it surfaces as a bearer
@@ -1486,7 +1497,7 @@ function SavedBackendListRow({
               serverLabel={`${environment.label} server`}
               selfUpdate={resolveServerSelfUpdateCapability(environment.serverConfig)}
               targetVersion={versionMismatch.clientVersion}
-              label={serverUpdateState.status === "failed" ? "Retry" : "Update"}
+              label={serverUpdateState.status === "failed" ? "Retry" : i18next.t("Update")}
             />
           ) : null}
           {isWslEnvironment ? (
@@ -1511,7 +1522,7 @@ function SavedBackendListRow({
                   disabled={removingEnvironmentId === environmentId}
                   onClick={() => void onRemove(environmentId)}
                 >
-                  {removingEnvironmentId === environmentId ? "Removing…" : "Remove"}
+                  {removingEnvironmentId === environmentId ? "Removing…" : i18next.t("Remove")}
                 </Button>
               ) : null}
               <Button
@@ -1551,7 +1562,8 @@ const DesktopSshHostRow = memo(function DesktopSshHostRow({
 }: DesktopSshHostRowProps) {
   const address = formatDesktopSshTarget(target);
   const showAddress = address !== target.alias;
-  const buttonLabel = connectingHostAlias === target.alias ? "Adding…" : "Add environment";
+  const buttonLabel =
+    connectingHostAlias === target.alias ? "Adding…" : i18next.t("Add environment");
 
   return (
     <div className="rounded-xl px-3 py-3 sm:px-4">
@@ -1670,7 +1682,7 @@ function ConfiguredCloudLinkRow({ canManageRelay }: { readonly canManageRelay: b
     <>
       {window.desktopBridge ? (
         <SettingsRow
-          title="T3 Connect"
+          title={i18next.t("T3 Connect")}
           description={
             managedTunnelActive
               ? "This environment is available to your other devices through T3 Connect."
@@ -1690,7 +1702,7 @@ function ConfiguredCloudLinkRow({ canManageRelay }: { readonly canManageRelay: b
         />
       ) : null}
       <SettingsRow
-        title="Publish agent activity"
+        title={i18next.t("Publish agent activity")}
         description="Send activity from this environment to your mobile clients for push notifications and Live Activities. Works without a T3 Connect tunnel."
         control={
           <CloudLinkSwitch
@@ -1717,7 +1729,7 @@ function EmptyRemoteEnvironments({ cloudEnabled = true }: { readonly cloudEnable
         <ChevronsLeftRightEllipsisIcon />
       </EmptyMedia>
       <EmptyHeader>
-        <EmptyTitle>No saved remote environments</EmptyTitle>
+        <EmptyTitle>{i18next.t("No saved remote environments")}</EmptyTitle>
         <EmptyDescription>
           {cloudEnabled
             ? "Click “Add environment” to pair another environment, or connect one from T3 Connect."
@@ -1992,7 +2004,7 @@ export function ConnectionsSettings() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not update network access",
+            title: i18next.t("Could not update network access"),
             description: message,
           }),
         );
@@ -2027,7 +2039,7 @@ export function ConnectionsSettings() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not set up Tailscale HTTPS",
+          title: i18next.t("Could not set up Tailscale HTTPS"),
           description: message,
         }),
       );
@@ -2063,7 +2075,7 @@ export function ConnectionsSettings() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not disable Tailscale HTTPS",
+          title: i18next.t("Could not disable Tailscale HTTPS"),
           description: message,
         }),
       );
@@ -2087,7 +2099,7 @@ export function ConnectionsSettings() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not revoke pairing link",
+          title: i18next.t("Could not revoke pairing link"),
           description: message,
         }),
       );
@@ -2108,7 +2120,7 @@ export function ConnectionsSettings() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not revoke client access",
+            title: i18next.t("Could not revoke client access"),
             description: message,
           }),
         );
@@ -2137,7 +2149,7 @@ export function ConnectionsSettings() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not revoke other clients",
+          title: i18next.t("Could not revoke other clients"),
           description: message,
         }),
       );
@@ -2201,7 +2213,7 @@ export function ConnectionsSettings() {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not add backend",
+          title: i18next.t("Could not add backend"),
           description: message,
         }),
       );
@@ -2218,7 +2230,7 @@ export function ConnectionsSettings() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not add backend",
+            title: i18next.t("Could not add backend"),
             description: message,
           }),
         );
@@ -2235,8 +2247,8 @@ export function ConnectionsSettings() {
     setAddBackendDialogOpen(false);
     toastManager.add({
       type: "success",
-      title: "Backend added",
-      description: "The environment is saved and will reconnect on app startup.",
+      title: i18next.t("Backend added"),
+      description: i18next.t("The environment is saved and will reconnect on app startup."),
     });
     setIsAddingSavedBackend(false);
   }, [
@@ -2261,7 +2273,7 @@ export function ConnectionsSettings() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not connect backend",
+            title: i18next.t("Could not connect backend"),
             description: message,
           }),
         );
@@ -2283,7 +2295,7 @@ export function ConnectionsSettings() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not remove backend",
+            title: i18next.t("Could not remove backend"),
             description: message,
           }),
         );
@@ -2432,17 +2444,21 @@ export function ConnectionsSettings() {
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_10rem]">
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-foreground">Host</span>
+          <span className="mb-1.5 block text-xs font-medium text-foreground">
+            {i18next.t("Host")}
+          </span>
           <Input
             value={savedBackendHost}
             onChange={(event) => handleSavedBackendHostChange(event.target.value)}
-            placeholder="backend.example.com"
+            placeholder={i18next.t("backend.example.com")}
             disabled={isAddingSavedBackend}
             spellCheck={false}
           />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-foreground">Pairing code</span>
+          <span className="mb-1.5 block text-xs font-medium text-foreground">
+            {i18next.t("Pairing code")}
+          </span>
           <Input
             value={savedBackendPairingCode}
             onChange={(event) => setSavedBackendPairingCode(event.target.value)}
@@ -2470,7 +2486,7 @@ export function ConnectionsSettings() {
         onClick={() => void handleAddSavedBackend()}
       >
         <PlusIcon className="size-3.5" />
-        {isAddingSavedBackend ? "Adding…" : "Add environment"}
+        {isAddingSavedBackend ? "Adding…" : i18next.t("Add environment")}
       </Button>
     </div>
   );
@@ -2484,28 +2500,32 @@ export function ConnectionsSettings() {
           <Input
             value={savedBackendSshHost}
             onChange={(event) => setSavedBackendSshHost(event.target.value)}
-            placeholder="Search hosts or type devbox"
+            placeholder={i18next.t("Search hosts or type devbox")}
             disabled={isAddingSavedBackend}
             spellCheck={false}
           />
         </label>
         <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_7rem]">
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-foreground">Username</span>
+            <span className="mb-1.5 block text-xs font-medium text-foreground">
+              {i18next.t("Username")}
+            </span>
             <Input
               value={savedBackendSshUsername}
               onChange={(event) => setSavedBackendSshUsername(event.target.value)}
-              placeholder="root"
+              placeholder={i18next.t("root")}
               disabled={isAddingSavedBackend}
               spellCheck={false}
             />
           </label>
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-foreground">Port</span>
+            <span className="mb-1.5 block text-xs font-medium text-foreground">
+              {i18next.t("Port")}
+            </span>
             <Input
               value={savedBackendSshPort}
               onChange={(event) => setSavedBackendSshPort(event.target.value)}
-              placeholder="22"
+              placeholder={i18next.t("22")}
               inputMode="numeric"
               disabled={isAddingSavedBackend}
               spellCheck={false}
@@ -2524,14 +2544,16 @@ export function ConnectionsSettings() {
           onClick={() => void handleAddSavedBackend()}
         >
           <PlusIcon className="size-3.5" />
-          {isAddingSavedBackend ? "Adding…" : "Add environment"}
+          {isAddingSavedBackend ? "Adding…" : i18next.t("Add environment")}
         </Button>
       </div>
       <div className="overflow-hidden rounded-lg border border-border/60">
         <div className="flex items-center justify-between gap-3 border-b border-border/60 bg-muted/30 px-3 py-2">
           <div className="min-w-0">
-            <p className="text-xs font-medium text-foreground">Suggested hosts</p>
-            <p className="text-[11px] text-muted-foreground">From SSH config and known hosts</p>
+            <p className="text-xs font-medium text-foreground">{i18next.t("Suggested hosts")}</p>
+            <p className="text-[11px] text-muted-foreground">
+              {i18next.t("From SSH config and known hosts")}
+            </p>
           </div>
           <Button
             size="xs"
@@ -2561,7 +2583,9 @@ export function ConnectionsSettings() {
             !isLoadingDiscoveredSshHosts &&
             unsavedDiscoveredSshHosts.length === 0 ? (
               <div className={ITEM_ROW_CLASSNAME}>
-                <p className="text-xs text-muted-foreground">No new SSH hosts were discovered.</p>
+                <p className="text-xs text-muted-foreground">
+                  {i18next.t("No new SSH hosts were discovered.")}
+                </p>
               </div>
             ) : null}
           </div>
@@ -2577,7 +2601,7 @@ export function ConnectionsSettings() {
         setPendingDesktopServerExposureMode(checked ? "network-accessible" : "local-only");
         setIsDesktopServerExposureDialogOpen(true);
       }}
-      aria-label="Enable network access"
+      aria-label={i18next.t("Enable network access")}
     />
   );
   const renderEndpointRows = (presentation: AccessSectionPresentation) =>
@@ -2622,7 +2646,7 @@ export function ConnectionsSettings() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not change WSL backend",
+            title: i18next.t("Could not change WSL backend"),
             description: message,
           }),
         );
@@ -2774,8 +2798,8 @@ export function ConnectionsSettings() {
       if (desktopWslError && canManageLocalBackend) {
         return (
           <SettingsRow
-            title="WSL backend"
-            description="Couldn't load the WSL backend state."
+            title={i18next.t("WSL backend")}
+            description={i18next.t("Couldn't load the WSL backend state.")}
             status={<span className="block text-destructive">{desktopWslError}</span>}
             control={
               <Button
@@ -2803,7 +2827,7 @@ export function ConnectionsSettings() {
       if (!desktopWslState.enabled && !desktopWslState.wslOnly) return null;
       return (
         <SettingsRow
-          title="WSL backend"
+          title={i18next.t("WSL backend")}
           description="WSL is no longer available, so the Windows backend is running instead. Switch off the WSL backend to clear this preference."
           status={
             desktopWslError ? (
@@ -2840,7 +2864,7 @@ export function ConnectionsSettings() {
     return (
       <>
         <SettingsRow
-          title="WSL backend"
+          title={i18next.t("WSL backend")}
           description="Run a second backend inside a WSL distro alongside the Windows one. Pick a distro to start it; pick Off to stop it. Projects opened against the WSL backend live on the Linux side; Windows projects stay where they are."
           status={
             desktopWslError ? (
@@ -2861,7 +2885,7 @@ export function ConnectionsSettings() {
             >
               <SelectTrigger
                 className="w-full sm:w-56"
-                aria-label="WSL backend"
+                aria-label={i18next.t("WSL backend")}
                 disabled={isUpdatingWslBackend}
               >
                 <SelectValue>{selectLabel}</SelectValue>
@@ -2888,7 +2912,7 @@ export function ConnectionsSettings() {
         />
         {desktopWslState.enabled ? (
           <SettingsRow
-            title="WSL only"
+            title={i18next.t("WSL only")}
             description="Stop the Windows backend and run only the WSL backend. Useful if you develop entirely inside WSL and don't want a second backend process. T3 Code restarts when you change this."
             className="bg-muted/20 pl-7 sm:pl-8"
             control={
@@ -2896,7 +2920,7 @@ export function ConnectionsSettings() {
                 checked={desktopWslState.wslOnly}
                 disabled={isUpdatingWslBackend}
                 onCheckedChange={(checked) => handleToggleWslOnly(checked)}
-                aria-label="Run WSL only"
+                aria-label={i18next.t("Run WSL only")}
               />
             }
           />
@@ -2907,7 +2931,7 @@ export function ConnectionsSettings() {
 
   const renderTailscaleRow = () => (
     <SettingsRow
-      title="Tailscale HTTPS"
+      title={i18next.t("Tailscale HTTPS")}
       description={
         tailscaleHttpsEndpoint
           ? tailscaleHttpsEndpoint.status === "available"
@@ -2927,7 +2951,7 @@ export function ConnectionsSettings() {
               }
               handleStartTailscaleServeDisable(tailscaleHttpsEndpoint);
             }}
-            aria-label="Enable Tailscale HTTPS"
+            aria-label={i18next.t("Enable Tailscale HTTPS")}
           />
         ) : null
       }
@@ -2957,7 +2981,7 @@ export function ConnectionsSettings() {
   );
   const renderNetworkAccessRow = () => (
     <SettingsRow
-      title="Network access"
+      title={i18next.t("Network access")}
       description={
         isLocalBackendNetworkAccessible ? (
           <NetworkAccessDescription
@@ -2989,7 +3013,7 @@ export function ConnectionsSettings() {
   );
   const renderDisabledNetworkAccessRow = () => (
     <SettingsRow
-      title="Network access"
+      title={i18next.t("Network access")}
       description={
         currentAuthPolicy === "remote-reachable"
           ? "This backend is already configured for remote access. Network exposure changes must be made where the server is launched."
@@ -3003,7 +3027,7 @@ export function ConnectionsSettings() {
                 <Switch
                   checked={isLocalBackendNetworkAccessible}
                   disabled
-                  aria-label="Enable network access"
+                  aria-label={i18next.t("Enable network access")}
                 />
               </span>
             }
@@ -3021,7 +3045,7 @@ export function ConnectionsSettings() {
     <SettingsPageContainer>
       {canManageLocalBackend ? (
         <>
-          <SettingsSection title="This environment">
+          <SettingsSection title={i18next.t("This environment")}>
             {primaryVersionMismatch || primaryServerUpdateState.status !== "idle" ? (
               <SettingsRow
                 title={
@@ -3059,7 +3083,9 @@ export function ConnectionsSettings() {
                       serverLabel={primaryEnvironment?.label ?? "this server"}
                       selfUpdate={resolveServerSelfUpdateCapability(primaryServerConfig)}
                       targetVersion={primaryVersionMismatch.clientVersion}
-                      label={primaryServerUpdateState.status === "failed" ? "Retry" : "Update"}
+                      label={
+                        primaryServerUpdateState.status === "failed" ? "Retry" : i18next.t("Update")
+                      }
                     />
                   ) : undefined
                 }
@@ -3083,7 +3109,7 @@ export function ConnectionsSettings() {
 
           {isLocalBackendRemotelyReachable ? (
             <SettingsSection
-              title="Authorized clients"
+              title={i18next.t("Authorized clients")}
               headerAction={
                 <AuthorizedClientsHeaderAction
                   clientSessions={desktopClientSessions}
@@ -3129,7 +3155,7 @@ export function ConnectionsSettings() {
                   disabled={isUpdatingDesktopServerExposure}
                   render={<Button variant="outline" disabled={isUpdatingDesktopServerExposure} />}
                 >
-                  Cancel
+                  {i18next.t("Cancel")}
                 </AlertDialogClose>
                 <Button
                   variant={
@@ -3195,7 +3221,7 @@ export function ConnectionsSettings() {
                   disabled={isUpdatingWslBackend}
                   render={<Button variant="outline" disabled={isUpdatingWslBackend} />}
                 >
-                  Cancel
+                  {i18next.t("Cancel")}
                 </AlertDialogClose>
                 {pendingWslChange?.kind === "enable" ? (
                   <>
@@ -3271,7 +3297,7 @@ export function ConnectionsSettings() {
           >
             <AlertDialogPopup>
               <AlertDialogHeader>
-                <AlertDialogTitle>Disable Tailscale HTTPS?</AlertDialogTitle>
+                <AlertDialogTitle>{i18next.t("Disable Tailscale HTTPS?")}</AlertDialogTitle>
                 <AlertDialogDescription>
                   T3 Code will restart the local backend without Tailscale Serve.
                 </AlertDialogDescription>
@@ -3281,7 +3307,7 @@ export function ConnectionsSettings() {
                   disabled={isUpdatingTailscaleServe}
                   render={<Button variant="outline" disabled={isUpdatingTailscaleServe} />}
                 >
-                  Cancel
+                  {i18next.t("Cancel")}
                 </AlertDialogClose>
                 <Button
                   variant="destructive"
@@ -3309,7 +3335,7 @@ export function ConnectionsSettings() {
           >
             <DialogPopup className="max-w-md">
               <DialogHeader>
-                <DialogTitle>Set up Tailscale HTTPS?</DialogTitle>
+                <DialogTitle>{i18next.t("Set up Tailscale HTTPS?")}</DialogTitle>
                 <DialogDescription>
                   T3 Code will restart the local backend with Tailscale Serve enabled and ask
                   Tailscale to proxy HTTPS traffic to this backend.
@@ -3317,7 +3343,9 @@ export function ConnectionsSettings() {
               </DialogHeader>
               <DialogPanel className="space-y-4">
                 <label className="block">
-                  <span className="text-sm font-medium text-foreground">HTTPS port</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {i18next.t("HTTPS port")}
+                  </span>
                   <Input
                     className="mt-2"
                     type="number"
@@ -3331,10 +3359,14 @@ export function ConnectionsSettings() {
                   />
                 </label>
                 {!isTailscaleServePortValid ? (
-                  <p className="mt-2 text-xs text-destructive">Enter a port from 1 to 65535.</p>
+                  <p className="mt-2 text-xs text-destructive">
+                    {i18next.t("Enter a port from 1 to 65535.")}
+                  </p>
                 ) : null}
                 <div className="rounded-md border border-border/70 bg-muted/20 px-3 py-2">
-                  <p className="text-xs font-medium text-muted-foreground">HTTPS endpoint</p>
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {i18next.t("HTTPS endpoint")}
+                  </p>
                   <Tooltip>
                     <TooltipTrigger
                       render={
@@ -3356,7 +3388,7 @@ export function ConnectionsSettings() {
                   disabled={isUpdatingTailscaleServe}
                   render={<Button variant="outline" disabled={isUpdatingTailscaleServe} />}
                 >
-                  Cancel
+                  {i18next.t("Cancel")}
                 </DialogClose>
                 <Button
                   onClick={() => void handleConfirmTailscaleServeSetup()}
@@ -3376,9 +3408,9 @@ export function ConnectionsSettings() {
           </Dialog>
         </>
       ) : (
-        <SettingsSection title="This environment">
+        <SettingsSection title={i18next.t("This environment")}>
           <SettingsRow
-            title="Administrative access"
+            title={i18next.t("Administrative access")}
             description="Pairing links and client-session management require the access:write scope for this backend."
           />
           <CloudLinkRow canManageRelay={canManageRelay} />
@@ -3406,36 +3438,40 @@ export function ConnectionsSettings() {
                         size="xs"
                         variant="ghost"
                         className="h-5 gap-1 rounded-sm px-1 text-[11px] font-normal text-muted-foreground/60 hover:text-muted-foreground"
-                        aria-label="Add environment"
+                        aria-label={i18next.t("Add environment")}
                       >
                         <PlusIcon className="size-3" />
-                        <span>Add environment</span>
+                        <span>{i18next.t("Add environment")}</span>
                       </Button>
                     }
                   />
                 }
               />
-              <TooltipPopup side="top">Add environment</TooltipPopup>
+              <TooltipPopup side="top">{i18next.t("Add environment")}</TooltipPopup>
             </Tooltip>
             <DialogPopup className="max-h-[80dvh] sm:max-w-3xl">
               <DialogHeader>
-                <DialogTitle>Add Environment</DialogTitle>
-                <DialogDescription>Pair another environment to this client.</DialogDescription>
+                <DialogTitle>{i18next.t("Add Environment")}</DialogTitle>
+                <DialogDescription>
+                  {i18next.t("Pair another environment to this client.")}
+                </DialogDescription>
               </DialogHeader>
               <DialogPanel>
                 <div className="space-y-4">
                   <div className="grid gap-3 sm:grid-cols-2">
                     {renderConnectionModeCard({
                       mode: "remote",
-                      title: "Remote link",
-                      description: "Enter a backend host and pairing code.",
+                      title: i18next.t("Remote link"),
+                      description: i18next.t("Enter a backend host and pairing code."),
                       icon: <ChevronsLeftRightEllipsisIcon aria-hidden className="size-4" />,
                     })}
                     {desktopBridge
                       ? renderConnectionModeCard({
                           mode: "ssh",
-                          title: "SSH",
-                          description: "Use local SSH config, agent, and tunnels for the backend.",
+                          title: i18next.t("SSH"),
+                          description: i18next.t(
+                            "Use local SSH config, agent, and tunnels for the backend.",
+                          ),
                           icon: <TerminalIcon aria-hidden className="size-4" />,
                         })
                       : null}

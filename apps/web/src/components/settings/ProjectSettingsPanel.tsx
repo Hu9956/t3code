@@ -217,14 +217,14 @@ function ProjectSettingsBreadcrumb({ projectKey }: { projectKey: string }) {
 
   return (
     <WorkspaceBreadcrumb ariaLabel="Project settings breadcrumb">
-      <WorkspaceBreadcrumbItem>Projects</WorkspaceBreadcrumbItem>
+      <WorkspaceBreadcrumbItem>{i18next.t("Projects")}</WorkspaceBreadcrumbItem>
       <WorkspaceBreadcrumbSeparator />
       <WorkspaceBreadcrumbItem current>
         {selected ? (
           <button
             type="button"
             aria-haspopup="menu"
-            aria-label="Switch project"
+            aria-label={i18next.t("Switch project")}
             onClick={openProjectMenu}
             className="group/project-title inline-flex min-w-0 max-w-64 cursor-pointer items-center gap-1 rounded-sm text-left focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
           >
@@ -235,7 +235,7 @@ function ProjectSettingsBreadcrumb({ projectKey }: { projectKey: string }) {
             />
           </button>
         ) : (
-          <span className="truncate text-muted-foreground">Unavailable project</span>
+          <span className="truncate text-muted-foreground">{i18next.t("Unavailable project")}</span>
         )}
       </WorkspaceBreadcrumbItem>
     </WorkspaceBreadcrumb>
@@ -398,7 +398,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
     async (nextTitle: string, wasEdited: boolean) => {
       const title = nextTitle.trim();
       if (!title) {
-        toastManager.add({ type: "warning", title: "Project title cannot be empty" });
+        toastManager.add({ type: "warning", title: i18next.t("Project title cannot be empty") });
         return;
       }
       if (
@@ -769,13 +769,15 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
       <SettingsPageContainer>
         <SettingsSection title="Project">
           <SettingsRow
-            title="Name"
-            description="The shared name for this project group in the sidebar and thread lists."
+            title={i18next.t("Name")}
+            description={i18next.t(
+              "The shared name for this project group in the sidebar and thread lists.",
+            )}
             control={
               <Input
                 key={`${group.projectKey}:${group.displayName}`}
                 className="w-full sm:w-64"
-                aria-label="Project name"
+                aria-label={i18next.t("Project name")}
                 defaultValue={group.displayName}
                 onChange={() => {
                   projectNameEditedRef.current = true;
@@ -792,12 +794,12 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
             }
           />
           <SettingsRow
-            title="Project icon"
-            description={faviconPath ?? "Automatic"}
+            title={i18next.t("Project icon")}
+            description={faviconPath ?? i18next.t("Automatic")}
             resetAction={
               faviconPath !== null ? (
                 <SettingResetButton
-                  label="project icon"
+                  label={i18next.t("project icon")}
                   disabled={isSavingFavicon}
                   onClick={() => void setFaviconPath(null)}
                 />
@@ -815,7 +817,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                   size="xs"
                   variant="outline"
                   type="button"
-                  aria-label="Choose a project icon file"
+                  aria-label={i18next.t("Choose a project icon file")}
                   disabled={isSavingFavicon}
                   onClick={() => setFaviconPickerOpen(true)}
                 >
@@ -826,14 +828,16 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
           />
         </SettingsSection>
 
-        <SettingsSection title="New threads">
+        <SettingsSection title={i18next.t("New threads")}>
           <SettingsRow
-            title="Model"
-            description="New threads in this project start with this model. Applies to every checkout in this group."
+            title={i18next.t("Model")}
+            description={i18next.t(
+              "New threads in this project start with this model. Applies to every checkout in this group.",
+            )}
             resetAction={
               storedSelection !== null ? (
                 <SettingResetButton
-                  label="project default model"
+                  label={i18next.t("project default model")}
                   onClick={() => setDefaultModel(null)}
                 />
               ) : null
@@ -876,17 +880,19 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                   />
                 </div>
               ) : (
-                <span className="text-sm text-muted-foreground">No providers available</span>
+                <span className="text-sm text-muted-foreground">
+                  {i18next.t("No providers available")}
+                </span>
               )
             }
           />
           <SettingsRow
-            title="Workspace"
+            title={i18next.t("Workspace")}
             description="Where new threads in this project start. Overrides t3.json and the global default; applies to every checkout in this group."
             resetAction={
               storedEnvMode !== null ? (
                 <SettingResetButton
-                  label="project workspace default"
+                  label={i18next.t("project workspace default")}
                   onClick={() => setDefaultThreadEnvMode(null)}
                 />
               ) : null
@@ -902,7 +908,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                   }
                 }}
               >
-                <SelectTrigger aria-label="New-thread workspace">
+                <SelectTrigger aria-label={i18next.t("New-thread workspace")}>
                   <SelectValue>
                     {storedEnvMode === null
                       ? group.memberProjects.length > 1
@@ -926,13 +932,13 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
         </SettingsSection>
 
         <SettingsSection
-          title="Checkout"
+          title={i18next.t("Checkout")}
           headerAction={
             <Select
               value={selectedCheckout.physicalProjectKey}
               onValueChange={(value) => setSelectedCheckoutKey(String(value))}
             >
-              <SelectTrigger className="max-w-64" aria-label="Selected checkout">
+              <SelectTrigger className="max-w-64" aria-label={i18next.t("Selected checkout")}>
                 <SelectValue>{selectedCheckoutLabel}</SelectValue>
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
@@ -955,7 +961,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                 <TooltipTrigger
                   render={
                     <button
-                      aria-label="Copy checkout path"
+                      aria-label={i18next.t("Copy checkout path")}
                       className="group flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-left outline-none hover:bg-accent/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                       type="button"
                       onClick={() =>
@@ -971,7 +977,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                     </button>
                   }
                 />
-                <TooltipPopup side="top">Copy path</TooltipPopup>
+                <TooltipPopup side="top">{i18next.t("Copy path")}</TooltipPopup>
               </Tooltip>
               <div className="shrink-0 border-l border-border/60 px-2 tabular-nums">
                 {selectedCheckoutThreadCount === 1
@@ -981,7 +987,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
             </div>
           </div>
           <SettingsRow
-            title="Project grouping"
+            title={i18next.t("Project grouping")}
             description="How this checkout joins project groups in the sidebar. Changing it can move you to a different project group."
             control={
               <Select
@@ -1023,7 +1029,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
           />
           {group.memberProjects.length > 1 ? (
             <SettingsRow
-              title="Remove checkout"
+              title={i18next.t("Remove checkout")}
               description="Removes this checkout and its threads from the project group. Files on disk are not touched."
               control={
                 <Button
@@ -1032,14 +1038,14 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                   onClick={() => void removeMembers([selectedCheckout])}
                 >
                   <Trash2Icon className="size-3.5" />
-                  Remove checkout
+                  {i18next.t("Remove checkout")}
                 </Button>
               }
             />
           ) : null}
           <div className="flex min-h-8 flex-col items-start gap-3 px-3 pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4">
             <div className="min-w-0">
-              <h3 className="text-base font-semibold text-foreground">Actions</h3>
+              <h3 className="text-base font-semibold text-foreground">{i18next.t("Actions")}</h3>
               <p className="text-pretty text-sm text-muted-foreground">
                 Saved and run only in {selectedCheckoutLabel}.
               </p>
@@ -1057,7 +1063,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                   </MenuTrigger>
                   <MenuPopup align="end" className="w-72">
                     <MenuGroup>
-                      <MenuGroupLabel>Import from t3.json</MenuGroupLabel>
+                      <MenuGroupLabel>{i18next.t("Import from t3.json")}</MenuGroupLabel>
                       <p className="px-2 pb-2 text-pretty text-sm text-muted-foreground">
                         Add actions declared by this checkout without editing them first.
                       </p>
@@ -1089,7 +1095,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                 }
               >
                 <PlusIcon className="size-3.5" />
-                Add action
+                {i18next.t("Add action")}
               </Button>
             </div>
           </div>
@@ -1154,14 +1160,14 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
           )}
           {t3File.status === "invalid" ? (
             <SettingsRow
-              title="t3.json is invalid"
+              title={i18next.t("t3.json is invalid")}
               description="A t3.json exists in this checkout but fails to parse, so every action and icon it declares is ignored. Check the JSON syntax and icon values."
               className="text-warning"
             />
           ) : null}
         </SettingsSection>
 
-        <SettingsSection title="Danger">
+        <SettingsSection title={i18next.t("Danger")}>
           <SettingsRow
             title={
               group.memberProjects.length > 1 ? "Remove this project everywhere" : "Remove project"

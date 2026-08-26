@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { WorkspacePageContainer, type WorkspacePageWidth } from "../WorkspacePageContainer";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import i18next from "i18next";
 
 interface SettingsSearchTargetContextValue {
   readonly targetId: string | null;
@@ -92,7 +93,11 @@ export function PolicyTooltip({ children }: { readonly children: string }) {
       <TooltipTrigger
         delay={200}
         render={
-          <Button size="icon-micro" variant="ghost-muted" aria-label="Background policy details">
+          <Button
+            size="icon-micro"
+            variant="ghost-muted"
+            aria-label={i18next.t("Background policy details")}
+          >
             <InfoIcon className="size-3.5" />
           </Button>
         }
@@ -234,7 +239,7 @@ export function SettingResetButton({
           </Button>
         }
       />
-      <TooltipPopup side="top">Reset to default</TooltipPopup>
+      <TooltipPopup side="top">{i18next.t("Reset to default")}</TooltipPopup>
     </Tooltip>
   );
 }

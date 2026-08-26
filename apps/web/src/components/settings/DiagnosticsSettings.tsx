@@ -192,7 +192,7 @@ function ExpandableText({
           className="cursor-pointer mt-1 text-[11px] font-medium text-foreground/70 underline-offset-2 hover:text-foreground hover:underline"
           onClick={() => setExpanded((value) => !value)}
         >
-          {expanded ? "Show less" : expandLabel}
+          {expanded ? i18next.t("Show less") : expandLabel}
         </button>
       ) : null}
     </div>
@@ -301,7 +301,7 @@ function formatProcessName(command: string): string {
 function formatProcessType(process: ServerProcessDiagnosticsEntry): string {
   if (process.depth > 0) return "Subprocess";
   if (/\b(codex|claude|opencode|cursor)\b/i.test(process.command)) return "Agent";
-  return "Process";
+  return i18next.t("Process");
 }
 
 function ProcessNameCell({
@@ -374,7 +374,7 @@ function ProcessSignalActions({
             </button>
           }
         />
-        <TooltipPopup side="top">Send SIGINT</TooltipPopup>
+        <TooltipPopup side="top">{i18next.t("Send SIGINT")}</TooltipPopup>
       </Tooltip>
       <Tooltip>
         <TooltipTrigger
@@ -389,7 +389,7 @@ function ProcessSignalActions({
             </button>
           }
         />
-        <TooltipPopup side="top">Send SIGKILL</TooltipPopup>
+        <TooltipPopup side="top">{i18next.t("Send SIGKILL")}</TooltipPopup>
       </Tooltip>
     </div>
   );
@@ -457,13 +457,13 @@ function ProcessDiagnosticsTable({
         </colgroup>
         <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-[11px] uppercase tracking-[0.08em] text-muted-foreground/70">
           <tr>
-            <th className="px-4 py-2 font-semibold sm:pl-5">Name</th>
-            <th className="px-3 py-2 text-right font-semibold">CPU</th>
-            <th className="px-3 py-2 text-right font-semibold">Memory</th>
-            <th className="px-3 py-2 font-semibold">Command</th>
-            <th className="px-3 py-2 text-right font-semibold">PID</th>
-            <th className="px-3 py-2 font-semibold">Type</th>
-            <th className="p-2 text-right font-semibold sm:pr-4">Kill</th>
+            <th className="px-4 py-2 font-semibold sm:pl-5">{i18next.t("Name")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("CPU")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Memory")}</th>
+            <th className="px-3 py-2 font-semibold">{i18next.t("Command")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("PID")}</th>
+            <th className="px-3 py-2 font-semibold">{i18next.t("Type")}</th>
+            <th className="p-2 text-right font-semibold sm:pr-4">{i18next.t("Kill")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border/50">
@@ -686,14 +686,14 @@ function ProcessResourceHistoryTable({
         </colgroup>
         <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-[11px] uppercase tracking-[0.08em] text-muted-foreground/70">
           <tr>
-            <th className="px-4 py-2 font-semibold sm:pl-5">Process</th>
-            <th className="px-3 py-2 text-right font-semibold">CPU Time</th>
-            <th className="px-3 py-2 text-right font-semibold">Current</th>
-            <th className="px-3 py-2 text-right font-semibold">Average</th>
-            <th className="px-3 py-2 text-right font-semibold">Peak</th>
-            <th className="px-3 py-2 text-right font-semibold">Max Mem</th>
-            <th className="px-3 py-2 font-semibold">Command</th>
-            <th className="px-3 py-2 text-right font-semibold sm:pr-5">PID</th>
+            <th className="px-4 py-2 font-semibold sm:pl-5">{i18next.t("Process")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("CPU Time")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Current")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Average")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Peak")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Max Mem")}</th>
+            <th className="px-3 py-2 font-semibold">{i18next.t("Command")}</th>
+            <th className="px-3 py-2 text-right font-semibold sm:pr-5">{i18next.t("PID")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border/50">
@@ -760,18 +760,23 @@ function DiagnosticsLastChecked({ checkedAt }: { checkedAt: DateTime.Utc | null 
   const relative = getRelativeTimeState(checkedAt ? DateTime.formatIso(checkedAt) : null);
 
   if (relative.status === "missing") {
-    return <span className="text-[11px] text-muted-foreground/50">Checking</span>;
+    return <span className="text-[11px] text-muted-foreground/50">{i18next.t("Checking")}</span>;
   }
 
   if (relative.status === "invalid") {
-    return <span className="text-[11px] text-muted-foreground/50">Checked unavailable</span>;
+    return (
+      <span className="text-[11px] text-muted-foreground/50">
+        {i18next.t("Checked unavailable")}
+      </span>
+    );
   }
 
   return (
     <span className="text-[11px] text-muted-foreground/60">
       {relative.suffix ? (
         <>
-          Checked <span className="font-mono tabular-nums">{relative.value}</span> {relative.suffix}
+          {i18next.t("Checked")}
+          <span className="font-mono tabular-nums">{relative.value}</span> {relative.suffix}
         </>
       ) : (
         <>Checked {relative.value}</>
@@ -920,7 +925,7 @@ export function DiagnosticsSettingsPanel() {
           clearSignaling();
           toastManager.add({
             type: "error",
-            title: "Could not confirm signal",
+            title: i18next.t("Could not confirm signal"),
             description: error instanceof Error ? error.message : `Failed to send ${signal}.`,
           });
           return;
@@ -964,8 +969,9 @@ export function DiagnosticsSettingsPanel() {
             toastManager.add({
               type: "info",
               title: i18next.t("Process already exited"),
-              description:
+              description: i18next.t(
                 "The process is not a child of the T3 Server. It might already have exited.",
+              ),
             });
             return;
           }
@@ -997,13 +1003,13 @@ export function DiagnosticsSettingsPanel() {
       <ResourceTelemetryDiagnostics />
 
       <SettingsSection
-        title="Live Processes"
+        title={i18next.t("Live Processes")}
         headerAction={
           <div className="flex items-center gap-1.5">
             <DiagnosticsLastChecked checkedAt={processData?.readAt ?? null} />
             <DiagnosticsRefreshButton
               isPending={isProcessPending}
-              label="Refresh process diagnostics"
+              label={i18next.t("Refresh process diagnostics")}
               onClick={refreshProcesses}
             />
           </div>
@@ -1011,21 +1017,21 @@ export function DiagnosticsSettingsPanel() {
       >
         <StatsGrid>
           <StatBlock
-            label="Child Processes"
+            label={i18next.t("Child Processes")}
             value={processData ? formatCount(processData.processCount) : "..."}
           />
           <StatBlock
-            label="CPU"
+            label={i18next.t("CPU")}
             value={processData ? `${processData.totalCpuPercent.toFixed(1)}%` : "..."}
             tooltip="Total CPU across live child processes of the current server process. The desktop shell and other parent processes are not included."
           />
           <StatBlock
-            label="Memory"
+            label={i18next.t("Memory")}
             value={processData ? formatBytes(processData.totalRssBytes) : "..."}
             tooltip="Total resident memory across live child processes of the current server process. The desktop shell and other parent processes are not included."
           />
           <StatBlock
-            label="Server PID"
+            label={i18next.t("Server PID")}
             value={processData ? String(processData.serverPid) : "..."}
           />
         </StatsGrid>
@@ -1058,7 +1064,7 @@ export function DiagnosticsSettingsPanel() {
       </SettingsSection>
 
       <SettingsSection
-        title="Resource History"
+        title={i18next.t("Resource History")}
         headerAction={
           <div className="flex items-center gap-1.5">
             <ResourceHistoryWindowSelector
@@ -1068,7 +1074,7 @@ export function DiagnosticsSettingsPanel() {
             <DiagnosticsLastChecked checkedAt={resourceData?.readAt ?? null} />
             <DiagnosticsRefreshButton
               isPending={isResourcePending}
-              label="Refresh resource history"
+              label={i18next.t("Refresh resource history")}
               onClick={refreshResources}
             />
           </div>
@@ -1076,12 +1082,12 @@ export function DiagnosticsSettingsPanel() {
       >
         <StatsGrid>
           <StatBlock
-            label="CPU Time"
+            label={i18next.t("CPU Time")}
             value={resourceData ? formatCpuTime(resourceData.totalCpuSecondsApprox) : "..."}
             tooltip="Approximate active CPU time for the T3 server root process and its descendants during the selected window. It grows only while sampled processes use CPU and older samples leave as the window moves."
           />
           <StatBlock
-            label="Samples"
+            label={i18next.t("Samples")}
             value={resourceData ? formatCount(resourceData.retainedSampleCount) : "..."}
             tooltip="In-memory process samples retained by the server. This resets when the server restarts."
           />
@@ -1090,7 +1096,7 @@ export function DiagnosticsSettingsPanel() {
             value={resourceData ? formatDuration(resourceData.sampleIntervalMs) : "..."}
           />
           <StatBlock
-            label="Processes"
+            label={i18next.t("Processes")}
             value={resourceData ? formatCount(resourceData.topProcesses.length) : "..."}
           />
         </StatsGrid>
@@ -1122,7 +1128,7 @@ export function DiagnosticsSettingsPanel() {
       </SettingsSection>
 
       <SettingsSection
-        title="Trace Diagnostics"
+        title={i18next.t("Trace Diagnostics")}
         headerAction={
           <div className="flex items-center gap-1.5">
             <DiagnosticsLastChecked checkedAt={data?.readAt ?? null} />
@@ -1134,31 +1140,34 @@ export function DiagnosticsSettingsPanel() {
                     variant="ghost-muted"
                     disabled={!observability?.logsDirectoryPath || isOpeningLogsDirectory}
                     onClick={openLogsDirectory}
-                    aria-label="Open logs folder"
+                    aria-label={i18next.t("Open logs folder")}
                   >
                     <FolderOpenIcon className="size-3" />
                   </Button>
                 }
               />
-              <TooltipPopup side="top">Open logs folder</TooltipPopup>
+              <TooltipPopup side="top">{i18next.t("Open logs folder")}</TooltipPopup>
             </Tooltip>
             <DiagnosticsRefreshButton
               isPending={isPending}
-              label="Refresh trace diagnostics"
+              label={i18next.t("Refresh trace diagnostics")}
               onClick={refresh}
             />
           </div>
         }
       >
         <StatsGrid>
-          <StatBlock label="Spans" value={data ? formatCount(data.recordCount) : "..."} />
+          <StatBlock
+            label={i18next.t("Spans")}
+            value={data ? formatCount(data.recordCount) : "..."}
+          />
           <StatBlock
             label={i18next.t("Failures")}
             value={data ? formatCount(data.failureCount) : "..."}
             tone={data && data.failureCount > 0 ? "danger" : "default"}
           />
           <StatBlock
-            label="Slow Spans"
+            label={i18next.t("Slow Spans")}
             value={data ? formatCount(data.slowSpanCount) : "..."}
             tooltip={
               data
@@ -1208,9 +1217,9 @@ export function DiagnosticsSettingsPanel() {
         ) : null}
       </SettingsSection>
 
-      <SettingsSection title="Latest Failures">
+      <SettingsSection title={i18next.t("Latest Failures")}>
         {data && data.latestFailures.length > 0 ? (
-          <DiagnosticsTable headers={["Span", "Cause", "Duration", "Ended"]}>
+          <DiagnosticsTable headers={[i18next.t("Span"), "Cause", "Duration", "Ended"]}>
             {data.latestFailures.map((failure) => (
               <tr key={`${failure.traceId}:${failure.spanId}`}>
                 <td className="px-4 py-3 align-top text-xs font-medium text-foreground first:sm:pl-5">
@@ -1233,10 +1242,10 @@ export function DiagnosticsSettingsPanel() {
         )}
       </SettingsSection>
 
-      <SettingsSection title="Most Common Failures">
+      <SettingsSection title={i18next.t("Most Common Failures")}>
         {data && data.commonFailures.length > 0 ? (
           <DiagnosticsTable
-            headers={["Span", "Count", "Cause", "Last Seen"]}
+            headers={[i18next.t("Span"), i18next.t("Count"), "Cause", "Last Seen"]}
             minTableWidth="min-w-[760px]"
           >
             {data.commonFailures.map((failure) => (
@@ -1263,10 +1272,10 @@ export function DiagnosticsSettingsPanel() {
         )}
       </SettingsSection>
 
-      <SettingsSection title="Slowest Spans">
+      <SettingsSection title={i18next.t("Slowest Spans")}>
         {data && data.slowestSpans.length > 0 ? (
           <DiagnosticsTable
-            headers={["Span", "Duration", "Ended", "Trace"]}
+            headers={[i18next.t("Span"), "Duration", "Ended", i18next.t("Trace")]}
             minTableWidth="min-w-[900px]"
             columnWidths={["w-[44%]", "w-[14%]", "w-[12%]", "w-[30%]"]}
           >
@@ -1292,7 +1301,7 @@ export function DiagnosticsSettingsPanel() {
         )}
       </SettingsSection>
 
-      <SettingsSection title="Span Logs">
+      <SettingsSection title={i18next.t("Span Logs")}>
         {data && data.latestWarningAndErrorLogs.length > 0 ? (
           <ScrollArea
             chainVerticalScroll
@@ -1310,11 +1319,21 @@ export function DiagnosticsSettingsPanel() {
               </colgroup>
               <thead className="border-b border-border/60 text-[11px] uppercase tracking-[0.08em] text-muted-foreground/70">
                 <tr>
-                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold sm:pl-5">Time</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold">Level</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold">Span</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold">Message</th>
-                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold sm:pr-5">Trace</th>
+                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold sm:pl-5">
+                    {i18next.t("Time")}
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold">
+                    {i18next.t("Level")}
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold">
+                    {i18next.t("Span")}
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold">
+                    {i18next.t("Message")}
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2.5 font-semibold sm:pr-5">
+                    {i18next.t("Trace")}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
@@ -1356,10 +1375,16 @@ export function DiagnosticsSettingsPanel() {
         )}
       </SettingsSection>
 
-      <SettingsSection title="Top Span Names">
+      <SettingsSection title={i18next.t("Top Span Names")}>
         {data && data.topSpansByCount.length > 0 ? (
           <DiagnosticsTable
-            headers={["Span", "Count", "Failures", "Average", "Max"]}
+            headers={[
+              i18next.t("Span"),
+              i18next.t("Count"),
+              i18next.t("Failures"),
+              i18next.t("Average"),
+              "Max",
+            ]}
             minTableWidth="min-w-[760px]"
             columnWidths={["w-[48%]", "w-[13%]", "w-[13%]", "w-[13%]", "w-[13%]"]}
           >

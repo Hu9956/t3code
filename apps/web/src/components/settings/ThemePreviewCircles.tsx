@@ -12,6 +12,7 @@ import {
   type ThemeAppearance,
   type ThemeDefinition,
 } from "../../themePalette";
+import i18next from "i18next";
 
 const THEME_PREVIEW_ROLES = [
   "sidebar",
@@ -58,7 +59,7 @@ const STANDARD_THEME_PREVIEW_COLORS: Record<
 export const STANDARD_THEME_CARDS: ReadonlyArray<ThemeCardDefinition> = [
   {
     id: "default",
-    label: "T3 Code",
+    label: i18next.t("T3 Code"),
     previews: (["light", "dark"] as const).map((mode) => ({
       mode,
       colors: STANDARD_THEME_PREVIEW_COLORS[mode],
@@ -215,7 +216,9 @@ export function ThemePreviewCircles({
               }
             />
             <TooltipPopup>
-              {mode === "light" ? "Use for light mode only" : "Use for dark mode only"}
+              {mode === "light"
+                ? i18next.t("Use for light mode only")
+                : i18next.t("Use for dark mode only")}
             </TooltipPopup>
           </Tooltip>
         );

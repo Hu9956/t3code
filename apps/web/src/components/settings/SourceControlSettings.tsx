@@ -62,6 +62,7 @@ import {
   SettingsSection,
 } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
+import i18next from "i18next";
 
 const EMPTY_DISCOVERY_RESULT: SourceControlDiscoveryResult = {
   versionControlSystems: [],
@@ -141,12 +142,12 @@ function authPresentation(auth: SourceControlProviderAuth): {
   readonly badge: "warning" | null;
 } {
   if (auth.status === "authenticated") {
-    return { label: "Authenticated", badge: null };
+    return { label: i18next.t("Authenticated"), badge: null };
   }
   if (auth.status === "unauthenticated") {
-    return { label: "Not authenticated", badge: "warning" };
+    return { label: i18next.t("Not authenticated"), badge: "warning" };
   }
-  return { label: "Status unknown", badge: null };
+  return { label: i18next.t("Status unknown"), badge: null };
 }
 
 function RedactedAccount(props: { readonly account: string | null }) {
@@ -216,7 +217,7 @@ function itemSummary({
     if (auth.status === "authenticated") {
       return (
         <>
-          <span>Authenticated</span>
+          <span>{i18next.t("Authenticated")}</span>
           {authAccount ? (
             <>
               <span aria-hidden>as</span>
@@ -248,7 +249,7 @@ function itemSummary({
     );
   }
 
-  return <span>Available</span>;
+  return <span>{i18next.t("Available")}</span>;
 }
 
 function DiscoveryItemRow({
@@ -351,7 +352,9 @@ function GitFetchIntervalSettings() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-1">
           <div className="flex min-w-0 items-center gap-1">
-            <span className="text-xs font-medium text-foreground">Fetch interval</span>
+            <span className="text-xs font-medium text-foreground">
+              {i18next.t("Fetch interval")}
+            </span>
             <PolicyTooltip>
               This interval is configured for Git only. The shared Background activity policy still
               decides whether Git refreshes may run when the timer fires. Custom intervals appear as
@@ -366,7 +369,7 @@ function GitFetchIntervalSettings() {
             >
               {canResetFetchInterval ? (
                 <SettingResetButton
-                  label="fetch interval"
+                  label={i18next.t("fetch interval")}
                   onClick={() =>
                     updateSettings(
                       backgroundActivityOverrideSettings(settings.backgroundActivity, {
@@ -399,12 +402,12 @@ function GitFetchIntervalSettings() {
             }
           >
             <NumberFieldGroup>
-              <NumberFieldDecrement aria-label="Decrease fetch interval" />
-              <NumberFieldInput aria-label="Automatic Git fetch interval in seconds" />
-              <NumberFieldIncrement aria-label="Increase fetch interval" />
+              <NumberFieldDecrement aria-label={i18next.t("Decrease fetch interval")} />
+              <NumberFieldInput aria-label={i18next.t("Automatic Git fetch interval in seconds")} />
+              <NumberFieldIncrement aria-label={i18next.t("Increase fetch interval")} />
             </NumberFieldGroup>
           </NumberField>
-          <span className="text-xs text-muted-foreground">seconds</span>
+          <span className="text-xs text-muted-foreground">{i18next.t("seconds")}</span>
         </div>
       </div>
     </div>
@@ -460,7 +463,10 @@ function EmptySourceControlDiscovery({
   const hasError = error !== null;
 
   return (
-    <SettingsSection id={searchableSetting("source-control").id} title="Server environment">
+    <SettingsSection
+      id={searchableSetting("source-control").id}
+      title={i18next.t("Server environment")}
+    >
       <Empty className="min-h-88">
         <EmptyMedia variant="icon">
           <GitPullRequestIcon />
@@ -526,13 +532,13 @@ export function SourceControlSettingsPanel() {
             variant="ghost-muted"
             onClick={handleScan}
             disabled={discovery.isPending}
-            aria-label="Rescan server environment"
+            aria-label={i18next.t("Rescan server environment")}
           >
             <RefreshCwIcon className={cn("size-3", discovery.isPending && "animate-spin")} />
           </Button>
         }
       />
-      <TooltipPopup side="top">Rescan Git and hosting integrations</TooltipPopup>
+      <TooltipPopup side="top">{i18next.t("Rescan Git and hosting integrations")}</TooltipPopup>
     </Tooltip>
   );
 
@@ -540,15 +546,18 @@ export function SourceControlSettingsPanel() {
     <SettingsPageContainer>
       {isInitialScanPending ? (
         <>
-          <SourceControlSectionSkeleton title="Version Control" headerAction={scanButton} />
-          <SourceControlSectionSkeleton title="Source Control Providers" />
+          <SourceControlSectionSkeleton
+            title={i18next.t("Version Control")}
+            headerAction={scanButton}
+          />
+          <SourceControlSectionSkeleton title={i18next.t("Source Control Providers")} />
         </>
       ) : hasDiscoveryItems ? (
         <>
           {hasVersionControlSystems ? (
             <SettingsSection
               id={searchableSetting("source-control").id}
-              title="Version Control"
+              title={i18next.t("Version Control")}
               headerAction={scanButton}
             >
               {result.versionControlSystems.map((item) => (
@@ -564,7 +573,7 @@ export function SourceControlSettingsPanel() {
           {result.sourceControlProviders.length > 0 ? (
             <SettingsSection
               id={hasVersionControlSystems ? undefined : searchableSetting("source-control").id}
-              title="Source Control Providers"
+              title={i18next.t("Source Control Providers")}
               headerAction={hasVersionControlSystems ? null : scanButton}
             >
               {result.sourceControlProviders.map((item) => (

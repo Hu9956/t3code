@@ -129,13 +129,13 @@ function ExpandableHeaderSearch({
                 size="icon-micro"
                 variant="ghost-muted"
                 onClick={() => onOpenChange(true)}
-                aria-label="Search keybindings"
+                aria-label={i18next.t("Search keybindings")}
               >
                 <SearchIcon className="size-3" />
               </Button>
             }
           />
-          <TooltipPopup side="top">Search keybindings</TooltipPopup>
+          <TooltipPopup side="top">{i18next.t("Search keybindings")}</TooltipPopup>
         </Tooltip>
       </>
     );
@@ -160,8 +160,8 @@ function ExpandableHeaderSearch({
             onOpenChange(false);
           }
         }}
-        placeholder="Search keybindings"
-        aria-label="Search keybindings"
+        placeholder={i18next.t("Search keybindings")}
+        aria-label={i18next.t("Search keybindings")}
         className="w-44 [&_[data-slot=input]]:pl-7"
         size="compact"
       />
@@ -311,7 +311,7 @@ function WhenVariableSelect({
   return (
     <Select value={value} onValueChange={(nextValue) => nextValue && onChange(nextValue)}>
       <SelectTrigger size="compact" className="min-w-0 flex-1 font-mono">
-        <SelectValue placeholder="Condition" className="leading-7" />
+        <SelectValue placeholder={i18next.t("Condition")} className="leading-7" />
         {unknownIdentifiers && unknownIdentifiers.length > 0 ? (
           <UnknownWhenVariableWarning identifiers={unknownIdentifiers} focusable={false} />
         ) : null}
@@ -380,7 +380,7 @@ function WhenExpressionNodeEditor({
             variant="ghost"
             size="icon-sm"
             className="size-7"
-            aria-label="Remove condition"
+            aria-label={i18next.t("Remove condition")}
             onClick={onRemove}
           >
             <MinusIcon className="size-3.5" />
@@ -402,7 +402,7 @@ function WhenExpressionNodeEditor({
           <Toggle
             pressed
             onPressedChange={(pressed) => onChange(pressed ? node : node.node)}
-            aria-label="Negate group"
+            aria-label={i18next.t("Negate group")}
             variant="outline"
             size="compact"
             className="min-w-10"
@@ -415,7 +415,7 @@ function WhenExpressionNodeEditor({
               variant="ghost"
               size="icon-sm"
               className="ml-auto size-7"
-              aria-label="Remove negated group"
+              aria-label={i18next.t("Remove negated group")}
               onClick={onRemove}
             >
               <MinusIcon className="size-3.5" />
@@ -526,7 +526,7 @@ function WhenExpressionNodeEditor({
         </Select>
         <Button type="button" variant="outline" size="compact" onClick={addCondition}>
           <PlusIcon className="size-3.5" />
-          Condition
+          {i18next.t("Condition")}
         </Button>
         <Button type="button" variant="outline" size="compact" onClick={addGroup}>
           <PlusIcon className="size-3.5" />
@@ -538,7 +538,7 @@ function WhenExpressionNodeEditor({
             variant="ghost"
             size="icon-sm"
             className="ml-auto size-7"
-            aria-label="Remove group"
+            aria-label={i18next.t("Remove group")}
             onClick={onRemove}
           >
             <MinusIcon className="size-3.5" />
@@ -629,12 +629,12 @@ function WhenExpressionBuilder({
     <div className="w-[min(34rem,calc(100vw-2rem))] space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-sm font-medium text-foreground">When</div>
+          <div className="text-sm font-medium text-foreground">{i18next.t("When")}</div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <Button type="button" variant="outline" size="compact" onClick={addRootCondition}>
             <PlusIcon className="size-3.5" />
-            Condition
+            {i18next.t("Condition")}
           </Button>
           <Button type="button" variant="outline" size="compact" onClick={addRootGroup}>
             <PlusIcon className="size-3.5" />
@@ -648,9 +648,9 @@ function WhenExpressionBuilder({
           <Input
             value={expressionDraft}
             onChange={(event) => updateExpressionDraft(event.currentTarget.value)}
-            placeholder="Always"
+            placeholder={i18next.t("Always")}
             aria-invalid={Boolean(parseError)}
-            aria-label="When expression"
+            aria-label={i18next.t("When expression")}
             className={cn(
               "h-7 rounded-md font-mono text-[12px] leading-7 sm:h-7 sm:leading-7",
               unknownIdentifiers.length > 0 && "pr-9",
@@ -684,7 +684,7 @@ function WhenExpressionBuilder({
             <div className="flex flex-wrap gap-2">
               <Button type="button" size="compact" onClick={addRootCondition}>
                 <PlusIcon className="size-3.5" />
-                Condition
+                {i18next.t("Condition")}
               </Button>
               <Button type="button" variant="outline" size="compact" onClick={addRootGroup}>
                 <PlusIcon className="size-3.5" />
@@ -842,7 +842,7 @@ function KeybindingTableRow({
             disabled={isSaving || keyDraft.trim().length === 0 || !isWhenDraftValid}
             onClick={save}
           >
-            {isSaving ? "Saving" : "Save"}
+            {isSaving ? "Saving" : i18next.t("Save")}
           </Button>
         ) : null}
       </div>
@@ -855,7 +855,7 @@ function KeybindingTableRow({
             )}
             aria-label={`Edit when clause for ${commandLabel(row.command)}`}
           >
-            <span className="truncate">{whenDraftExpression || "Always"}</span>
+            <span className="truncate">{whenDraftExpression || i18next.t("Always")}</span>
             <ChevronDownIcon className="size-3.5 shrink-0 opacity-60" />
           </PopoverTrigger>
           <PopoverContent align="start" sideOffset={6}>
@@ -889,12 +889,12 @@ function KeybindingTableRow({
             <MenuPopup align="end" className="min-w-36">
               {canReset ? (
                 <MenuItem disabled={isSaving} onClick={() => onReset(row)}>
-                  Reset to default
+                  {i18next.t("Reset to default")}
                 </MenuItem>
               ) : null}
               {canRemove ? (
                 <MenuItem variant="destructive" disabled={isSaving} onClick={() => onRemove(row)}>
-                  Remove
+                  {i18next.t("Remove")}
                 </MenuItem>
               ) : null}
             </MenuPopup>
@@ -966,7 +966,7 @@ function NewKeybindingTableRow({
           onValueChange={(value) => setCommandDraft(value as KeybindingCommand)}
         >
           <SelectTrigger size="compact" className="w-full max-w-60">
-            <SelectValue placeholder="Command" />
+            <SelectValue placeholder={i18next.t("Command")} />
           </SelectTrigger>
           <SelectContent
             alignItemWithTrigger={false}
@@ -999,7 +999,7 @@ function NewKeybindingTableRow({
           disabled={isSaving || !commandDraft || keyDraft.trim().length === 0 || !isWhenDraftValid}
           onClick={save}
         >
-          {isSaving ? "Saving" : "Save"}
+          {isSaving ? "Saving" : i18next.t("Save")}
         </Button>
       </div>
       <div className="pr-4">
@@ -1011,7 +1011,7 @@ function NewKeybindingTableRow({
             )}
             aria-label={`Edit when clause for ${commandLabelText}`}
           >
-            <span className="truncate">{whenDraftExpression || "Always"}</span>
+            <span className="truncate">{whenDraftExpression || i18next.t("Always")}</span>
             <ChevronDownIcon className="size-3.5 shrink-0 opacity-60" />
           </PopoverTrigger>
           <PopoverContent align="start" sideOffset={6}>
@@ -1035,14 +1035,14 @@ function NewKeybindingTableRow({
                 size="icon-sm"
                 className="size-7 text-muted-foreground hover:text-foreground"
                 disabled={isSaving}
-                aria-label="Cancel new keybinding"
+                aria-label={i18next.t("Cancel new keybinding")}
                 onClick={onCancel}
               />
             }
           >
             <XIcon className="size-3.5" />
           </TooltipTrigger>
-          <TooltipPopup side="top">Cancel</TooltipPopup>
+          <TooltipPopup side="top">{i18next.t("Cancel")}</TooltipPopup>
         </Tooltip>
       </div>
     </div>
@@ -1107,7 +1107,7 @@ export function KeybindingsSettingsPanel() {
       }
       const error = squashAtomCommandFailure(result);
       toastManager.add({
-        title: "Unable to open keybindings file",
+        title: i18next.t("Unable to open keybindings file"),
         description:
           error instanceof Error ? error.message : "The keybindings file was not opened.",
         type: "error",
@@ -1138,7 +1138,7 @@ export function KeybindingsSettingsPanel() {
         if (!isAtomCommandInterrupted(result)) {
           const error = squashAtomCommandFailure(result);
           toastManager.add({
-            title: "Unable to save keybinding",
+            title: i18next.t("Unable to save keybinding"),
             description: error instanceof Error ? error.message : "The keybinding was not saved.",
             type: "error",
           });
@@ -1161,7 +1161,7 @@ export function KeybindingsSettingsPanel() {
         if (result._tag === "Failure" && !isAtomCommandInterrupted(result)) {
           const error = squashAtomCommandFailure(result);
           toastManager.add({
-            title: "Unable to remove keybinding",
+            title: i18next.t("Unable to remove keybinding"),
             description: error instanceof Error ? error.message : "The keybinding was not removed.",
             type: "error",
           });
@@ -1217,13 +1217,13 @@ export function KeybindingsSettingsPanel() {
                     size="icon-micro"
                     variant="ghost-muted"
                     onClick={() => setIsAddingBinding(true)}
-                    aria-label="Add keybinding"
+                    aria-label={i18next.t("Add keybinding")}
                   >
                     <PlusIcon className="size-3" />
                   </Button>
                 }
               />
-              <TooltipPopup side="top">Add keybinding</TooltipPopup>
+              <TooltipPopup side="top">{i18next.t("Add keybinding")}</TooltipPopup>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger
@@ -1234,13 +1234,13 @@ export function KeybindingsSettingsPanel() {
                     variant="ghost-muted"
                     disabled={!keybindingsConfigPath}
                     onClick={openKeybindingsFile}
-                    aria-label="Open keybindings.json"
+                    aria-label={i18next.t("Open keybindings.json")}
                   >
                     <FileJsonIcon className="size-3" />
                   </Button>
                 }
               />
-              <TooltipPopup side="top">Open keybindings.json</TooltipPopup>
+              <TooltipPopup side="top">{i18next.t("Open keybindings.json")}</TooltipPopup>
             </Tooltip>
           </div>
         }
@@ -1262,10 +1262,10 @@ export function KeybindingsSettingsPanel() {
           className="w-full max-w-full rounded-none"
         >
           <div className="grid min-w-[680px] grid-cols-[minmax(190px,1.1fr)_minmax(220px,0.85fr)_minmax(210px,1fr)_60px] border-b border-border/70 bg-muted/25 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.07em] text-muted-foreground">
-            <div>Command</div>
-            <div>Keybinding</div>
-            <div>When</div>
-            <div>Status</div>
+            <div>{i18next.t("Command")}</div>
+            <div>{i18next.t("Keybinding")}</div>
+            <div>{i18next.t("When")}</div>
+            <div>{i18next.t("Status")}</div>
           </div>
           <div className="min-w-[680px] divide-y divide-border/60">
             {isAddingBinding ? (

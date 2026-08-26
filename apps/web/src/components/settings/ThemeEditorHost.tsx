@@ -32,8 +32,8 @@ export function ThemeEditorHost() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not save your theme",
-              description: "Browser storage is unavailable, so the change was not kept.",
+              title: i18next.t("Could not save your theme"),
+              description: i18next.t("Browser storage is unavailable, so the change was not kept."),
             }),
           );
           return false;
@@ -70,8 +70,8 @@ export function ThemeEditorHost() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not save your theme",
-            description: "Browser storage is unavailable, so the change was not kept.",
+            title: i18next.t("Could not save your theme"),
+            description: i18next.t("Browser storage is unavailable, so the change was not kept."),
           }),
         );
         return false;

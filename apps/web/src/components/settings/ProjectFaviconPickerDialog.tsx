@@ -17,6 +17,7 @@ import {
 import { useProjectFilePickerQuery } from "../files/projectFilesQueryState";
 import { CommandDialog, CommandDialogPopup, CommandFooterAction } from "../ui/command";
 import { toastManager } from "../ui/toast";
+import i18next from "i18next";
 
 function emptyMessage(query: string, error: string | null, isPending: boolean): string {
   if (error) return error;
@@ -70,14 +71,14 @@ export function ProjectFaviconPickerDialog(props: {
     <CommandDialog open={props.open} onOpenChange={props.onOpenChange}>
       {props.open ? (
         <CommandDialogPopup
-          aria-label="Choose project icon"
+          aria-label={i18next.t("Choose project icon")}
           className="overflow-hidden p-0"
           onBackdropPointerDown={() => props.onOpenChange(false)}
         >
           <CommandPaletteContent
-            aria-label="Choose project icon"
+            aria-label={i18next.t("Choose project icon")}
             autoHighlight="always"
-            escapeLabel="Close"
+            escapeLabel={i18next.t("Close")}
             footerActionLabel="Select icon"
             footerTrailing={
               pickExternal ? (
@@ -94,7 +95,7 @@ export function ProjectFaviconPickerDialog(props: {
                       .catch((error: unknown) => {
                         toastManager.add({
                           type: "error",
-                          title: "Could not open image picker",
+                          title: i18next.t("Could not open image picker"),
                           description:
                             error instanceof Error ? error.message : "An error occurred.",
                         });
@@ -106,7 +107,7 @@ export function ProjectFaviconPickerDialog(props: {
                 </CommandFooterAction>
               ) : null
             }
-            inputProps={{ placeholder: "Search image files…" }}
+            inputProps={{ placeholder: i18next.t("Search image files…") }}
             mode="none"
             onItemHighlighted={(value) => {
               setHighlightedItemValue(typeof value === "string" ? value : null);

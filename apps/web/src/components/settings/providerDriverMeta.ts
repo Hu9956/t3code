@@ -17,6 +17,7 @@ import {
   OpenAI,
   OpenCodeIcon,
 } from "../Icons";
+import i18next from "i18next";
 
 type ProviderSettingsSchema = {
   readonly fields: Readonly<Record<string, Schema.Top>>;
@@ -46,7 +47,7 @@ export interface ProviderClientDefinition {
 export const PROVIDER_CLIENT_DEFINITIONS: readonly ProviderClientDefinition[] = [
   {
     value: ProviderDriverKind.make("codex"),
-    label: "Codex",
+    label: i18next.t("Codex"),
     icon: OpenAI,
     settingsSchema: CodexSettings,
   },
@@ -60,14 +61,14 @@ export const PROVIDER_CLIENT_DEFINITIONS: readonly ProviderClientDefinition[] = 
     value: ProviderDriverKind.make("cursor"),
     label: "Cursor",
     icon: CursorIcon,
-    badgeLabel: "Early Access",
+    badgeLabel: i18next.t("Early Access"),
     settingsSchema: CursorSettings,
   },
   {
     value: ProviderDriverKind.make("grok"),
     label: "Grok",
     icon: GrokIcon,
-    badgeLabel: "Early Access",
+    badgeLabel: i18next.t("Early Access"),
     settingsSchema: GrokSettings,
   },
   {
@@ -80,7 +81,7 @@ export const PROVIDER_CLIENT_DEFINITIONS: readonly ProviderClientDefinition[] = 
     value: ProviderDriverKind.make("antigravity"),
     label: "Antigravity",
     icon: AntigravityIcon,
-    badgeLabel: "Early Access",
+    badgeLabel: i18next.t("Early Access"),
     settingsSchema: AntigravitySettings,
   },
 ];

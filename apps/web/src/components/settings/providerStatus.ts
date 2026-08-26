@@ -1,4 +1,5 @@
 import type { ServerProvider, ServerProviderVersionAdvisory } from "@t3tools/contracts";
+import i18next from "i18next";
 
 /**
  * Visual treatment for each server-reported provider status. Centralized so
@@ -31,52 +32,58 @@ export type ProviderStatusKey = keyof typeof PROVIDER_STATUS_STYLES;
 export function getProviderSummary(provider: ServerProvider | undefined) {
   if (!provider) {
     return {
-      headline: "Checking provider status",
-      detail: "Waiting for the server to report installation and authentication details.",
+      headline: i18next.t("Checking provider status"),
+      detail: i18next.t(
+        "Waiting for the server to report installation and authentication details.",
+      ),
     };
   }
   if (!provider.enabled) {
     return {
-      headline: "Disabled",
+      headline: i18next.t("Disabled"),
       detail:
-        provider.message ?? "This provider is installed but disabled for new sessions in T3 Code.",
+        provider.message ??
+        i18next.t("This provider is installed but disabled for new sessions in T3 Code."),
     };
   }
   if (!provider.installed) {
     return {
-      headline: "Not found",
-      detail: provider.message ?? "CLI not detected on PATH.",
+      headline: i18next.t("Not found"),
+      detail: provider.message ?? i18next.t("CLI not detected on PATH."),
     };
   }
   if (provider.auth.status === "authenticated") {
     const authLabel = provider.auth.label ?? provider.auth.type;
     return {
-      headline: authLabel ? `Authenticated · ${authLabel}` : "Authenticated",
+      headline: authLabel ? `Authenticated · ${authLabel}` : i18next.t("Authenticated"),
       detail: provider.message ?? null,
     };
   }
   if (provider.auth.status === "unauthenticated") {
     return {
-      headline: "Not authenticated",
+      headline: i18next.t("Not authenticated"),
       detail: provider.message ?? null,
     };
   }
   if (provider.status === "warning") {
     return {
-      headline: "Needs attention",
+      headline: i18next.t("Needs attention"),
       detail:
-        provider.message ?? "The provider is installed, but the server could not fully verify it.",
+        provider.message ??
+        i18next.t("The provider is installed, but the server could not fully verify it."),
     };
   }
   if (provider.status === "error") {
     return {
-      headline: "Unavailable",
-      detail: provider.message ?? "The provider failed its startup checks.",
+      headline: i18next.t("Unavailable"),
+      detail: provider.message ?? i18next.t("The provider failed its startup checks."),
     };
   }
   return {
-    headline: "Available",
-    detail: provider.message ?? "Installed and ready, but authentication could not be verified.",
+    headline: i18next.t("Available"),
+    detail:
+      provider.message ??
+      i18next.t("Installed and ready, but authentication could not be verified."),
   };
 }
 
@@ -101,7 +108,7 @@ export function getProviderVersionAdvisoryPresentation(
     return null;
   }
 
-  const label = "Update available";
+  const label = i18next.t("Update available");
   const version = advisory.latestVersion;
   const versionLabel = getProviderVersionLabel(version);
 

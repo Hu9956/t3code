@@ -52,6 +52,7 @@ import {
   getProviderVersionLabel,
   type ProviderStatusKey,
 } from "./providerStatus";
+import i18next from "i18next";
 
 const ENVIRONMENT_VARIABLE_NAME_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
@@ -258,7 +259,7 @@ function ProviderEnvironmentSection(props: {
                     <DraftInput
                       value={variable.name}
                       onCommit={(name) => updateVariable(variable.id, { name: name.trim() })}
-                      placeholder="VARIABLE_NAME"
+                      placeholder={i18next.t("VARIABLE_NAME")}
                       spellCheck={false}
                       aria-label={`Environment variable name ${index + 1}`}
                     />
@@ -271,7 +272,7 @@ function ProviderEnvironmentSection(props: {
                       autoComplete="off"
                       placeholder={
                         variable.valueRedacted
-                          ? "Stored secret - enter a new value to replace"
+                          ? i18next.t("Stored secret - enter a new value to replace")
                           : "Value"
                       }
                       spellCheck={false}
@@ -316,7 +317,9 @@ function ProviderEnvironmentSection(props: {
         </div>
       )}
       <span className="text-xs text-muted-foreground">
-        Sensitive values are stored separately and are not returned to the app after saving.
+        {i18next.t(
+          "Sensitive values are stored separately and are not returned to the app after saving.",
+        )}
       </span>
     </div>
   );
@@ -424,7 +427,7 @@ export function ProviderInstanceCard({
       toastManager.add({
         type: "success",
         title: `${providerName} update command copied`,
-        description: "Run it in a terminal when you are ready to update.",
+        description: i18next.t("Run it in a terminal when you are ready to update."),
       });
     },
     onError: (error, { providerName }) => {
@@ -567,7 +570,7 @@ export function ProviderInstanceCard({
                   variant="ghost"
                   className="text-muted-foreground hover:text-destructive"
                   onClick={onDelete}
-                  aria-label={t("Delete provider instance {{id}}", { id: instanceId })}
+                  aria-label={t(i18next.t("Delete provider instance {{id}}"), { id: instanceId })}
                 >
                   <Trash2Icon className="size-3" />
                 </Button>
@@ -591,7 +594,7 @@ export function ProviderInstanceCard({
       ) : (
         <>
           <span>{t(summary.headline)}</span>
-          <ProviderAuthEmail email={authEmail} separator prefix="Email" />
+          <ProviderAuthEmail email={authEmail} separator prefix={i18next.t("Email")} />
         </>
       )}
       {summary.detail ? <span>- {t(summary.detail)}</span> : null}
@@ -624,7 +627,7 @@ export function ProviderInstanceCard({
                             ? "text-warning hover:text-warning"
                             : "text-update-foreground hover:text-update-foreground",
                         )}
-                        aria-label="Update available — view details"
+                        aria-label={i18next.t("Update available — view details")}
                       >
                         <ArrowUpCircleIcon className="size-3.5 [animation:bounce_2.4s_ease-in-out_infinite] motion-reduce:animate-none" />
                       </Button>
@@ -638,7 +641,7 @@ export function ProviderInstanceCard({
                     <div className="grid min-w-0 gap-3">
                       <div className="grid gap-0.5">
                         <p className="text-[13px] font-semibold leading-tight text-foreground">
-                          Update available
+                          {i18next.t("Update available")}
                         </p>
                         <p
                           className={cn(
@@ -661,13 +664,13 @@ export function ProviderInstanceCard({
                           onClick={onRunUpdate}
                         >
                           {isUpdating ? <LoaderIcon className="animate-spin" /> : <DownloadIcon />}
-                          {isUpdating ? "Updating" : "Update now"}
+                          {isUpdating ? i18next.t("Updating") : i18next.t("Update now")}
                         </Button>
                       ) : null}
                       {onRunUpdate && updateCommand ? (
                         <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                           <span aria-hidden className="h-px flex-1 bg-border" />
-                          or, update manually using
+                          {i18next.t("or, update manually using")}
                           <span aria-hidden className="h-px flex-1 bg-border" />
                         </div>
                       ) : null}
@@ -755,7 +758,9 @@ export function ProviderInstanceCard({
                 value={accentColor}
                 onCommit={updateAccentColor}
                 commitDelayMs={120}
-                description="Used to distinguish this instance in picker rails and model lists."
+                description={i18next.t(
+                  "Used to distinguish this instance in picker rails and model lists.",
+                )}
               />
             </div>
 
@@ -793,7 +798,7 @@ export function ProviderInstanceCard({
             ) : (
               <div>
                 <p className="text-xs text-muted-foreground">
-                  This instance uses a driver (
+                  {i18next.t("This instance uses a driver (")}
                   <code className="text-foreground">{String(instance.driver)}</code>) that is not
                   shipped with the current build. Configuration values are preserved but cannot be
                   edited from this surface.

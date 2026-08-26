@@ -100,6 +100,7 @@ import {
   resolveRemoteOperateAccess,
   resolveSelectedProviderEnvironmentId,
 } from "./ProviderSettingsPanel.logic";
+import i18next from "i18next";
 
 function withoutProviderInstanceKey<V>(
   record: Readonly<Record<ProviderInstanceId, V>> | undefined,
@@ -160,8 +161,8 @@ function providerEnvironmentIcon(environment: EnvironmentPresentation) {
 
 function providerEnvironmentDetail(environment: EnvironmentPresentation): string {
   if (environment.entry.target._tag === "PrimaryConnectionTarget") return "Primary device";
-  if (environment.relayManaged) return "T3 Connect";
-  if (environment.entry.target._tag === "SshConnectionTarget") return "SSH";
+  if (environment.relayManaged) return i18next.t("T3 Connect");
+  if (environment.entry.target._tag === "SshConnectionTarget") return i18next.t("SSH");
   if (isDesktopLocalConnectionTarget(environment.entry.target)) return "Local device";
   return environment.displayUrl ?? "Remote device";
 }
@@ -183,12 +184,12 @@ function EnvironmentUnavailableRow({
   const description = isLoading
     ? access.reason === "permissions"
       ? t("Checking what this session is allowed to change.")
-      : t("Waiting for {{name}}'s configuration.", { name: environment.label })
+      : t(i18next.t("Waiting for {{name}}'s configuration."), { name: environment.label })
     : connectionStatusText(environment.connection);
   // No spinner: this state can persist indefinitely for a wedged device, and a
   // continuously repainting animation would run the whole time.
   return (
-    <SettingsSection title="Providers">
+    <SettingsSection title={i18next.t("Providers")}>
       <SettingsRow title={title} description={description} />
     </SettingsSection>
   );
@@ -221,15 +222,15 @@ export function ProviderSettingsPanel() {
   return (
     <SettingsPageContainer>
       {!onlyPrimaryDevice ? (
-        <SettingsSection title="Devices">
+        <SettingsSection title={i18next.t("Devices")}>
           {options.length === 0 ? (
             // The catalog hydrates asynchronously, so an empty list before it is
             // ready means "not loaded yet", not "nothing is connected".
             <SettingsRow
-              title={isReady ? "No connected devices" : "Loading devices"}
+              title={isReady ? i18next.t("No connected devices") : i18next.t("Loading devices")}
               description={
                 isReady
-                  ? "Connect an execution environment before configuring providers."
+                  ? i18next.t("Connect an execution environment before configuring providers.")
                   : "Reading connected execution environments."
               }
             />
@@ -475,7 +476,7 @@ export function EnvironmentProviderSettings({
             description:
               error instanceof Error
                 ? error.message
-                : "The provider update command could not be started.",
+                : i18next.t("The provider update command could not be started."),
           }),
         );
       }
@@ -757,7 +758,7 @@ export function EnvironmentProviderSettings({
               providerHealthRefreshIntervalSeconds !==
               defaultProviderHealthRefreshIntervalSeconds ? (
                 <SettingResetButton
-                  label="provider health check interval"
+                  label={i18next.t("provider health check interval")}
                   onClick={() =>
                     updateSettings(
                       backgroundActivityOverrideSettings(

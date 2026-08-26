@@ -5,16 +5,17 @@ import { cn } from "../../lib/utils";
 import { Input } from "../ui/input";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import i18next from "i18next";
 export function getThemeRoleLabel(role: ThemeColorRole): string {
   const labels: Partial<Record<ThemeColorRole, string>> = {
-    canvas: "Background",
+    canvas: i18next.t("Background"),
     toolbar: "Toolbar background",
     toolbarForeground: "Toolbar text",
     toolbarBorder: "Toolbar border",
     toolbarControl: "Toolbar control",
     toolbarControlForeground: "Toolbar control text",
     toolbarControlHover: "Toolbar control hover",
-    accent: "Accent color",
+    accent: i18next.t("Accent color"),
     errorForeground: "Error text",
     errorSurface: "Error background",
     warningForeground: "Warning text",
@@ -297,7 +298,7 @@ function ThemeColorPickerPanel({
       <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
         <div className="min-w-0">
           <p className="truncate text-xs font-semibold text-foreground">{label}</p>
-          <p className="text-[11px] text-muted-foreground">Choose a color</p>
+          <p className="text-[11px] text-muted-foreground">{i18next.t("Choose a color")}</p>
         </div>
         <span
           className="size-7 shrink-0 rounded-full shadow-sm"

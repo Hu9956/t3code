@@ -97,7 +97,7 @@ function formatSampleInterval(valueMs: number): string {
   if (valueMs < 1_000) return `${Math.max(0, Math.round(valueMs))} ms`;
   const seconds = valueMs / 1_000;
   return `${seconds.toLocaleString(undefined, { maximumFractionDigits: 1 })} ${
-    seconds === 1 ? "second" : "seconds"
+    seconds === 1 ? "second" : i18next.t("seconds")
   }`;
 }
 
@@ -123,9 +123,9 @@ function categoryLabel(category: ResourceTelemetryProcessCategory): string {
     case "server-child":
       return "Backend child";
     case "provider-root":
-      return "Provider";
+      return i18next.t("Provider");
     case "terminal-root":
-      return "Terminal";
+      return i18next.t("Terminal");
     case "electron-main":
       return "Electron main";
     case "electron-renderer":
@@ -157,7 +157,7 @@ function ioSemanticsLabel(semantics: ResourceTelemetryIoSemantics): string {
     case "all-io":
       return "All I/O bytes";
     case "unavailable":
-      return "Unavailable";
+      return i18next.t("Unavailable");
   }
 }
 
@@ -220,11 +220,19 @@ function SourceStatusBadge({
 function LastSampleLabel({ sampledAt }: { sampledAt: DateTime.Utc | null }) {
   useRelativeTimeTick();
   if (!sampledAt) {
-    return <span className="text-[11px] text-muted-foreground/55">Waiting for sample</span>;
+    return (
+      <span className="text-[11px] text-muted-foreground/55">
+        {i18next.t("Waiting for sample")}
+      </span>
+    );
   }
   const relative = formatRelativeTime(DateTime.formatIso(sampledAt));
   if (!relative) {
-    return <span className="text-[11px] text-muted-foreground/55">Waiting for sample</span>;
+    return (
+      <span className="text-[11px] text-muted-foreground/55">
+        {i18next.t("Waiting for sample")}
+      </span>
+    );
   }
   return (
     <span className="text-[11px] text-muted-foreground/60">
@@ -292,10 +300,13 @@ function AggregateCard({
         </div>
       </div>
       <div className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-2.5">
-        <MetricPair label="CPU" value={`${aggregate.currentCpuPercent.toFixed(1)}%`} />
-        <MetricPair label="Memory" value={formatBytes(aggregate.currentRssBytes)} />
-        <MetricPair label="Read" value={formatRate(aggregate.ioReadBytesPerSecond)} />
-        <MetricPair label="Write" value={formatRate(aggregate.ioWriteBytesPerSecond)} />
+        <MetricPair label={i18next.t("CPU")} value={`${aggregate.currentCpuPercent.toFixed(1)}%`} />
+        <MetricPair label={i18next.t("Memory")} value={formatBytes(aggregate.currentRssBytes)} />
+        <MetricPair label={i18next.t("Read")} value={formatRate(aggregate.ioReadBytesPerSecond)} />
+        <MetricPair
+          label={i18next.t("Write")}
+          value={formatRate(aggregate.ioWriteBytesPerSecond)}
+        />
       </div>
     </div>
   );
@@ -337,7 +348,7 @@ function HealthSource({ label, health }: { label: string; health: ResourceTeleme
         presentation={
           expectedInBrowser
             ? {
-                label: "Desktop only",
+                label: i18next.t("Desktop only"),
                 tone: "neutral",
               }
             : undefined
@@ -607,17 +618,17 @@ function ProcessTable({
         </colgroup>
         <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-[10px] uppercase tracking-[0.08em] text-muted-foreground/65">
           <tr>
-            <th className="px-4 py-2 font-semibold sm:pl-5">Process</th>
-            <th className="px-3 py-2 font-semibold">Category</th>
-            <th className="px-3 py-2 text-right font-semibold">CPU</th>
-            <th className="px-3 py-2 text-right font-semibold">CPU Time</th>
-            <th className="px-3 py-2 text-right font-semibold">Memory</th>
+            <th className="px-4 py-2 font-semibold sm:pl-5">{i18next.t("Process")}</th>
+            <th className="px-3 py-2 font-semibold">{i18next.t("Category")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("CPU")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("CPU Time")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Memory")}</th>
             <th className="px-3 py-2 text-right font-semibold">Read/s</th>
             <th className="px-3 py-2 text-right font-semibold">Write/s</th>
-            <th className="px-3 py-2 text-right font-semibold">Read Total</th>
-            <th className="px-3 py-2 text-right font-semibold">Write Total</th>
-            <th className="px-3 py-2 text-right font-semibold">PID</th>
-            <th className="px-2 py-2 text-right font-semibold sm:pr-4">Kill</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Read Total")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Write Total")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("PID")}</th>
+            <th className="px-2 py-2 text-right font-semibold sm:pr-4">{i18next.t("Kill")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border/50">
@@ -708,15 +719,15 @@ function HistoryProcessTable({
         </colgroup>
         <thead className="sticky top-0 z-10 border-b border-border/60 bg-card text-[10px] uppercase tracking-[0.08em] text-muted-foreground/65">
           <tr>
-            <th className="px-4 py-2 font-semibold sm:pl-5">Process</th>
-            <th className="px-3 py-2 font-semibold">Category</th>
-            <th className="px-3 py-2 text-right font-semibold">CPU Time</th>
-            <th className="px-3 py-2 text-right font-semibold">Peak CPU</th>
-            <th className="px-3 py-2 text-right font-semibold">Peak Mem</th>
-            <th className="px-3 py-2 text-right font-semibold">Read</th>
-            <th className="px-3 py-2 text-right font-semibold">Write</th>
-            <th className="px-3 py-2 text-right font-semibold">Samples</th>
-            <th className="px-3 py-2 text-right font-semibold sm:pr-5">PID</th>
+            <th className="px-4 py-2 font-semibold sm:pl-5">{i18next.t("Process")}</th>
+            <th className="px-3 py-2 font-semibold">{i18next.t("Category")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("CPU Time")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Peak CPU")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Peak Mem")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Read")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Write")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Samples")}</th>
+            <th className="px-3 py-2 text-right font-semibold sm:pr-5">{i18next.t("PID")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border/50">
@@ -792,12 +803,12 @@ function AttributionTable({ entries }: { entries: ReadonlyArray<ResourceAttribut
         </colgroup>
         <thead className="border-b border-border/60 text-[10px] uppercase tracking-[0.08em] text-muted-foreground/65">
           <tr>
-            <th className="px-4 py-2 font-semibold sm:pl-5">Component</th>
-            <th className="px-3 py-2 font-semibold">Operation</th>
-            <th className="px-3 py-2 text-right font-semibold">Logical Read</th>
-            <th className="px-3 py-2 text-right font-semibold">Logical Write</th>
-            <th className="px-3 py-2 text-right font-semibold">Count</th>
-            <th className="px-3 py-2 text-right font-semibold sm:pr-5">Time</th>
+            <th className="px-4 py-2 font-semibold sm:pl-5">{i18next.t("Component")}</th>
+            <th className="px-3 py-2 font-semibold">{i18next.t("Operation")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Logical Read")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Logical Write")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Count")}</th>
+            <th className="px-3 py-2 text-right font-semibold sm:pr-5">{i18next.t("Time")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border/50">
@@ -880,7 +891,7 @@ export function ResourceTelemetryDiagnostics() {
           clearSignaling();
           toastManager.add({
             type: "error",
-            title: "Could not confirm signal",
+            title: i18next.t("Could not confirm signal"),
             description: error instanceof Error ? error.message : `Failed to send ${signal}.`,
           });
           return;
@@ -938,7 +949,7 @@ export function ResourceTelemetryDiagnostics() {
       .catch((error: unknown) => {
         toastManager.add({
           type: "error",
-          title: "Could not restart resource monitor",
+          title: i18next.t("Could not restart resource monitor"),
           description:
             error instanceof Error ? error.message : "The resource monitor retry failed.",
         });
@@ -964,7 +975,7 @@ export function ResourceTelemetryDiagnostics() {
   return (
     <>
       <SettingsSection
-        title="Resource monitor"
+        title={i18next.t("Resource monitor")}
         icon={<ActivityIcon className="size-4 text-muted-foreground" />}
         headerAction={
           <div className="flex items-center gap-2">
@@ -983,7 +994,7 @@ export function ResourceTelemetryDiagnostics() {
                     variant="ghost"
                     disabled={telemetry.isPending}
                     onClick={telemetry.refresh}
-                    aria-label="Refresh resource telemetry"
+                    aria-label={i18next.t("Refresh resource telemetry")}
                   >
                     <RefreshCwIcon
                       className={cn("size-3", telemetry.isPending && "animate-spin")}
@@ -991,7 +1002,7 @@ export function ResourceTelemetryDiagnostics() {
                   </Button>
                 }
               />
-              <TooltipPopup side="top">Refresh telemetry snapshot</TooltipPopup>
+              <TooltipPopup side="top">{i18next.t("Refresh telemetry snapshot")}</TooltipPopup>
             </Tooltip>
           </div>
         }
@@ -1015,13 +1026,13 @@ export function ResourceTelemetryDiagnostics() {
           <div className="grid grid-cols-2 divide-x divide-y divide-border/55 md:grid-cols-3">
             <IconStat
               icon={<CpuIcon className="size-3.5" />}
-              label="Current CPU"
+              label={i18next.t("Current CPU")}
               value={allT3 ? `${allT3.currentCpuPercent.toFixed(1)}%` : "..."}
               detail={allT3 ? `${formatCpuTime(allT3.cpuTimeMs)} observed CPU time` : undefined}
             />
             <IconStat
               icon={<MemoryStickIcon className="size-3.5" />}
-              label="Resident memory"
+              label={i18next.t("Resident memory")}
               value={allT3 ? formatBytes(allT3.currentRssBytes) : "..."}
               detail={
                 allT3 ? `${formatBytes(allT3.peakRssBytes)} combined process peaks` : undefined
@@ -1037,13 +1048,13 @@ export function ResourceTelemetryDiagnostics() {
             />
             <IconStat
               icon={<HardDriveIcon className="size-3.5" />}
-              label="Read throughput"
+              label={i18next.t("Read throughput")}
               value={allT3 ? formatRate(allT3.ioReadBytesPerSecond) : "..."}
               detail={allT3 ? `${formatBytes(allT3.ioReadBytes)} observed` : undefined}
             />
             <IconStat
               icon={<DatabaseIcon className="size-3.5" />}
-              label="Write throughput"
+              label={i18next.t("Write throughput")}
               value={allT3 ? formatRate(allT3.ioWriteBytesPerSecond) : "..."}
               detail={allT3 ? `${formatBytes(allT3.ioWriteBytes)} observed` : undefined}
               tone={
@@ -1056,7 +1067,7 @@ export function ResourceTelemetryDiagnostics() {
             />
             <IconStat
               icon={<GaugeIcon className="size-3.5" />}
-              label="CPU speed limit"
+              label={i18next.t("CPU speed limit")}
               value={
                 snapshot ? (speedLimit === null ? "Unknown" : `${speedLimit.toFixed(0)}%`) : "..."
               }
@@ -1073,12 +1084,12 @@ export function ResourceTelemetryDiagnostics() {
           {snapshot ? (
             <div className="grid border-t border-border/60 bg-muted/10 md:grid-cols-3">
               <AggregateCard
-                label="Backend + agents"
+                label={i18next.t("Backend + agents")}
                 accentClass="bg-emerald-500/80"
                 aggregate={snapshot.groups.backend}
               />
               <AggregateCard
-                label="Desktop"
+                label={i18next.t("Desktop")}
                 accentClass="bg-sky-500/80"
                 aggregate={snapshot.groups.electron}
               />
@@ -1093,7 +1104,7 @@ export function ResourceTelemetryDiagnostics() {
       </SettingsSection>
 
       <SettingsSection
-        title="Host & collection"
+        title={i18next.t("Host & collection")}
         icon={<GaugeIcon className="size-4 text-muted-foreground" />}
         headerAction={
           collectorNeedsRetry ? (
@@ -1125,13 +1136,13 @@ export function ResourceTelemetryDiagnostics() {
                   label={i18next.t("Low power mode")}
                   value={booleanStateLabel(snapshot.power.lowPowerMode, {
                     true: "Enabled",
-                    false: "Disabled",
+                    false: i18next.t("Disabled"),
                   })}
                 />
                 <DetailRow
-                  label="Idle"
+                  label={i18next.t("Idle")}
                   value={`${booleanStateLabel(snapshot.power.idle, {
-                    true: "Idle",
+                    true: i18next.t("Idle"),
                     false: "Active",
                   })}${
                     snapshot.power.idleSeconds === null
@@ -1140,7 +1151,7 @@ export function ResourceTelemetryDiagnostics() {
                   }`}
                 />
                 <DetailRow
-                  label="Session"
+                  label={i18next.t("Session")}
                   value={
                     snapshot.power.suspended
                       ? "Suspended"
@@ -1151,7 +1162,7 @@ export function ResourceTelemetryDiagnostics() {
                   }
                 />
                 <DetailRow
-                  label="Thermal"
+                  label={i18next.t("Thermal")}
                   value={snapshot.power.thermalState}
                   valueClassName={
                     snapshot.power.thermalState === "serious" ||
@@ -1186,9 +1197,12 @@ export function ResourceTelemetryDiagnostics() {
                   label={i18next.t("Native process monitor")}
                   health={snapshot.health.native}
                 />
-                <HealthSource label="Electron main process" health={snapshot.health.desktop} />
+                <HealthSource
+                  label={i18next.t("Electron main process")}
+                  health={snapshot.health.desktop}
+                />
                 <DetailRow
-                  label="Collection time"
+                  label={i18next.t("Collection time")}
                   value={formatDurationMicros(snapshot.health.collectionDurationMicros)}
                 />
                 <DetailRow
@@ -1205,9 +1219,9 @@ export function ResourceTelemetryDiagnostics() {
                   }
                 />
                 <DetailRow
-                  label="Sidecar"
+                  label={i18next.t("Sidecar")}
                   value={Option.match(snapshot.health.sidecarVersion, {
-                    onNone: () => "Unavailable",
+                    onNone: () => i18next.t("Unavailable"),
                     onSome: (version) =>
                       `${version}${Option.match(snapshot.health.sidecarPid, {
                         onNone: () => "",
@@ -1215,7 +1229,10 @@ export function ResourceTelemetryDiagnostics() {
                       })}`,
                   })}
                 />
-                <DetailRow label="Restarts" value={String(snapshot.health.restartCount)} />
+                <DetailRow
+                  label={i18next.t("Restarts")}
+                  value={String(snapshot.health.restartCount)}
+                />
               </>
             ) : (
               <div className="py-4 text-xs text-muted-foreground">
@@ -1227,7 +1244,7 @@ export function ResourceTelemetryDiagnostics() {
       </SettingsSection>
 
       <SettingsSection
-        title="Resource timeline"
+        title={i18next.t("Resource timeline")}
         icon={<HardDriveIcon className="size-4 text-muted-foreground" />}
         headerAction={
           <div className="flex items-center gap-2">
@@ -1237,7 +1254,7 @@ export function ResourceTelemetryDiagnostics() {
               variant="ghost"
               disabled={history.isPending}
               onClick={history.refresh}
-              aria-label="Refresh resource history"
+              aria-label={i18next.t("Refresh resource history")}
             >
               <RefreshCwIcon className={cn("size-3", history.isPending && "animate-spin")} />
             </Button>
@@ -1257,12 +1274,12 @@ export function ResourceTelemetryDiagnostics() {
       </SettingsSection>
 
       <SettingsSection
-        title="Live process tree"
+        title={i18next.t("Live process tree")}
         icon={<CpuIcon className="size-4 text-muted-foreground" />}
         headerAction={
           snapshot ? (
             <span className="text-[10px] text-muted-foreground/55">
-              Identity: <span className="font-mono">PID + start time</span>
+              Identity: <span className="font-mono">{i18next.t("PID + start time")}</span>
             </span>
           ) : null
         }
@@ -1277,10 +1294,12 @@ export function ResourceTelemetryDiagnostics() {
       </SettingsSection>
 
       <SettingsSection
-        title="Instrumented application I/O"
+        title={i18next.t("Instrumented application I/O")}
         icon={<DatabaseIcon className="size-4 text-muted-foreground" />}
         headerAction={
-          <span className="text-[10px] text-muted-foreground/55">Logical bytes by operation</span>
+          <span className="text-[10px] text-muted-foreground/55">
+            {i18next.t("Logical bytes by operation")}
+          </span>
         }
       >
         <div className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_1px_1px_rgb(0_0_0/0.03)]">

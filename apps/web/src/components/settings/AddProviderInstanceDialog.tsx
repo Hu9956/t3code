@@ -91,7 +91,7 @@ const COMING_SOON_DRIVER_OPTIONS: readonly ComingSoonDriverOption[] = [
   },
   {
     value: ProviderDriverKind.make("acpRegistry"),
-    label: "ACP Registry",
+    label: i18next.t("ACP Registry"),
     icon: ACPRegistryIcon,
   },
   {
@@ -216,14 +216,14 @@ export function AddProviderInstanceDialog({
       updateSettings({ providerInstances: nextMap });
       toastManager.add({
         type: "success",
-        title: "Provider instance added",
+        title: i18next.t("Provider instance added"),
         description: `${driverOption.label} instance '${instanceId}' was added.`,
       });
       onOpenChange(false);
     } catch (error) {
       toastManager.add({
         type: "error",
-        title: "Could not add provider instance",
+        title: i18next.t("Could not add provider instance"),
         description: error instanceof Error ? error.message : "Update failed.",
       });
     }
@@ -234,7 +234,7 @@ export function AddProviderInstanceDialog({
       <DialogPopup className="max-w-xl overflow-hidden">
         <div className="flex min-h-0 flex-col overflow-hidden">
           <DialogHeader>
-            <DialogTitle>Add provider instance</DialogTitle>
+            <DialogTitle>{i18next.t("Add provider instance")}</DialogTitle>
             <DialogDescription>
               Configure an additional provider instance on {environmentLabel} — for example, a
               second Codex install pointed at a different workspace.
@@ -316,10 +316,10 @@ export function AddProviderInstanceDialog({
               </div>
 
               <label className={cn("grid gap-2", wizardStep !== 1 && "hidden")}>
-                <span className="text-xs font-medium text-foreground">Label</span>
+                <span className="text-xs font-medium text-foreground">{i18next.t("Label")}</span>
                 <Input
                   className="bg-background"
-                  placeholder="e.g. Work"
+                  placeholder={i18next.t("e.g. Work")}
                   value={label}
                   onChange={(event) => setLabel(event.target.value)}
                 />
@@ -329,7 +329,9 @@ export function AddProviderInstanceDialog({
               </label>
 
               <label className={cn("grid gap-2", wizardStep !== 1 && "hidden")}>
-                <span className="text-xs font-medium text-foreground">Instance ID</span>
+                <span className="text-xs font-medium text-foreground">
+                  {i18next.t("Instance ID")}
+                </span>
                 <Input
                   className="bg-background"
                   placeholder={`${driver}_work`}
@@ -349,13 +351,15 @@ export function AddProviderInstanceDialog({
               </label>
 
               <div className={cn("grid gap-2", wizardStep !== 1 && "hidden")}>
-                <span className="text-xs font-medium text-foreground">Accent color</span>
+                <span className="text-xs font-medium text-foreground">
+                  {i18next.t("Accent color")}
+                </span>
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                   <input
                     type="color"
                     value={normalizeProviderAccentColor(accentColor) ?? PROVIDER_ACCENT_SWATCHES[0]}
                     onChange={(event) => setAccentColor(event.target.value)}
-                    aria-label="Provider instance accent color"
+                    aria-label={i18next.t("Provider instance accent color")}
                     className="h-8 w-10 cursor-pointer rounded-xl border border-input bg-background p-0.5"
                   />
                   <div className="flex flex-wrap gap-1.5">

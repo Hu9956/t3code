@@ -187,7 +187,7 @@ export function ProviderModelsSection({
 
   return (
     <div>
-      <div className="text-xs font-medium text-foreground">Models</div>
+      <div className="text-xs font-medium text-foreground">{i18next.t("Models")}</div>
       <div className="mt-1 text-xs text-muted-foreground">
         {models.length} model{models.length === 1 ? "" : "s"} available.
       </div>
@@ -287,7 +287,7 @@ export function ProviderModelsSection({
                         variant="ghost-muted"
                         className={cn(isFavorite && "text-yellow-500 hover:text-yellow-600")}
                         onClick={() => handleToggleFavorite(model.slug)}
-                        aria-label={`${isFavorite ? "Remove" : "Add"} ${model.name} ${
+                        aria-label={`${isFavorite ? i18next.t("Remove") : i18next.t("Add")} ${model.name} ${
                           isFavorite ? "from" : "to"
                         } favorites`}
                       />
@@ -313,7 +313,7 @@ export function ProviderModelsSection({
                   >
                     <ArrowUpIcon className="size-3" />
                   </TooltipTrigger>
-                  <TooltipPopup side="top">Move up</TooltipPopup>
+                  <TooltipPopup side="top">{i18next.t("Move up")}</TooltipPopup>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger
@@ -329,7 +329,7 @@ export function ProviderModelsSection({
                   >
                     <ArrowDownIcon className="size-3" />
                   </TooltipTrigger>
-                  <TooltipPopup side="top">Move down</TooltipPopup>
+                  <TooltipPopup side="top">{i18next.t("Move down")}</TooltipPopup>
                 </Tooltip>
                 {!model.isCustom ? (
                   <Tooltip>
@@ -368,7 +368,7 @@ export function ProviderModelsSection({
                     >
                       <XIcon className="size-3" />
                     </TooltipTrigger>
-                    <TooltipPopup side="top">Remove custom model</TooltipPopup>
+                    <TooltipPopup side="top">{i18next.t("Remove custom model")}</TooltipPopup>
                   </Tooltip>
                 ) : null}
               </div>
@@ -395,7 +395,7 @@ export function ProviderModelsSection({
         />
         <Button className="shrink-0" variant="outline" onClick={handleAdd}>
           <PlusIcon className="size-3.5" />
-          Add
+          {i18next.t("Add")}
         </Button>
       </div>
 
