@@ -2,6 +2,7 @@ import type { ScopedProjectRef } from "@t3tools/contracts";
 import { scopedProjectKey, scopeProjectRef } from "@t3tools/client-runtime/environment";
 import { FolderPlusIcon } from "lucide-react";
 import { useCallback, useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { openCommandPalette } from "~/commandPaletteBus";
 import { useNewThreadHandler } from "~/hooks/useHandleNewThread";
@@ -42,6 +43,7 @@ export function DraftHeroHeadline({
   const projectSortOrder = useClientSettings((settings) => settings.sidebarProjectSortOrder);
   const handleNewThread = useNewThreadHandler();
   const openAddProject = useCallback(() => openCommandPalette({ open: "add-project" }), []);
+  const { t } = useTranslation();
 
   const environmentLabelById = useMemo(
     () =>
@@ -104,12 +106,12 @@ export function DraftHeroHeadline({
         <TooltipTrigger
           render={
             <MenuTrigger
-              aria-label={hasResolvedProject ? "Change project" : "Choose a project"}
+              aria-label={hasResolvedProject ? t("Change project") : t("Choose a project")}
               className="pointer-events-auto inline-block max-w-64 truncate border-foreground/60 border-b border-dotted align-baseline text-foreground transition-colors hover:border-foreground/80 focus-visible:rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
             />
           }
         >
-          {activeProjectDisplayName ?? "Choose a project"}
+          {activeProjectDisplayName ?? t("Choose a project")}
         </TooltipTrigger>
         {activeProjectDisplayName ? (
           <TooltipPopup side="top" className="max-w-80">
@@ -152,7 +154,7 @@ export function DraftHeroHeadline({
         <MenuSeparator />
         <MenuItem onClick={openAddProject}>
           <FolderPlusIcon />
-          New project
+          {t("New project")}
         </MenuItem>
       </MenuPopup>
     </Menu>
@@ -162,18 +164,26 @@ export function DraftHeroHeadline({
       onClick={openAddProject}
       className="pointer-events-auto inline cursor-pointer border-muted-foreground/35 border-b border-dotted text-muted-foreground/60 transition-colors hover:border-muted-foreground/60 hover:text-muted-foreground/80 focus-visible:rounded-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
     >
-      {activeProjectTitle ?? "Add a project"}
+      {activeProjectTitle ?? t("Add a project")}
     </button>
   );
 
   return (
     <h1 className="mx-auto w-full max-w-5xl text-center font-normal text-2xl text-foreground tracking-tight sm:text-3xl">
       {hasResolvedProject ? (
-        <>What should we build in {projectSelector}?</>
+        <Trans
+          i18nKey="hero.buildIn"
+          defaults="What should we build in <slot/>?"
+          components={{ slot: projectSelector }}
+        />
       ) : canChooseProject ? (
-        <>{projectSelector} to start</>
+        <Trans
+          i18nKey="hero.toStart"
+          defaults="<slot/> to start"
+          components={{ slot: projectSelector }}
+        />
       ) : (
-        <>Add a project to start</>
+        <>{t("Add a project to start")}</>
       )}
     </h1>
   );
