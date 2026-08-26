@@ -5,6 +5,7 @@ import {
 } from "@t3tools/contracts";
 import { memo } from "react";
 import { Button } from "../ui/button";
+import i18next from "i18next";
 
 interface ComposerPendingApprovalActionsProps {
   requestId: ApprovalRequestId;
@@ -18,10 +19,10 @@ interface ComposerPendingApprovalActionsProps {
 
 const APPROVAL_ACTION_CLASS_NAME = "font-normal";
 const DEFAULT_APPROVAL_OPTIONS = [
-  { decision: "cancel", label: "Cancel" },
-  { decision: "decline", label: "Decline" },
-  { decision: "acceptForSession", label: "Always allow this session" },
-  { decision: "accept", label: "Approve" },
+  { decision: "cancel", label: i18next.t("Cancel") },
+  { decision: "decline", label: i18next.t("Decline") },
+  { decision: "acceptForSession", label: i18next.t("Always allow this session") },
+  { decision: "accept", label: i18next.t("Approve") },
 ] satisfies ReadonlyArray<ProviderApprovalOption>;
 
 export const ComposerPendingApprovalActions = memo(function ComposerPendingApprovalActions({

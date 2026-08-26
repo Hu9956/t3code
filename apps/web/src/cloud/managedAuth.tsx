@@ -13,6 +13,7 @@ import { runtime } from "../lib/runtime";
 import { appAtomRegistry } from "../rpc/atomRegistry";
 import { useAtomCommand } from "../state/use-atom-command";
 import { resolveRelayClerkTokenOptions } from "./publicConfig";
+import i18next from "i18next";
 
 let relayTokenProvider: (() => Promise<string | null>) | null = null;
 
@@ -71,7 +72,7 @@ export function ManagedRelayAuthProvider({ children }: { readonly children: Reac
           ),
         ]);
         for (const result of results) {
-          reportAtomCommandResult(result, { label: "cloud account cleanup" });
+          reportAtomCommandResult(result, { label: i18next.t("cloud account cleanup") });
         }
       });
       return accountTransitionRef.current;
@@ -95,7 +96,7 @@ export function ManagedRelayAuthProvider({ children }: { readonly children: Reac
             await transition;
             activateSession();
           });
-          reportAtomCommandResult(result, { label: "cloud account activation" });
+          reportAtomCommandResult(result, { label: i18next.t("cloud account activation") });
         })();
       };
       if (previousAccount !== undefined && previousAccount !== null && previousAccount !== userId) {

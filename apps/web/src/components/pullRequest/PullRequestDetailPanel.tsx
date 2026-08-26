@@ -136,6 +136,7 @@ import {
   resolvePullRequestState,
   summarizePullRequestChecks,
 } from "./pullRequestPresentation";
+import i18next from "i18next";
 
 type DetailTab = "summary" | "timeline" | "code";
 
@@ -201,9 +202,9 @@ const UPDATE_BRANCH_REBASE_FAILURE_HINT =
   "The host refused it. A rebase stops at the first commit that does not apply cleanly; updating with a merge commit may still work.";
 
 const TABS: ReadonlyArray<{ value: DetailTab; label: string }> = [
-  { value: "summary", label: "Summary" },
-  { value: "timeline", label: "Timeline" },
-  { value: "code", label: "Code" },
+  { value: "summary", label: i18next.t("Summary") },
+  { value: "timeline", label: i18next.t("Timeline") },
+  { value: "code", label: i18next.t("Code") },
 ];
 
 // The diff viewer pulls in its worker pool, so it stays out of the bundle until Code is opened.
@@ -333,10 +334,12 @@ function PullRequestBaseFreshnessWarning({
         align="start"
         side="bottom"
         className="max-w-80"
-        viewportClassName="py-2.5 [--viewport-inline-padding:--spacing(3)]"
+        viewportClassName={i18next.t("py-2.5 [--viewport-inline-padding:--spacing(3)]")}
       >
         <p className="text-xs text-foreground">{summary}</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">Changes can be cleanly merged.</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          {i18next.t("Changes can be cleanly merged.")}
+        </p>
         {/* Each way the host offers and this reader may take, as its own button: a split button
             would need a menu inside a popover, and two buttons say the same thing in one layer. */}
         {freshness.methods.length > 0 ? (
@@ -686,7 +689,7 @@ export function PullRequestDetailPanel({
       // rewritten is the one thing a failed save must not cost them.
       toastManager.add({
         type: "error",
-        title: "The title could not be saved",
+        title: i18next.t("The title could not be saved"),
         description: readableFailure(
           squashAtomCommandFailure(result),
           "The host refused the new title.",
@@ -760,7 +763,7 @@ export function PullRequestDetailPanel({
       writeTaskToComposer(attachTarget, task);
       toastManager.add({
         type: "success",
-        title: "Added to the composer",
+        title: i18next.t("Added to the composer"),
         description:
           task.prompt.length > 0
             ? "The question is in the composer — read it over, then send."
@@ -775,14 +778,14 @@ export function PullRequestDetailPanel({
     if (opened === null) {
       toastManager.add({
         type: "error",
-        title: "Could not open a thread",
-        description: "Try again from the project, or open a thread first.",
+        title: i18next.t("Could not open a thread"),
+        description: i18next.t("Try again from the project, or open a thread first."),
       });
       return;
     }
     toastManager.add({
       type: "success",
-      title: "Asked in a thread",
+      title: i18next.t("Asked in a thread"),
       // "Ask" leaves the composer empty on purpose, so saying the question is in it would send
       // the reader looking for something that is not there. The chips are what landed.
       description:
@@ -808,8 +811,8 @@ export function PullRequestDetailPanel({
       writeTaskToComposer(attachTarget, task);
       toastManager.add({
         type: "success",
-        title: "Added to the composer",
-        description: "The task is in the composer — read it over, then send.",
+        title: i18next.t("Added to the composer"),
+        description: i18next.t("The task is in the composer — read it over, then send."),
       });
       return;
     }
@@ -819,7 +822,7 @@ export function PullRequestDetailPanel({
     // never expires, and an explicit one would survive the update and pin the result on screen.
     const toastId = toastManager.add({
       type: "loading",
-      title: "Preparing the pull request checkout...",
+      title: i18next.t("Preparing the pull request checkout..."),
     });
     // Wherever the reader chose to act: the thread, the checkout it is pointed at and the composer
     // the task lands in are all one server's, and picking another one moves all three.
@@ -838,8 +841,8 @@ export function PullRequestDetailPanel({
       // working tree than to prepare a worktree nobody asked for.
       toastManager.update(toastId, {
         type: "error",
-        title: "Could not open a thread for the checkout",
-        description: "Try again from the project, or open a thread first.",
+        title: i18next.t("Could not open a thread for the checkout"),
+        description: i18next.t("Try again from the project, or open a thread first."),
       });
       return;
     }
@@ -856,7 +859,7 @@ export function PullRequestDetailPanel({
         prepareThread.error instanceof Error ? prepareThread.error.message : null;
       toastManager.update(toastId, {
         type: "error",
-        title: "Could not prepare the pull request checkout",
+        title: i18next.t("Could not prepare the pull request checkout"),
         ...(detailMessage ? { description: detailMessage } : {}),
       });
       return;
@@ -878,7 +881,7 @@ export function PullRequestDetailPanel({
       // outcome worth stopping for, since it reads as success and is not.
       toastManager.update(toastId, {
         type: "error",
-        title: "Checked out, but the thread stayed where it was",
+        title: i18next.t("Checked out, but the thread stayed where it was"),
         description: `The checkout is ready on \`${prepared.value.branch}\`. Point a thread at it from the branch picker, then ask again.`,
       });
       return;
@@ -891,9 +894,10 @@ export function PullRequestDetailPanel({
     // success, because everything else about the handoff did happen.
     const staleCheckoutToast = {
       type: "warning",
-      title: "Checked out, but not on the latest commits",
-      description:
+      title: i18next.t("Checked out, but not on the latest commits"),
+      description: i18next.t(
         "The checkout could not be moved onto the pull request's latest commits, so the code there is older than the pull request. Uncommitted work or local commits keep it where it is.",
+      ),
     } as const;
     if (task === null) {
       toastManager.update(
@@ -917,8 +921,8 @@ export function PullRequestDetailPanel({
       prepared.value.isOnPullRequestHead
         ? {
             type: "success",
-            title: "Checkout ready",
-            description: "The task is in the composer — read it over, then send.",
+            title: i18next.t("Checkout ready"),
+            description: i18next.t("The task is in the composer — read it over, then send."),
           }
         : staleCheckoutToast,
     );
@@ -1239,18 +1243,20 @@ export function PullRequestDetailPanel({
                     <MenuItem onClick={() => startCheckout("worktree")}>
                       <GitBranchIcon className="mt-0.5 size-3.5 shrink-0 self-start" />
                       <span className="flex min-w-0 flex-col">
-                        <span>In a separate worktree</span>
+                        <span>{i18next.t("In a separate worktree")}</span>
                         <span className="text-xs text-muted-foreground">
-                          Its own folder and thread. Nothing you have open moves.
+                          {i18next.t("Its own folder and thread. Nothing you have open moves.")}
                         </span>
                       </span>
                     </MenuItem>
                     <MenuItem onClick={() => startCheckout("local")}>
                       <FolderGit2Icon className="mt-0.5 size-3.5 shrink-0 self-start" />
                       <span className="flex min-w-0 flex-col">
-                        <span>In this repository</span>
+                        <span>{i18next.t("In this repository")}</span>
                         <span className="text-xs text-muted-foreground">
-                          Switches the branch you are working in, like `gh pr checkout`.
+                          {i18next.t(
+                            "Switches the branch you are working in, like `gh pr checkout`.",
+                          )}
                         </span>
                       </span>
                     </MenuItem>
@@ -1276,12 +1282,12 @@ export function PullRequestDetailPanel({
                         className="h-5 shrink-0 gap-1 rounded px-1.5 text-[10px]"
                       >
                         <GitMergeIcon aria-hidden className="size-3" />
-                        Auto-merge
+                        {i18next.t("Auto-merge")}
                       </Badge>
                     }
                   />
                   <TooltipPopup side="top">
-                    The host will merge this on its own once its requirements are met
+                    {i18next.t("The host will merge this on its own once its requirements are met")}
                   </TooltipPopup>
                 </Tooltip>
               ) : null}
@@ -1297,7 +1303,7 @@ export function PullRequestDetailPanel({
                 </Button>
               ) : primaryAction === "ready" ? (
                 <Button size="xs" disabled={actionPending} onClick={() => void perform("ready")}>
-                  Ready for review
+                  {i18next.t("Ready for review")}
                 </Button>
               ) : primaryAction === "merge" ? (
                 <Button
@@ -1312,7 +1318,7 @@ export function PullRequestDetailPanel({
                 <MenuTrigger
                   render={
                     <Button
-                      aria-label="More pull request actions"
+                      aria-label={i18next.t("More pull request actions")}
                       className="size-6"
                       size="icon-xs"
                       variant="ghost-muted"
@@ -1324,7 +1330,7 @@ export function PullRequestDetailPanel({
                 <MenuPopup align="end" side="bottom" className="min-w-72">
                   <MenuItem disabled={detailQuery.isPending} onClick={() => void refreshFromHost()}>
                     <RefreshCwIcon className="size-3.5" />
-                    Refresh
+                    {i18next.t("Refresh")}
                   </MenuItem>
                   <MenuItem disabled={handoff !== null} onClick={askAboutPullRequest}>
                     <MessageCircleQuestionIcon className="mt-0.5 size-3.5 shrink-0 self-start" />
@@ -1342,7 +1348,7 @@ export function PullRequestDetailPanel({
                     <span className="flex min-w-0 flex-col">
                       <span>{handoff === "explain" ? "Opening..." : "Explain this PR"}</span>
                       <span className="text-xs text-muted-foreground">
-                        A walk through the diff and what to read closely.
+                        {i18next.t("A walk through the diff and what to read closely.")}
                       </span>
                     </span>
                   </MenuItem>
@@ -1388,7 +1394,7 @@ export function PullRequestDetailPanel({
                           onClick={() => void perform("disable-auto-merge")}
                         >
                           <GitMergeIcon className="size-3.5" />
-                          Disable auto-merge
+                          {i18next.t("Disable auto-merge")}
                         </MenuItem>
                       ) : !autoMergeArmed &&
                         !detail.isDraft &&
@@ -1402,7 +1408,7 @@ export function PullRequestDetailPanel({
                           }
                         >
                           <GitMergeIcon className="size-3.5" />
-                          Enable auto-merge
+                          {i18next.t("Enable auto-merge")}
                         </MenuItem>
                       ) : null}
                       {/* A preference for the merge action rather than a second action, so it
@@ -1450,7 +1456,7 @@ export function PullRequestDetailPanel({
                   </MenuItem>
                   <MenuItem onClick={() => void writeTextToClipboard(detail.url)}>
                     <LinkIcon className="size-3.5" />
-                    Copy link
+                    {i18next.t("Copy link")}
                   </MenuItem>
                   {detail.state === "open" && can("close") ? (
                     <>
@@ -1461,7 +1467,7 @@ export function PullRequestDetailPanel({
                         onClick={() => setConfirmation({ open: true, action: "close" })}
                       >
                         <GitPullRequestClosedIcon className="size-3.5" />
-                        Close pull request
+                        {i18next.t("Close pull request")}
                       </MenuItem>
                     </>
                   ) : detail.state === "closed" && can("reopen") ? (
@@ -1469,7 +1475,7 @@ export function PullRequestDetailPanel({
                       <MenuSeparator />
                       <MenuItem disabled={actionPending} onClick={() => void perform("reopen")}>
                         <GitPullRequestIcon className="size-3.5" />
-                        Reopen pull request
+                        {i18next.t("Reopen pull request")}
                       </MenuItem>
                     </>
                   ) : null}
@@ -1481,7 +1487,7 @@ export function PullRequestDetailPanel({
             <Button
               size="icon-xs"
               variant="ghost"
-              aria-label="Collapse pull request panel"
+              aria-label={i18next.t("Collapse pull request panel")}
               onClick={onClose}
             >
               <PanelRightIcon className="size-3.5" />
@@ -1534,7 +1540,7 @@ export function PullRequestDetailPanel({
                           <span className="inline-flex min-w-0 max-w-[40%] shrink-0 items-center gap-1">
                             {isStackedPullRequest ? (
                               <LayersIcon
-                                aria-label="Stacked pull request"
+                                aria-label={i18next.t("Stacked pull request")}
                                 className="size-3 shrink-0"
                               />
                             ) : null}
@@ -1558,7 +1564,7 @@ export function PullRequestDetailPanel({
                       />
                     ) : null}
                     <ArrowLeftIcon
-                      aria-label="receives changes from"
+                      aria-label={i18next.t("receives changes from")}
                       className="size-3 shrink-0 opacity-60"
                     />
                     <Tooltip>
@@ -1624,7 +1630,7 @@ export function PullRequestDetailPanel({
                         size="icon-xs"
                         variant="ghost"
                         className="shrink-0 text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:opacity-100"
-                        aria-label="Edit title"
+                        aria-label={i18next.t("Edit title")}
                         onClick={() => setTitleScope({ pullRequestKey, text: detail.title })}
                       >
                         <PencilIcon className="size-3" />
@@ -1640,7 +1646,7 @@ export function PullRequestDetailPanel({
                       size="sm"
                       disabled={titleSaving}
                       value={titleDraft}
-                      aria-label="Pull request title"
+                      aria-label={i18next.t("Pull request title")}
                       onChange={(event) =>
                         setTitleScope({ pullRequestKey, text: event.target.value })
                       }
@@ -1661,7 +1667,7 @@ export function PullRequestDetailPanel({
                         disabled={titleSaving}
                         onClick={() => setTitleScope(null)}
                       >
-                        Cancel
+                        {i18next.t("Cancel")}
                       </Button>
                       <Button
                         size="xs"
@@ -1687,7 +1693,7 @@ export function PullRequestDetailPanel({
                           <span className="inline-flex min-w-0 max-w-[40%] shrink-0 items-center gap-1">
                             {isStackedPullRequest ? (
                               <LayersIcon
-                                aria-label="Stacked pull request"
+                                aria-label={i18next.t("Stacked pull request")}
                                 className="size-3 shrink-0"
                               />
                             ) : null}
@@ -1710,7 +1716,7 @@ export function PullRequestDetailPanel({
                       />
                     ) : null}
                     <ArrowLeftIcon
-                      aria-label="receives changes from"
+                      aria-label={i18next.t("receives changes from")}
                       className="size-3.5 shrink-0 opacity-60"
                     />
                     <Tooltip>
@@ -1741,7 +1747,7 @@ export function PullRequestDetailPanel({
                             isBranchCopied ? "opacity-100" : "opacity-0",
                           )}
                         >
-                          Copied
+                          {i18next.t("Copied")}
                         </span>
                       </TooltipTrigger>
                       <TooltipPopup side="top">
@@ -1770,7 +1776,7 @@ export function PullRequestDetailPanel({
         {detail ? (
           <nav
             className="col-span-2 flex min-w-0 items-center gap-1 overflow-x-auto border-t border-border/60 px-4 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            aria-label="Pull request tabs"
+            aria-label={i18next.t("Pull request tabs")}
           >
             <ToggleGroup
               size="segmented"
@@ -1948,7 +1954,11 @@ export function PullRequestDetailPanel({
             ) : null}
             {mountedTabs.has("code") ? (
               <div className={cn("absolute inset-0", tab !== "code" && "invisible")}>
-                <Suspense fallback={<DiffPanelLoadingState label="Loading pull request diff..." />}>
+                <Suspense
+                  fallback={
+                    <DiffPanelLoadingState label={i18next.t("Loading pull request diff...")} />
+                  }
+                >
                   <PullRequestCodeTab
                     {...(attachTarget ? { onAddToAgentSelection: addSelectionToAgent } : {})}
                     environmentId={environmentId}
@@ -1998,7 +2008,7 @@ export function PullRequestDetailPanel({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogClose render={<Button variant="outline" size="sm" />}>
-              Cancel
+              {i18next.t("Cancel")}
             </AlertDialogClose>
             <Button
               size="sm"

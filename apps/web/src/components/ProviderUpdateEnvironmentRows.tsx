@@ -26,6 +26,7 @@ import {
 } from "./ProviderUpdateLaunchNotification.logic";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
+import i18next from "i18next";
 
 type ProviderUpdateCommandResult = AtomCommandResult<
   { readonly providers: ReadonlyArray<ServerProvider> },
@@ -127,14 +128,14 @@ function EnvironmentUpdateRow({
     case "unchanged":
       trailing = (
         <Button size="xs" variant="outline" onClick={onUpdate}>
-          Retry
+          {i18next.t("Retry")}
         </Button>
       );
       break;
     default:
       trailing = (
         <Button size="xs" onClick={onUpdate}>
-          Update
+          {i18next.t("Update")}
         </Button>
       );
       break;

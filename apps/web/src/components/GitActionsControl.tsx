@@ -182,7 +182,7 @@ const PUBLISH_PROVIDER_OPTIONS = [
   },
   {
     value: "bitbucket",
-    label: "Bitbucket",
+    label: i18next.t("Bitbucket"),
     description: "bitbucket.org",
     host: "bitbucket.org",
     pathPlaceholder: "workspace/repository",
@@ -190,7 +190,7 @@ const PUBLISH_PROVIDER_OPTIONS = [
   },
   {
     value: "azure-devops",
-    label: "Azure DevOps",
+    label: i18next.t("Azure DevOps"),
     description: "dev.azure.com",
     host: "dev.azure.com",
     pathPlaceholder: "project/repository",
@@ -228,7 +228,7 @@ function getPublishProviderReadiness(input: {
   if (!discovered) {
     return {
       ready: false,
-      hint: "Provider status unavailable. Open Settings -> Source Control and rescan.",
+      hint: i18next.t("Provider status unavailable. Open Settings -> Source Control and rescan."),
     };
   }
   if (discovered.status !== "available") {
@@ -556,9 +556,9 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
       <DialogPopup className="max-w-xl overflow-hidden">
         <div className="flex min-h-0 flex-col overflow-hidden border-foreground/10 bg-transparent">
           <DialogHeader className="border-b border-border/70 bg-foreground/[0.025] dark:border-transparent dark:bg-transparent">
-            <DialogTitle>Publish repository</DialogTitle>
+            <DialogTitle>{i18next.t("Publish repository")}</DialogTitle>
             <DialogDescription>
-              Pick where to host it, then point us at a repo to push to.
+              {i18next.t("Pick where to host it, then point us at a repo to push to.")}
             </DialogDescription>
             <div className="grid grid-cols-3 gap-2">
               {publishWizardSteps.map((label, index) => {
@@ -597,7 +597,8 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                       {isComplete ? <CheckIcon className="size-3" /> : null}
                     </span>
                     <span className="text-[10px] font-medium uppercase text-muted-foreground">
-                      Step {index + 1}
+                      {i18next.t("Step")}
+                      {index + 1}
                     </span>
                     <span className="truncate text-xs font-semibold text-foreground">
                       {label}
@@ -618,7 +619,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                   id="publish-provider-cards-label"
                   className="text-xs font-medium text-foreground"
                 >
-                  Provider
+                  {i18next.t("Provider")}
                 </span>
                 <RadioGroup
                   value={publishProvider}
@@ -658,7 +659,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                                     openSourceControlSettings();
                                   }}
                                 >
-                                  Setup Required
+                                  {i18next.t("Setup Required")}
                                 </Button>
                               }
                             />
@@ -699,7 +700,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     htmlFor="publish-repository-path"
                     className="text-xs font-medium text-foreground"
                   >
-                    Repository
+                    {i18next.t("Repository")}
                   </label>
                   <div className="flex items-stretch overflow-hidden rounded-md border border-input bg-background focus-within:outline-2 focus-within:-outline-offset-1 focus-within:outline-ring">
                     <span className="flex shrink-0 items-center gap-1.5 border-r border-input bg-muted/50 px-2.5 font-mono text-xs text-muted-foreground">
@@ -731,7 +732,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     id="publish-visibility-cards-label"
                     className="text-xs font-medium text-foreground"
                   >
-                    Visibility
+                    {i18next.t("Visibility")}
                   </span>
                   <RadioGroup
                     value={publishVisibility}
@@ -751,8 +752,8 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                       },
                       {
                         value: "public" as const,
-                        label: "Public",
-                        description: "Anyone on the web",
+                        label: i18next.t("Public"),
+                        description: i18next.t("Anyone on the web"),
                         Icon: GlobeIcon,
                       },
                     ].map((option) => {
@@ -800,12 +801,14 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                         publishAdvancedOpen ? "" : "-rotate-90",
                       )}
                     />
-                    Advanced
+                    {i18next.t("Advanced")}
                   </button>
                   {publishAdvancedOpen ? (
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       <label className="space-y-1.5" htmlFor="publish-remote-name">
-                        <span className="text-xs font-medium text-foreground">Remote</span>
+                        <span className="text-xs font-medium text-foreground">
+                          {i18next.t("Remote")}
+                        </span>
                         <Input
                           id="publish-remote-name"
                           value={publishRemoteName}
@@ -819,7 +822,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                           id="publish-protocol-label"
                           className="text-xs font-medium text-foreground"
                         >
-                          Protocol
+                          {i18next.t("Protocol")}
                         </span>
                         <RadioGroup
                           value={publishProtocol}
@@ -861,7 +864,8 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     className="flex items-center gap-2 rounded-md border border-input bg-muted/40 px-3 py-2 text-xs text-muted-foreground dark:border-transparent dark:bg-white/[0.035]"
                   >
                     <Spinner className="size-3.5" aria-hidden />
-                    Publishing repository to {publishProviderLabel}...
+                    {i18next.t("Publishing repository to")}
+                    {publishProviderLabel}...
                   </div>
                 ) : null}
                 {publishError && !publishRepositoryAction.isPending ? (
@@ -869,7 +873,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     role="alert"
                     className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive"
                   >
-                    <p className="font-medium">Publish failed</p>
+                    <p className="font-medium">{i18next.t("Publish failed")}</p>
                     <p className="mt-0.5 text-destructive/90">{publishError}</p>
                   </div>
                 ) : null}
@@ -910,12 +914,13 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                       }}
                     >
                       <ExternalLinkIcon className="size-3.5" aria-hidden />
-                      Open on {publishProviderLabel}
+                      {i18next.t("Open on")}
+                      {publishProviderLabel}
                     </Button>
                   </>
                 ) : (
                   <div className="rounded-md border border-input bg-background px-3 py-2 text-xs text-muted-foreground dark:border-transparent dark:bg-white/[0.035]">
-                    Publish result unavailable.
+                    {i18next.t("Publish result unavailable.")}
                   </div>
                 )}
               </div>
@@ -925,7 +930,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
           <DialogFooter className="dark:border-transparent dark:bg-transparent">
             {publishWizardStep === 2 ? (
               <Button size="sm" onClick={() => handleOpenChange(false)}>
-                Done
+                {i18next.t("Done")}
               </Button>
             ) : (
               <>
@@ -949,7 +954,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     disabled={!hasReadyPublishProvider || !selectedPublishProviderReadiness.ready}
                     onClick={() => setPublishWizardStep((step) => Math.min(1, step + 1))}
                   >
-                    Next
+                    {i18next.t("Next")}
                   </Button>
                 ) : (
                   <Button
@@ -960,7 +965,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     {publishRepositoryAction.isPending ? (
                       <>
                         <Spinner className="size-3.5" aria-hidden />
-                        Publishing...
+                        {i18next.t("Publishing...")}
                       </>
                     ) : (
                       "Publish"
@@ -1253,7 +1258,7 @@ export default function GitActionsControl({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Unable to open pull request link",
+          title: i18next.t("Unable to open pull request link"),
           description: err instanceof Error ? err.message : "An error occurred.",
           ...(threadToastData !== undefined ? { data: threadToastData } : {}),
         }),
@@ -1322,7 +1327,7 @@ export default function GitActionsControl({
         toastManager.add({
           type: "loading",
           title: progressStages[0] ?? "Running git action...",
-          description: "Waiting for Git...",
+          description: i18next.t("Waiting for Git..."),
           timeout: 0,
           data: scopedToastData,
         });
@@ -1343,7 +1348,7 @@ export default function GitActionsControl({
         toastManager.update(progressToastId, {
           type: "loading",
           title: progressStages[0] ?? "Running git action...",
-          description: "Waiting for Git...",
+          description: i18next.t("Waiting for Git..."),
           timeout: 0,
           data: scopedToastData,
         });
@@ -1426,7 +1431,7 @@ export default function GitActionsControl({
           resolvedProgressToastId,
           stackedThreadToast({
             type: "error",
-            title: "Action failed",
+            title: i18next.t("Action failed"),
             description: error instanceof Error ? error.message : "An error occurred.",
             ...(scopedToastData !== undefined ? { data: scopedToastData } : {}),
           }),
@@ -1553,7 +1558,7 @@ export default function GitActionsControl({
     if (quickAction.kind === "run_pull") {
       const toastId = toastManager.add({
         type: "loading",
-        title: "Pulling...",
+        title: i18next.t("Pulling..."),
         timeout: 0,
         data: threadToastData,
       });
@@ -1569,7 +1574,7 @@ export default function GitActionsControl({
             toastId,
             stackedThreadToast({
               type: "error",
-              title: "Pull failed",
+              title: i18next.t("Pull failed"),
               description: error instanceof Error ? error.message : "An error occurred.",
               ...(threadToastData !== undefined ? { data: threadToastData } : {}),
             }),
@@ -1642,7 +1647,7 @@ export default function GitActionsControl({
       if (!gitCwd) {
         toastManager.add({
           type: "error",
-          title: "Editor opening is unavailable.",
+          title: i18next.t("Editor opening is unavailable."),
           data: threadToastData,
         });
         return;
@@ -1657,7 +1662,7 @@ export default function GitActionsControl({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to open file",
+            title: i18next.t("Unable to open file"),
             description: error instanceof Error ? error.message : "An error occurred.",
             ...(threadToastData !== undefined ? { data: threadToastData } : {}),
           }),
@@ -1814,13 +1819,14 @@ export default function GitActionsControl({
                   }}
                 >
                   <CloudUploadIcon />
-                  Publish repository...
+                  {i18next.t("Publish repository...")}
                 </MenuItem>
               ) : null}
               {gitStatusForActions?.refName === null && (
                 <p className="px-2 py-1.5 text-xs text-warning">
-                  Detached HEAD: create and checkout a refName to enable push and pull request
-                  actions.
+                  {i18next.t(
+                    "Detached HEAD: create and checkout a refName to enable push and pull request\n                  actions.",
+                  )}
                 </p>
               )}
               {gitStatusForActions &&
@@ -1829,7 +1835,7 @@ export default function GitActionsControl({
                 gitStatusForActions.behindCount > 0 &&
                 gitStatusForActions.aheadCount === 0 && (
                   <p className="px-2 py-1.5 text-xs text-warning">
-                    Behind upstream. Pull/rebase first.
+                    {i18next.t("Behind upstream. Pull/rebase first.")}
                   </p>
                 )}
               {gitStatusError && (
@@ -1859,13 +1865,15 @@ export default function GitActionsControl({
           <DialogPanel className="space-y-4">
             <div className="space-y-3 rounded-xl bg-zinc-25 p-3 text-sm ring-1 ring-black/5 dark:bg-white/[0.035] dark:ring-white/5">
               <div className="grid grid-cols-[auto_1fr] items-center gap-x-2 gap-y-1">
-                <span className="text-muted-foreground">Branch</span>
+                <span className="text-muted-foreground">{i18next.t("Branch")}</span>
                 <span className="flex items-center justify-between gap-2">
                   <span className="font-medium">
                     {gitStatusForActions?.refName ?? "(detached HEAD)"}
                   </span>
                   {isDefaultRef && (
-                    <span className="text-right text-warning">Warning: default refName</span>
+                    <span className="text-right text-warning">
+                      {i18next.t("Warning: default refName")}
+                    </span>
                   )}
                 </span>
               </div>
@@ -1883,7 +1891,7 @@ export default function GitActionsControl({
                         }}
                       />
                     )}
-                    <span className="text-muted-foreground">Files</span>
+                    <span className="text-muted-foreground">{i18next.t("Files")}</span>
                     {!allSelected && !isEditingFiles && (
                       <span className="text-muted-foreground">
                         ({selectedFiles.length} of {allFiles.length})
@@ -1940,7 +1948,9 @@ export default function GitActionsControl({
                                 />
                                 <span className="shrink-0">
                                   {isExcluded ? (
-                                    <span className="text-muted-foreground">Excluded</span>
+                                    <span className="text-muted-foreground">
+                                      {i18next.t("Excluded")}
+                                    </span>
                                   ) : (
                                     <>
                                       <span className="text-success">+{file.insertions}</span>
@@ -1969,7 +1979,7 @@ export default function GitActionsControl({
               </div>
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium">Commit message (optional)</p>
+              <p className="text-sm font-medium">{i18next.t("Commit message (optional)")}</p>
               <Textarea
                 value={dialogCommitMessage}
                 onChange={(event) => setDialogCommitMessage(event.target.value)}
@@ -1989,7 +1999,7 @@ export default function GitActionsControl({
                 setIsEditingFiles(false);
               }}
             >
-              Cancel
+              {i18next.t("Cancel")}
             </Button>
             <Button
               variant="outline"
@@ -1997,10 +2007,10 @@ export default function GitActionsControl({
               disabled={noneSelected}
               onClick={runDialogActionOnNewBranch}
             >
-              Commit on new refName
+              {i18next.t("Commit on new refName")}
             </Button>
             <Button size="sm" disabled={noneSelected} onClick={runDialogAction}>
-              Commit
+              {i18next.t("Commit")}
             </Button>
           </DialogFooter>
         </DialogPopup>
@@ -2035,7 +2045,7 @@ export default function GitActionsControl({
               size="sm"
               onClick={() => setPendingDefaultBranchAction(null)}
             >
-              Abort
+              {i18next.t("Abort")}
             </Button>
             <Button
               className="min-h-8 w-full max-w-full whitespace-normal py-1.5 leading-snug sm:min-h-7 sm:w-auto"
@@ -2050,7 +2060,7 @@ export default function GitActionsControl({
               size="sm"
               onClick={checkoutFeatureBranchAndContinuePendingAction}
             >
-              Checkout feature branch & continue
+              {i18next.t("Checkout feature branch & continue")}
             </Button>
           </DialogFooter>
         </DialogPopup>

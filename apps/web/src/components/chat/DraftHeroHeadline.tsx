@@ -25,6 +25,7 @@ import {
   MenuTrigger,
 } from "../ui/menu";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import i18next from "i18next";
 
 interface DraftHeroHeadlineProps {
   readonly activeProjectRef: ScopedProjectRef | null;
@@ -173,13 +174,13 @@ export function DraftHeroHeadline({
       {hasResolvedProject ? (
         <Trans
           i18nKey="hero.buildIn"
-          defaults="What should we build in <slot/>?"
+          defaults={i18next.t("What should we build in <slot/>?")}
           components={{ slot: projectSelector }}
         />
       ) : canChooseProject ? (
         <Trans
           i18nKey="hero.toStart"
-          defaults="<slot/> to start"
+          defaults={i18next.t("<slot/> to start")}
           components={{ slot: projectSelector }}
         />
       ) : (

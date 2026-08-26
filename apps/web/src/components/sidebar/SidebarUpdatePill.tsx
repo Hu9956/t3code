@@ -27,6 +27,7 @@ import {
   shouldContinueDesktopUpdateCheckAnimation,
   shouldShowDesktopUpdateCheckIcon,
 } from "./DesktopUpdateStatusIcon";
+import i18next from "i18next";
 
 function resolveSidebarUpdatePresentation({
   action,
@@ -81,7 +82,7 @@ function SidebarUpdateReleaseNotesTooltip({
         {state.status === "available" ? (
           <div>
             <div className="whitespace-nowrap text-sm leading-5 font-medium">
-              Update ready to download
+              {i18next.t("Update ready to download")}
             </div>
             {state.availableVersion ? (
               <div className="mt-0.5 text-xs leading-4 text-update-foreground">
@@ -130,7 +131,7 @@ function SidebarUpdateArchitectureWarningContent() {
   return (
     <Alert variant="warning" className="rounded-2xl border-warning/40 bg-warning/8 text-xs">
       <TriangleAlertIcon />
-      <AlertTitle>Intel build on Apple Silicon</AlertTitle>
+      <AlertTitle>{i18next.t("Intel build on Apple Silicon")}</AlertTitle>
       <AlertDescription>{description}</AlertDescription>
     </Alert>
   );
@@ -201,7 +202,7 @@ function SidebarUpdateControl() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not download update",
+              title: i18next.t("Could not download update"),
               description: actionError,
             }),
           );
@@ -210,7 +211,7 @@ function SidebarUpdateControl() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not start update download",
+              title: i18next.t("Could not start update download"),
               description: error instanceof Error ? error.message : "An unexpected error occurred.",
             }),
           );
@@ -230,7 +231,7 @@ function SidebarUpdateControl() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not confirm update",
+            title: i18next.t("Could not confirm update"),
             description: error instanceof Error ? error.message : "Update confirmation failed.",
           }),
         );
@@ -249,7 +250,7 @@ function SidebarUpdateControl() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not install update",
+              title: i18next.t("Could not install update"),
               description: actionError,
             }),
           );
@@ -258,7 +259,7 @@ function SidebarUpdateControl() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not install update",
+              title: i18next.t("Could not install update"),
               description: error instanceof Error ? error.message : "An unexpected error occurred.",
             }),
           );
@@ -278,7 +279,7 @@ function SidebarUpdateControl() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not check for updates",
+            title: i18next.t("Could not check for updates"),
             description:
               result.state.message ?? "Automatic updates are not available in this build.",
           }),
@@ -288,7 +289,7 @@ function SidebarUpdateControl() {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not check for updates",
+            title: i18next.t("Could not check for updates"),
             description: error instanceof Error ? error.message : "Update check failed.",
           }),
         );

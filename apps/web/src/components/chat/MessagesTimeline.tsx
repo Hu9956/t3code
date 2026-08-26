@@ -123,6 +123,7 @@ import {
   parseReviewCommentMessageSegments,
   type ReviewCommentContext,
 } from "../../reviewCommentContext";
+import i18next from "i18next";
 
 // ---------------------------------------------------------------------------
 // Context — shared state consumed by every row component via Context.
@@ -573,7 +574,9 @@ export const MessagesTimeline = memo(function MessagesTimeline({
     }
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-placeholder text-sm">Send a message to start the conversation.</p>
+        <p className="text-placeholder text-sm">
+          {i18next.t("Send a message to start the conversation.")}
+        </p>
       </div>
     );
   }
@@ -1103,13 +1106,13 @@ function RevertUserMessageButton({ messageId }: { messageId: MessageId }) {
             variant="ghost"
             disabled={activity.isRevertingCheckpoint || activity.isWorking}
             onClick={() => ctx.onRevertUserMessage(messageId)}
-            aria-label="Revert to this message"
+            aria-label={i18next.t("Revert to this message")}
           />
         }
       >
         <Undo2Icon className="size-3" />
       </TooltipTrigger>
-      <TooltipPopup side="top">Revert to this message</TooltipPopup>
+      <TooltipPopup side="top">{i18next.t("Revert to this message")}</TooltipPopup>
     </Tooltip>
   );
 }
@@ -1319,7 +1322,8 @@ function WorkingTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "workin
         <div className="px-1 text-sm leading-relaxed text-muted-foreground tabular-nums">
           {row.createdAt ? (
             <>
-              Working for <WorkingTimer createdAt={row.createdAt} />
+              {i18next.t("Working for")}
+              <WorkingTimer createdAt={row.createdAt} />
             </>
           ) : (
             "Working..."
@@ -1449,7 +1453,7 @@ function LiveActivityRow({
 }
 
 function ThinkingActivityRow() {
-  return <LiveActivityRow label="Thinking" />;
+  return <LiveActivityRow label={i18next.t("Thinking")} />;
 }
 
 function LiveActivityContent({
@@ -1610,7 +1614,8 @@ function WorkGroupToggleTimelineRow({
       </span>
       {row.expanded ? (
         <span className="font-medium text-foreground">
-          Show fewer {row.onlyToolEntries ? "tool calls" : "log entries"}
+          {i18next.t("Show fewer")}
+          {row.onlyToolEntries ? "tool calls" : "log entries"}
         </span>
       ) : (
         <span className="font-medium text-foreground">
@@ -1751,7 +1756,7 @@ function UserMessagePreviewAnnotationCard(props: {
         >
           <img
             src={props.image.previewUrl}
-            alt="Annotated preview crop"
+            alt={i18next.t("Annotated preview crop")}
             className="size-full object-cover"
           />
         </button>

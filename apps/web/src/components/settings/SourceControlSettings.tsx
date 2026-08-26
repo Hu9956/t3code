@@ -154,9 +154,9 @@ function RedactedAccount(props: { readonly account: string | null }) {
   return (
     <RedactedSensitiveText
       value={props.account}
-      ariaLabel="Toggle source control account visibility"
-      revealTooltip="Click to reveal account"
-      hideTooltip="Click to hide account"
+      ariaLabel={i18next.t("Toggle source control account visibility")}
+      revealTooltip={i18next.t("Click to reveal account")}
+      hideTooltip={i18next.t("Click to hide account")}
     />
   );
 }
@@ -206,11 +206,21 @@ function itemSummary({
   readonly authAccount: string | null;
 }) {
   if (isVcsNotReady(item)) {
-    return <span>Support for {item.label} is coming soon.</span>;
+    return (
+      <span>
+        {i18next.t("Support for")}
+        {item.label} {i18next.t("is coming soon.")}
+      </span>
+    );
   }
 
   if (item.status !== "available") {
-    return <span>Not available on this server: {item.installHint}</span>;
+    return (
+      <span>
+        {i18next.t("Not available on this server:")}
+        {item.installHint}
+      </span>
+    );
   }
 
   if (auth) {
@@ -229,22 +239,31 @@ function itemSummary({
     }
 
     if (!item.executable) {
-      return <span>Available. {item.installHint}</span>;
+      return (
+        <span>
+          {i18next.t("Available.")}
+          {item.installHint}
+        </span>
+      );
     }
 
     if (auth.status === "unauthenticated") {
       return (
         <span>
-          {item.label} is not authenticated on this server. Sign in or configure credentials using
-          the <code className="rounded bg-muted px-1 py-px text-[11px]">{item.executable}</code>{" "}
-          tool on the server host to enable change request features.
+          {item.label}{" "}
+          {i18next.t(
+            "is not authenticated on this server. Sign in or configure credentials using\n          the",
+          )}
+          <code className="rounded bg-muted px-1 py-px text-[11px]">{item.executable}</code>{" "}
+          {i18next.t("tool on the server host to enable change request features.")}
         </span>
       );
     }
     const authDetail = optionLabel(auth.detail);
     return (
       <span>
-        Could not verify {item.label}. {authDetail ?? item.installHint}
+        {i18next.t("Could not verify")}
+        {item.label}. {authDetail ?? item.installHint}
       </span>
     );
   }
@@ -287,7 +306,7 @@ function DiscoveryItemRow({
               {version ? <code className="text-xs text-muted-foreground">{version}</code> : null}
               {isVcsNotReady(item) ? (
                 <Badge variant="warning" size="sm">
-                  Coming Soon
+                  {i18next.t("Coming Soon")}
                 </Badge>
               ) : null}
               {authStatus?.badge ? (
@@ -356,9 +375,9 @@ function GitFetchIntervalSettings() {
               {i18next.t("Fetch interval")}
             </span>
             <PolicyTooltip>
-              This interval is configured for Git only. The shared Background activity policy still
-              decides whether Git refreshes may run when the timer fires. Custom intervals appear as
-              Advanced in General settings.
+              {i18next.t(
+                "This interval is configured for Git only. The shared Background activity policy still\n              decides whether Git refreshes may run when the timer fires. Custom intervals appear as\n              Advanced in General settings.",
+              )}
             </PolicyTooltip>
             <span
               className={cn(
@@ -382,8 +401,9 @@ function GitFetchIntervalSettings() {
             </span>
           </div>
           <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
-            Refresh remote branch status in the background. Set this to 0 seconds if Git credentials
-            or security keys should only be prompted by explicit Git actions.
+            {i18next.t(
+              "Refresh remote branch status in the background. Set this to 0 seconds if Git credentials\n            or security keys should only be prompted by explicit Git actions.",
+            )}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -490,7 +510,7 @@ function EmptySourceControlDiscovery({
             disabled={isPending}
           >
             <RefreshCwIcon className={cn("size-3.5", isPending && "animate-spin")} />
-            Scan
+            {i18next.t("Scan")}
           </Button>
         </EmptyContent>
       </Empty>

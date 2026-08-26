@@ -11,6 +11,7 @@ import {
 import { cn } from "~/lib/utils";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import i18next from "i18next";
 
 interface ComposerPreviewAnnotationCardsProps {
   annotations: ReadonlyArray<PreviewAnnotationPayload>;
@@ -74,7 +75,7 @@ export function ComposerPreviewAnnotationCards({
               >
                 <img
                   src={image.previewUrl}
-                  alt="Annotated preview crop"
+                  alt={i18next.t("Annotated preview crop")}
                   className="size-full object-cover transition duration-200 group-hover/preview-annotation:scale-[1.03]"
                 />
               </button>
@@ -138,7 +139,7 @@ export function ComposerPreviewAnnotationCards({
                     <TargetStat
                       icon={<Paintbrush className="size-3" />}
                       count={annotation.styleChanges.length}
-                      label="style change"
+                      label={i18next.t("style change")}
                     />
                   ) : null}
                   {upload?.status === "uploading" ? (
@@ -169,7 +170,7 @@ export function ComposerPreviewAnnotationCards({
             <Button
               size="icon-micro"
               variant="ghost-muted"
-              aria-label="Remove preview annotation"
+              aria-label={i18next.t("Remove preview annotation")}
               className="absolute right-1.5 top-1.5 [--control-icon-color:currentColor] rounded text-icon-muted hover:bg-muted"
               onClick={() => onRemove(annotation.id)}
             >

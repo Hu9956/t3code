@@ -259,8 +259,9 @@ function UnknownWhenVariableWarning({
         }
       />
       <TooltipPopup side="top" className="max-w-72 whitespace-normal leading-relaxed">
-        T3 Code does not recognize this condition yet. It can still be saved, but it may not match
-        unless the runtime provides it.
+        {i18next.t(
+          "T3 Code does not recognize this condition yet. It can still be saved, but it may not match\n        unless the runtime provides it.",
+        )}
       </TooltipPopup>
     </Tooltip>
   );
@@ -287,7 +288,8 @@ function KeybindingConflictWarning({ labels }: { labels: ReadonlyArray<string> }
         }
       />
       <TooltipPopup side="top" className="max-w-72 whitespace-normal leading-relaxed">
-        {description} The most recent matching binding wins when both conditions can apply.
+        {description}{" "}
+        {i18next.t("The most recent matching binding wins when both conditions can apply.")}
       </TooltipPopup>
     </Tooltip>
   );
@@ -366,7 +368,7 @@ function WhenExpressionNodeEditor({
           size="compact"
           className="min-w-10"
         >
-          Not
+          {i18next.t("Not")}
         </Toggle>
         <WhenVariableSelect
           value={condition.identifier}
@@ -407,7 +409,7 @@ function WhenExpressionNodeEditor({
             size="compact"
             className="min-w-10"
           >
-            Not
+            {i18next.t("Not")}
           </Toggle>
           {onRemove ? (
             <Button
@@ -530,7 +532,7 @@ function WhenExpressionNodeEditor({
         </Button>
         <Button type="button" variant="outline" size="compact" onClick={addGroup}>
           <PlusIcon className="size-3.5" />
-          Group
+          {i18next.t("Group")}
         </Button>
         {onRemove ? (
           <Button
@@ -638,7 +640,7 @@ function WhenExpressionBuilder({
           </Button>
           <Button type="button" variant="outline" size="compact" onClick={addRootGroup}>
             <PlusIcon className="size-3.5" />
-            Group
+            {i18next.t("Group")}
           </Button>
         </div>
       </div>
@@ -688,14 +690,14 @@ function WhenExpressionBuilder({
               </Button>
               <Button type="button" variant="outline" size="compact" onClick={addRootGroup}>
                 <PlusIcon className="size-3.5" />
-                Group
+                {i18next.t("Group")}
               </Button>
             </div>
           </div>
         )}
         {parseError ? (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg border border-destructive/30 bg-background/75 p-4 text-center text-xs text-destructive backdrop-blur-[1px]">
-            Fix the expression above to continue editing visually.
+            {i18next.t("Fix the expression above to continue editing visually.")}
           </div>
         ) : null}
       </div>
@@ -816,7 +818,7 @@ function KeybindingTableRow({
           >
             <KeybindingPill value={row.key} />
             <span className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground/0 transition-opacity group-hover:text-muted-foreground/70 group-focus-visible:text-muted-foreground/70">
-              Edit
+              {i18next.t("Edit")}
             </span>
           </button>
         ) : (
@@ -1249,8 +1251,9 @@ export function KeybindingsSettingsPanel() {
           <div className="flex items-start gap-2 border-b border-warning/20 bg-warning/5 px-3 py-2.5 text-[12px] leading-relaxed text-muted-foreground sm:px-4">
             <InfoIcon className="mt-0.5 size-3.5 shrink-0 text-warning" />
             <p>
-              Some shortcuts may be claimed by the browser before T3 Code sees them. Use the desktop
-              app for better keybinding support.
+              {i18next.t(
+                "Some shortcuts may be claimed by the browser before T3 Code sees them. Use the desktop\n              app for better keybinding support.",
+              )}
             </p>
           </div>
         ) : null}
@@ -1292,7 +1295,7 @@ export function KeybindingsSettingsPanel() {
             ))}
             {rows.length === 0 && !isAddingBinding ? (
               <div className="px-4 py-12 text-center text-sm text-muted-foreground">
-                No keybindings match your search.
+                {i18next.t("No keybindings match your search.")}
               </div>
             ) : null}
           </div>

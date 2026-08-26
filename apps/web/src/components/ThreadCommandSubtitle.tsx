@@ -3,6 +3,7 @@ import { FolderGit2Icon, FolderIcon, GitBranchIcon } from "lucide-react";
 import { ProjectFavicon } from "./ProjectFavicon";
 import { ProviderInstanceIcon } from "./chat/ProviderInstanceIcon";
 import { cn } from "~/lib/utils";
+import i18next from "i18next";
 
 /**
  * Flip this while reviewing command-palette thread subtitles.
@@ -96,7 +97,7 @@ export function ThreadCommandSubtitle(props: {
           <ProviderInstanceIcon
             driverKind={props.driverKind}
             displayName={props.providerDisplayName ?? props.driverKind}
-            iconClassName="size-3 shrink-0 opacity-70"
+            iconClassName={i18next.t("size-3 shrink-0 opacity-70")}
           />
         </>
       ) : null}
@@ -104,7 +105,7 @@ export function ThreadCommandSubtitle(props: {
       {props.isCurrent ? (
         <>
           {projectLabel || branchLabel || showHarness ? <CommandPaletteMetaDot /> : null}
-          <span className="shrink-0">Current thread</span>
+          <span className="shrink-0">{i18next.t("Current thread")}</span>
         </>
       ) : null}
     </span>

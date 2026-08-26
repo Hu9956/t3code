@@ -283,23 +283,23 @@ const runtimeModeConfig: Record<
   { label: string; description: string; icon: LucideIcon }
 > = {
   "approval-required": {
-    label: "Supervised",
-    description: "Ask before commands and file changes.",
+    label: i18next.t("Supervised"),
+    description: i18next.t("Ask before commands and file changes."),
     icon: LockIcon,
   },
   "auto-accept-edits": {
-    label: "Auto-accept edits",
-    description: "Auto-approve edits, ask before other actions.",
+    label: i18next.t("Auto-accept edits"),
+    description: i18next.t("Auto-approve edits, ask before other actions."),
     icon: PenLineIcon,
   },
   auto: {
-    label: "Auto",
-    description: "Supported providers approve routine actions; others still ask.",
+    label: i18next.t("Auto"),
+    description: i18next.t("Supported providers approve routine actions; others still ask."),
     icon: SparklesIcon,
   },
   "full-access": {
     label: i18next.t("Full access"),
-    description: "Allow commands and edits without prompts.",
+    description: i18next.t("Allow commands and edits without prompts."),
     icon: LockOpenIcon,
   },
 };
@@ -403,7 +403,12 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
           onValueChange={(value) => props.onRuntimeModeChange(value!)}
         >
           <TooltipTrigger
-            render={<ComposerSelectControl className="font-medium" aria-label="Runtime mode" />}
+            render={
+              <ComposerSelectControl
+                className="font-medium"
+                aria-label={i18next.t("Runtime mode")}
+              />
+            }
           >
             <ComposerControlIcon icon={RuntimeModeIcon} />
             <SelectValue>{runtimeModeOption.label}</SelectValue>
@@ -479,7 +484,7 @@ const ComposerFooterPrimaryActions = memo(function ComposerFooterPrimaryActions(
         />
       ) : null}
       {props.isPreparingWorktree ? (
-        <span className="text-secondary-label text-xs">Preparing worktree...</span>
+        <span className="text-secondary-label text-xs">{i18next.t("Preparing worktree...")}</span>
       ) : null}
       <ComposerPrimaryActions
         compact={props.compact}
@@ -1965,8 +1970,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
         event?.preventDefault();
         toastManager.add({
           type: "info",
-          title: "Still compressing a pasted image.",
-          description: "Send again once its thumbnail appears.",
+          title: i18next.t("Still compressing a pasted image."),
+          description: i18next.t("Send again once its thumbnail appears."),
         });
         return;
       }
@@ -2019,8 +2024,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     if ((pendingImageCompressionsRef.current.get(activeThreadId) ?? 0) > 0) {
       toastManager.add({
         type: "info",
-        title: "Still compressing a pasted image.",
-        description: "Compact again once its thumbnail appears.",
+        title: i18next.t("Still compressing a pasted image."),
+        description: i18next.t("Compact again once its thumbnail appears."),
       });
       return;
     }
@@ -2160,9 +2165,10 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       if (!durable) {
         toastManager.add({
           type: "warning",
-          title: "Restored prompt may reappear in the stash",
-          description:
+          title: i18next.t("Restored prompt may reappear in the stash"),
+          description: i18next.t(
             "Browser storage rejected the update, so this entry could still be there after a reload.",
+          ),
           data: { hideCopyButton: true },
         });
       }
@@ -2244,7 +2250,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       if (missingImageReasons.length > 0) {
         toastManager.add({
           type: "warning",
-          title: "Some images were not restored",
+          title: i18next.t("Some images were not restored"),
           description: missingImageReasons.join(" "),
         });
       }
@@ -2273,9 +2279,10 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       if (!durable) {
         toastManager.add({
           type: "warning",
-          title: "Stash entry may come back",
-          description:
+          title: i18next.t("Stash entry may come back"),
+          description: i18next.t(
             "Browser storage rejected the delete, so this prompt could reappear after a reload.",
+          ),
           data: { hideCopyButton: true },
         });
       }
@@ -2328,9 +2335,10 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       if (!written) {
         toastManager.add({
           type: "error",
-          title: "Could not stash this prompt",
-          description:
+          title: i18next.t("Could not stash this prompt"),
+          description: i18next.t(
             "Browser storage rejected the write, so the composer was left as-is. Free up site data and try again.",
+          ),
           data: { hideCopyButton: true },
         });
         return;
@@ -2341,9 +2349,10 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       if (!durable) {
         toastManager.add({
           type: "warning",
-          title: "Stashed prompt will not survive a reload",
-          description:
+          title: i18next.t("Stashed prompt will not survive a reload"),
+          description: i18next.t(
             "Browser storage is unavailable, so this stash is kept in memory only for this session.",
+          ),
           data: { hideCopyButton: true },
         });
       }
@@ -2411,9 +2420,10 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
         if (!imagesDurable && durable && images.length > 0) {
           toastManager.add({
             type: "warning",
-            title: "Stashed images were not saved",
-            description:
+            title: i18next.t("Stashed images were not saved"),
+            description: i18next.t(
               "The prompt was stashed, but browser storage rejected its images. They will be missing if you reload.",
+            ),
             data: { hideCopyButton: true },
           });
         }
@@ -2423,7 +2433,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
         // them evaporate.
         toastManager.add({
           type: "warning",
-          title: "Stashed images did not attach",
+          title: i18next.t("Stashed images did not attach"),
           description: `That prompt was restored or deleted before ${kept.length} image${kept.length === 1 ? "" : "s"} finished saving. Re-attach ${kept.length === 1 ? "it" : "them"} if you still need ${kept.length === 1 ? "it" : "them"}.`,
           data: { hideCopyButton: true },
         });
@@ -2589,7 +2599,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     if (pendingUserInputs.length > 0) {
       toastManager.add({
         type: "error",
-        title: "Attach images after answering plan questions.",
+        title: i18next.t("Attach images after answering plan questions."),
       });
       return;
     }
@@ -2728,8 +2738,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     onInsertRejected: () => {
       toastManager.add({
         type: "error",
-        title: "Unable to add to chat",
-        description: "The composer is busy; try again once it is ready.",
+        title: i18next.t("Unable to add to chat"),
+        description: i18next.t("The composer is busy; try again once it is ready."),
       });
     },
   });
@@ -3054,7 +3064,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                     )}
                     onPointerDown={(event) => event.preventDefault()}
                     onClick={expandMobileComposer}
-                    aria-label="Write custom answer"
+                    aria-label={i18next.t("Write custom answer")}
                   >
                     {activePendingProgress?.customAnswer || "Write custom answer"}
                   </button>
@@ -3154,9 +3164,13 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                 >
                   {activePendingProgress
                     ? activePendingProgress.customAnswer ||
-                      "Type your own answer, or leave this blank to use the selected option"
+                      i18next.t(
+                        "Type your own answer, or leave this blank to use the selected option",
+                      )
                     : prompt.trim() ||
-                      (noProviderAvailable ? "Enable a provider in Settings" : "Ask anything...")}
+                      (noProviderAvailable
+                        ? i18next.t("Enable a provider in Settings")
+                        : i18next.t("Ask anything..."))}
                 </button>
                 {inlineTasksBadge}
                 {inlineStashBadge}
@@ -3326,7 +3340,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                                   render={
                                     <span
                                       role="img"
-                                      aria-label="Draft attachment may not persist"
+                                      aria-label={i18next.t("Draft attachment may not persist")}
                                       className="absolute left-1 top-1 inline-flex items-center justify-center rounded bg-background/85 p-0.5 text-amber-600"
                                     >
                                       <CircleAlertIcon className="size-3" />
@@ -3337,8 +3351,9 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                                   side="top"
                                   className="max-w-64 whitespace-normal leading-tight"
                                 >
-                                  Draft attachment could not be saved locally and may be lost on
-                                  navigation.
+                                  {i18next.t(
+                                    "Draft attachment could not be saved locally and may be lost on\n                                  navigation.",
+                                  )}
                                 </TooltipPopup>
                               </Tooltip>
                             )}
@@ -3414,16 +3429,22 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                       ? (activePendingApproval?.detail ??
                         "Resolve this approval request to continue")
                       : activePendingProgress
-                        ? "Type your own answer, or leave this blank to use the selected option"
+                        ? i18next.t(
+                            "Type your own answer, or leave this blank to use the selected option",
+                          )
                         : showPlanFollowUpPrompt && activeProposedPlan
-                          ? "Add feedback to refine the plan, or leave this blank to implement it"
+                          ? i18next.t(
+                              "Add feedback to refine the plan, or leave this blank to implement it",
+                            )
                           : projectSelectionRequired
-                            ? "Choose a project above to start a thread"
+                            ? i18next.t("Choose a project above to start a thread")
                             : noProviderAvailable
-                              ? "Enable a provider in Settings to send a message"
+                              ? i18next.t("Enable a provider in Settings to send a message")
                               : phase === "disconnected"
                                 ? DISCONNECTED_COMPOSER_PLACEHOLDER
-                                : "Ask anything, @tag files/folders, $use skills, or / for commands"
+                                : i18next.t(
+                                    "Ask anything, @tag files/folders, $use skills, or / for commands",
+                                  )
                   }
                   disabled={isConnecting || isComposerApprovalState || projectSelectionRequired}
                 />
@@ -3487,7 +3508,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                       className="shrink-0 gap-2 px-2 text-secondary-label sm:px-3"
                     >
                       <CircleAlertIcon className="size-4" />
-                      No provider available
+                      {i18next.t("No provider available")}
                     </Button>
                   ) : (
                     <ProviderModelPicker

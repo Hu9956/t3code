@@ -4,6 +4,7 @@ import * as Schema from "effect/Schema";
 
 import { APP_VERSION } from "./branding";
 import { getLocalStorageItem, setLocalStorageItem } from "./hooks/useLocalStorage";
+import i18next from "i18next";
 
 export interface VersionMismatch {
   readonly clientVersion: string;
@@ -67,7 +68,9 @@ export function resolveVersionMismatch(
   return {
     clientVersion: normalizedClientVersion,
     serverVersion: normalizedServerVersion,
-    hint: "Version mismatch. Try syncing the client and server to the same T3 Code version.",
+    hint: i18next.t(
+      "Version mismatch. Try syncing the client and server to the same T3 Code version.",
+    ),
   };
 }
 

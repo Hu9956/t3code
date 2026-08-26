@@ -266,10 +266,10 @@ export function ThemeSearchSection({
     <section className="space-y-3" aria-labelledby="theme-search-heading">
       <div>
         <h3 className="text-sm font-medium" id="theme-search-heading">
-          Search community themes
+          {i18next.t("Search community themes")}
         </h3>
         <p className="mt-0.5 text-muted-foreground text-xs">
-          Find open-source themes from Open VSX.
+          {i18next.t("Find open-source themes from Open VSX.")}
         </p>
       </div>
       <InputGroup>
@@ -359,7 +359,7 @@ export function ThemeSearchSection({
 
       {isSearching && results === null ? (
         <div className="flex min-h-20 items-center justify-center gap-2 text-muted-foreground text-sm">
-          <Spinner /> Searching themes...
+          <Spinner /> {i18next.t("Searching themes...")}
         </div>
       ) : null}
 
@@ -445,10 +445,14 @@ export function ThemeSearchSection({
       >
         <AlertDialogPopup>
           <AlertDialogHeader>
-            <AlertDialogTitle>Update “{pendingUpdate?.name}”?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {i18next.t("Update “")}
+              {pendingUpdate?.name}”?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This replaces its installed variants, including any local edits. Variants no longer in
-              the extension will be removed.
+              {i18next.t(
+                "This replaces its installed variants, including any local edits. Variants no longer in\n              the extension will be removed.",
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -462,7 +466,7 @@ export function ThemeSearchSection({
                 if (extension) void handleInstall(extension, true);
               }}
             >
-              Update theme
+              {i18next.t("Update theme")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogPopup>

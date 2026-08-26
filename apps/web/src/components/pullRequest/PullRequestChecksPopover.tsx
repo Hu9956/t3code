@@ -18,6 +18,7 @@ import {
   pullRequestChecksStatePresentation,
   summarizePullRequestChecks,
 } from "./pullRequestPresentation";
+import i18next from "i18next";
 
 /**
  * The checks behind the rollup, for a row that only carries the rollup. Mounted by the popup, so
@@ -49,7 +50,7 @@ function LazyChecksBody({
 
 function ChecksBody({ checks }: { checks: ReadonlyArray<PullRequestCheck> }) {
   if (checks.length === 0) {
-    return <p className="text-muted-foreground text-xs">No checks reported</p>;
+    return <p className="text-muted-foreground text-xs">{i18next.t("No checks reported")}</p>;
   }
   return (
     <ul className="flex flex-col gap-1">
@@ -73,7 +74,7 @@ function ChecksBody({ checks }: { checks: ReadonlyArray<PullRequestCheck> }) {
               className="shrink-0 text-primary hover:underline"
               onClick={() => void readLocalApi()?.shell.openExternal(check.url ?? "")}
             >
-              Details
+              {i18next.t("Details")}
             </button>
           )}
         </li>

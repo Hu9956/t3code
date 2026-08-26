@@ -52,11 +52,11 @@ import i18next from "i18next";
 
 export const SCRIPT_ICONS: Array<{ id: ProjectScriptIcon; label: string }> = [
   { id: "play", label: i18next.t("Play") },
-  { id: "test", label: "Test" },
+  { id: "test", label: i18next.t("Test") },
   { id: "lint", label: i18next.t("Lint") },
-  { id: "configure", label: "Configure" },
-  { id: "build", label: "Build" },
-  { id: "debug", label: "Debug" },
+  { id: "configure", label: i18next.t("Configure") },
+  { id: "build", label: i18next.t("Build") },
+  { id: "debug", label: i18next.t("Debug") },
 ];
 
 export function ScriptIcon({
@@ -256,13 +256,15 @@ export function ProjectScriptEditorDialog({
           <DialogHeader>
             <DialogTitle>{isEditing ? "Edit Action" : "Add Action"}</DialogTitle>
             <DialogDescription>
-              Actions are project-scoped commands you can run from the top bar or keybindings.
+              {i18next.t(
+                "Actions are project-scoped commands you can run from the top bar or keybindings.",
+              )}
             </DialogDescription>
           </DialogHeader>
           <DialogPanel>
             <form id={formId} className="space-y-4" onSubmit={submit}>
               <div className="space-y-1.5">
-                <Label htmlFor="script-name">Name</Label>
+                <Label htmlFor="script-name">{i18next.t("Name")}</Label>
                 <div className="flex items-center gap-2">
                   <Popover onOpenChange={setIconPickerOpen} open={iconPickerOpen}>
                     <PopoverTrigger
@@ -271,7 +273,7 @@ export function ProjectScriptEditorDialog({
                           type="button"
                           variant="outline"
                           className="size-9 shrink-0 hover:bg-popover active:bg-popover data-pressed:bg-popover data-pressed:shadow-xs/5 data-pressed:before:shadow-[0_1px_--theme(--color-black/4%)] dark:border-transparent dark:bg-white/[0.035] dark:data-pressed:before:shadow-none"
-                          aria-label="Choose icon"
+                          aria-label={i18next.t("Choose icon")}
                         />
                       }
                     >
@@ -306,14 +308,14 @@ export function ProjectScriptEditorDialog({
                   <Input
                     id="script-name"
                     autoFocus
-                    placeholder="Test"
+                    placeholder={i18next.t("Test")}
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                   />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="script-keybinding">Keybinding</Label>
+                <Label htmlFor="script-keybinding">{i18next.t("Keybinding")}</Label>
                 <Input
                   id="script-keybinding"
                   placeholder={i18next.t("Press shortcut")}
@@ -322,20 +324,21 @@ export function ProjectScriptEditorDialog({
                   onKeyDown={captureKeybinding}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Press a shortcut. Use <code>Backspace</code> to clear.
+                  {i18next.t("Press a shortcut. Use")}
+                  <code>{i18next.t("Backspace")}</code> {i18next.t("to clear.")}
                 </p>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="script-command">Command</Label>
+                <Label htmlFor="script-command">{i18next.t("Command")}</Label>
                 <Textarea
                   id="script-command"
-                  placeholder="bun test"
+                  placeholder={i18next.t("bun test")}
                   value={command}
                   onChange={(event) => setCommand(event.target.value)}
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="script-preview-url">Preview URL (optional)</Label>
+                <Label htmlFor="script-preview-url">{i18next.t("Preview URL (optional)")}</Label>
                 <Input
                   id="script-preview-url"
                   placeholder="http://localhost:5173"
@@ -343,11 +346,11 @@ export function ProjectScriptEditorDialog({
                   onChange={(event) => setPreviewUrl(event.target.value)}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Open this URL in the in-app preview when this action runs.
+                  {i18next.t("Open this URL in the in-app preview when this action runs.")}
                 </p>
               </div>
               <label className="flex items-center justify-between gap-3 rounded-md border border-border/70 px-3 py-2 text-sm dark:border-transparent dark:bg-white/[0.035]">
-                <span>Run automatically on worktree creation</span>
+                <span>{i18next.t("Run automatically on worktree creation")}</span>
                 <Switch
                   checked={runOnWorktreeCreate}
                   onCheckedChange={(checked) => setRunOnWorktreeCreate(Boolean(checked))}
@@ -358,7 +361,7 @@ export function ProjectScriptEditorDialog({
                   previewUrl.trim().length === 0 ? "opacity-60" : ""
                 }`}
               >
-                <span>Open preview automatically when this action runs</span>
+                <span>{i18next.t("Open preview automatically when this action runs")}</span>
                 <Switch
                   checked={autoOpenPreview}
                   disabled={previewUrl.trim().length === 0}
@@ -376,11 +379,11 @@ export function ProjectScriptEditorDialog({
                 className="mr-auto"
                 onClick={() => setDeleteConfirmOpen(true)}
               >
-                Delete
+                {i18next.t("Delete")}
               </Button>
             )}
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {i18next.t("Cancel")}
             </Button>
             <Button form={formId} type="submit">
               {isEditing ? "Save changes" : "Save action"}
@@ -392,11 +395,18 @@ export function ProjectScriptEditorDialog({
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogPopup>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete action "{name}"?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+            <AlertDialogTitle>
+              {i18next.t('Delete action "')}
+              {name}"?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {i18next.t("This action cannot be undone.")}
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogClose render={<Button variant="outline" />}>Cancel</AlertDialogClose>
+            <AlertDialogClose render={<Button variant="outline" />}>
+              {i18next.t("Cancel")}
+            </AlertDialogClose>
             <Button
               variant="destructive"
               onClick={() => {
@@ -406,7 +416,7 @@ export function ProjectScriptEditorDialog({
                 onDelete(request.scriptId);
               }}
             >
-              Delete action
+              {i18next.t("Delete action")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogPopup>

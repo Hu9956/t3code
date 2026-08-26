@@ -13,6 +13,7 @@ import {
   type BrowserViewportLayout,
   type BrowserViewportResizeDirection,
 } from "./browserViewportLayout";
+import i18next from "i18next";
 
 interface Props {
   readonly layout: BrowserViewportLayout;
@@ -115,7 +116,7 @@ export function BrowserViewportResizeHandles({
     <>
       <ResizeHandle
         direction="west"
-        label="Resize browser viewport from left edge"
+        label={i18next.t("Resize browser viewport from left edge")}
         kind="vertical"
         cursorClassName="cursor-ew-resize"
         style={{ left: left - railSize, top, width: railSize, height: layout.viewportHeight }}
@@ -125,7 +126,7 @@ export function BrowserViewportResizeHandles({
       />
       <ResizeHandle
         direction="east"
-        label="Resize browser viewport from right edge"
+        label={i18next.t("Resize browser viewport from right edge")}
         kind="vertical"
         cursorClassName="cursor-ew-resize"
         style={{ left: right, top, width: railSize, height: layout.viewportHeight }}
@@ -135,7 +136,7 @@ export function BrowserViewportResizeHandles({
       />
       <ResizeHandle
         direction="south"
-        label="Resize browser viewport from bottom edge"
+        label={i18next.t("Resize browser viewport from bottom edge")}
         kind="horizontal"
         cursorClassName="cursor-ns-resize"
         style={{ left, top: bottom, width: layout.viewportWidth, height: railSize }}
@@ -145,7 +146,7 @@ export function BrowserViewportResizeHandles({
       />
       <ResizeHandle
         direction="southwest"
-        label="Resize browser viewport from bottom-left corner"
+        label={i18next.t("Resize browser viewport from bottom-left corner")}
         kind="corner"
         cursorClassName="cursor-nesw-resize"
         style={{ left: left - railSize, top: bottom, width: railSize, height: railSize }}
@@ -156,7 +157,7 @@ export function BrowserViewportResizeHandles({
       />
       <ResizeHandle
         direction="southeast"
-        label="Resize browser viewport from bottom-right corner"
+        label={i18next.t("Resize browser viewport from bottom-right corner")}
         kind="corner"
         cursorClassName="cursor-nwse-resize"
         style={{ left: right, top: bottom, width: railSize, height: railSize }}

@@ -60,7 +60,7 @@ function RefreshFilesButton(props: { isPending: boolean; onRefresh: () => void }
             type="button"
             variant="ghost"
             size="icon-xs"
-            aria-label="Refresh workspace files"
+            aria-label={i18next.t("Refresh workspace files")}
             onClick={props.onRefresh}
           />
         }
@@ -87,7 +87,7 @@ function FileSearchField(props: {
         size="sm"
         value={props.value}
         aria-label={props.ariaLabel}
-        placeholder="Search files"
+        placeholder={i18next.t("Search files")}
         spellCheck={false}
         onChange={(event) => props.onValueChange(event.target.value)}
         onKeyDown={(event) => {
@@ -156,8 +156,8 @@ export default function FileBrowserPanel({
     try {
       const clicked = await api.contextMenu.show(
         [
-          { id: "copy-mention", label: "Copy mention" },
-          { id: "add-to-chat", label: "Add to chat" },
+          { id: "copy-mention", label: i18next.t("Copy mention") },
+          { id: "add-to-chat", label: i18next.t("Add to chat") },
         ],
         position,
       );
@@ -183,7 +183,7 @@ export default function FileBrowserPanel({
         if (!composer) {
           toastManager.add({
             type: "error",
-            title: "Unable to add to chat",
+            title: i18next.t("Unable to add to chat"),
             description: i18next.t("Open a chat for this project and try again."),
           });
           return;
@@ -192,8 +192,8 @@ export default function FileBrowserPanel({
         if (!inserted) {
           toastManager.add({
             type: "error",
-            title: "Unable to add to chat",
-            description: "The chat isn't ready to accept input right now.",
+            title: i18next.t("Unable to add to chat"),
+            description: i18next.t("The chat isn't ready to accept input right now."),
           });
         }
       }

@@ -26,8 +26,8 @@ const FAILURE_OPERATION_BY_ACTION = {
 
 const EXTERNAL_LINK_CONTEXT_MENU_ITEMS = [
   { id: "open-in-preview", label: i18next.t("Open in integrated browser") },
-  { id: "open-external", label: "Open in system browser" },
-  { id: "copy-link", label: "Copy Link" },
+  { id: "open-external", label: i18next.t("Open in system browser") },
+  { id: "copy-link", label: i18next.t("Copy Link") },
 ] as const satisfies readonly ContextMenuItem<ExternalLinkContextMenuAction>[];
 
 /**

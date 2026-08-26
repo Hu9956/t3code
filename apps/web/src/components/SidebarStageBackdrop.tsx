@@ -4,6 +4,7 @@ import { useId } from "react";
 import { APP_STAGE_LABEL } from "../branding";
 import { resolveServerBackedAppStageLabel } from "../branding.logic";
 import { primaryServerConfigAtom } from "../state/server";
+import i18next from "i18next";
 
 export type SidebarStageBackdropVariant = "nightly" | "dev";
 export type EnvironmentIdentificationPillLabel = "Dev" | "Nightly";
@@ -118,7 +119,7 @@ function NightlySkyArt({ compact = false }: { compact?: boolean }) {
     <svg
       className="stage-art stage-nightly h-full w-full"
       fill="none"
-      preserveAspectRatio="xMinYMin slice"
+      preserveAspectRatio={i18next.t("xMinYMin slice")}
       viewBox={compact ? "96 0 8192 96" : STAGE_BACKDROP_VIEW_BOX}
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -232,7 +233,7 @@ function DevBlueprintArt({ compact = false }: { compact?: boolean }) {
     <svg
       className="stage-art stage-blueprint h-full w-full"
       fill="none"
-      preserveAspectRatio="xMinYMin slice"
+      preserveAspectRatio={i18next.t("xMinYMin slice")}
       viewBox={compact ? "64 0 8192 96" : STAGE_BACKDROP_VIEW_BOX}
       xmlns="http://www.w3.org/2000/svg"
     >

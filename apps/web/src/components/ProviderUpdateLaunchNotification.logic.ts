@@ -11,6 +11,7 @@ import {
   squashAtomCommandFailure,
   type AtomCommandResult,
 } from "@t3tools/client-runtime/state/runtime";
+import i18next from "i18next";
 
 export type ProviderUpdateCandidate = ServerProvider & {
   readonly versionAdvisory: NonNullable<ServerProvider["versionAdvisory"]> & {
@@ -240,7 +241,7 @@ export function getProviderUpdateRunningToastView(providerCount: number): Provid
     phase: "running",
     type: "loading",
     title: providerCount === 1 ? "Updating provider" : "Updating providers",
-    description: "Running provider update command.",
+    description: i18next.t("Running provider update command."),
   };
 }
 
@@ -809,7 +810,7 @@ export function resolveEnvironmentUpdateRowStatus(input: {
   if (input.result) {
     switch (input.result.phase) {
       case "succeeded":
-        return { kind: "success", text: "Updated" };
+        return { kind: "success", text: i18next.t("Updated") };
       case "failed":
         return { kind: "failed", text: input.result.description };
       case "unchanged":
@@ -820,20 +821,20 @@ export function resolveEnvironmentUpdateRowStatus(input: {
   if (input.pill) {
     switch (input.pill.tone) {
       case "success":
-        return { kind: "success", text: "Updated" };
+        return { kind: "success", text: i18next.t("Updated") };
       case "error":
         return { kind: "failed", text: input.pill.description };
       case "warning":
         return { kind: "unchanged", text: input.pill.description };
       default:
-        return { kind: "loading", text: "Updating…" };
+        return { kind: "loading", text: i18next.t("Updating…") };
     }
   }
   // A non-terminal result snapshot or the optimistic pending flag means an
   // update is still in flight — keep showing the spinner rather than reverting
   // to the Update button as if nothing happened.
   if (input.result || input.isPending) {
-    return { kind: "loading", text: "Updating…" };
+    return { kind: "loading", text: i18next.t("Updating…") };
   }
   return { kind: "idle", text: environmentProviderNames(input.group) };
 }

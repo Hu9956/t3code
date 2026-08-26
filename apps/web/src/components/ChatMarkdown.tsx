@@ -134,6 +134,7 @@ import {
   openUrlInPreview,
   BrowserPreviewUnavailableError,
 } from "../browser/openFileInPreview";
+import i18next from "i18next";
 
 interface ChatMarkdownProps {
   text: string;
@@ -311,31 +312,31 @@ const GITHUB_ALERT_PRESENTATIONS: Record<
   { label: string; Icon: typeof InfoIcon; borderClassName: string; titleClassName: string }
 > = {
   note: {
-    label: "Note",
+    label: i18next.t("Note"),
     Icon: InfoIcon,
     borderClassName: "border-blue-500/70",
     titleClassName: "text-blue-600 dark:text-blue-400",
   },
   tip: {
-    label: "Tip",
+    label: i18next.t("Tip"),
     Icon: LightbulbIcon,
     borderClassName: "border-emerald-500/70",
     titleClassName: "text-emerald-600 dark:text-emerald-400",
   },
   important: {
-    label: "Important",
+    label: i18next.t("Important"),
     Icon: MessageSquareWarningIcon,
     borderClassName: "border-purple-500/70",
     titleClassName: "text-purple-600 dark:text-purple-400",
   },
   warning: {
-    label: "Warning",
+    label: i18next.t("Warning"),
     Icon: TriangleAlertIcon,
     borderClassName: "border-amber-500/70",
     titleClassName: "text-amber-600 dark:text-amber-500",
   },
   caution: {
-    label: "Caution",
+    label: i18next.t("Caution"),
     Icon: OctagonAlertIcon,
     borderClassName: "border-red-500/70",
     titleClassName: "text-red-600 dark:text-red-400",
@@ -619,8 +620,10 @@ function MarkdownTable({ children, ...props }: React.ComponentProps<"table">) {
             <TooltipPopup side="top">{copyLabel}</TooltipPopup>
           </Tooltip>
           <MenuPopup align="end">
-            <MenuItem onClick={() => handleCopy("markdown")}>Copy as Markdown</MenuItem>
-            <MenuItem onClick={() => handleCopy("csv")}>Copy as CSV</MenuItem>
+            <MenuItem onClick={() => handleCopy("markdown")}>
+              {i18next.t("Copy as Markdown")}
+            </MenuItem>
+            <MenuItem onClick={() => handleCopy("csv")}>{i18next.t("Copy as CSV")}</MenuItem>
           </MenuPopup>
         </Menu>
       </div>
@@ -783,7 +786,11 @@ function MarkdownCodeBlock({
             theme={theme}
           />
         </span>
-        <span className="flex items-center gap-0.5" role="toolbar" aria-label="Code block actions">
+        <span
+          className="flex items-center gap-0.5"
+          role="toolbar"
+          aria-label={i18next.t("Code block actions")}
+        >
           <Tooltip>
             <TooltipTrigger
               render={
@@ -1084,7 +1091,7 @@ const ChatMarkdownWorkspaceImage = memo(function ChatMarkdownWorkspaceImage(prop
     return (
       <span
         role="status"
-        aria-label="Loading image"
+        aria-label={i18next.t("Loading image")}
         className="my-1 block aspect-video w-full max-w-[30rem] rounded-lg bg-muted/60"
       />
     );
@@ -1302,7 +1309,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to open file",
+            title: i18next.t("Unable to open file"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1314,7 +1321,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to open file",
+            title: i18next.t("Unable to open file"),
             description: cause instanceof Error ? cause.message : "An error occurred.",
           }),
         );
@@ -1348,7 +1355,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to open file in browser",
+            title: i18next.t("Unable to open file in browser"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1360,7 +1367,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to open file in browser",
+            title: i18next.t("Unable to open file in browser"),
             description: cause instanceof Error ? cause.message : "An error occurred.",
           }),
         );
@@ -1386,7 +1393,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to reveal file",
+            title: i18next.t("Unable to reveal file"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1398,7 +1405,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to reveal file",
+            title: i18next.t("Unable to reveal file"),
             description: cause instanceof Error ? cause.message : "An error occurred.",
           }),
         );
@@ -1413,7 +1420,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           stackedThreadToast({
             type: "error",
             title: `Failed to copy ${title.toLowerCase()}`,
-            description: "Clipboard API unavailable.",
+            description: i18next.t("Clipboard API unavailable."),
           }),
         );
         return;
@@ -1455,11 +1462,13 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           [
             ...(onOpen ? ([{ id: "open", label: openInEditorMenuLabel }] as const) : []),
             ...(onOpenInBrowser
-              ? ([{ id: "open-in-browser", label: "Open in integrated browser" }] as const)
+              ? ([
+                  { id: "open-in-browser", label: i18next.t("Open in integrated browser") },
+                ] as const)
               : []),
             ...(onReveal && revealLabel ? ([{ id: "reveal", label: revealLabel }] as const) : []),
-            { id: "copy-relative", label: "Copy relative path" },
-            { id: "copy-full", label: "Copy full path" },
+            { id: "copy-relative", label: i18next.t("Copy relative path") },
+            { id: "copy-full", label: i18next.t("Copy full path") },
           ] as const,
           position,
         );
@@ -1798,7 +1807,7 @@ function ChatMarkdown({
           AsyncResult.failure<void, BrowserPreviewUnavailableError>(
             Cause.fail(
               new BrowserPreviewUnavailableError({
-                message: "Thread context is unavailable.",
+                message: i18next.t("Thread context is unavailable."),
               }),
             ),
           ),
@@ -1818,7 +1827,7 @@ function ChatMarkdown({
           AsyncResult.failure<void, BrowserPreviewUnavailableError>(
             Cause.fail(
               new BrowserPreviewUnavailableError({
-                message: "Environment is not connected.",
+                message: i18next.t("Environment is not connected."),
               }),
             ),
           ),
@@ -2002,7 +2011,7 @@ function ChatMarkdown({
             {...props}
             type="checkbox"
             name="markdown-task"
-            aria-label="Toggle task"
+            aria-label={i18next.t("Toggle task")}
             checked={checked}
             onChange={(event) => {
               const markerOffset = Number(

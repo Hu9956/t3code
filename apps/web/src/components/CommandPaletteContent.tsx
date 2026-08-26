@@ -51,22 +51,22 @@ export function CommandPaletteContent({
               <Kbd>
                 <ArrowDownIcon />
               </Kbd>
-              <span>Navigate</span>
+              <span>{i18next.t("Navigate")}</span>
             </KbdGroup>
             {footerActionLabel !== undefined ? (
               <KbdGroup className="items-center gap-1.5">
-                <Kbd>Enter</Kbd>
+                <Kbd>{i18next.t("Enter")}</Kbd>
                 <span>{footerActionLabel}</span>
               </KbdGroup>
             ) : null}
             {showBackHint ? (
               <KbdGroup className="items-center gap-1.5">
-                <Kbd>Backspace</Kbd>
+                <Kbd>{i18next.t("Backspace")}</Kbd>
                 <span>{i18next.t("Back")}</span>
               </KbdGroup>
             ) : null}
             <KbdGroup className="items-center gap-1.5">
-              <Kbd>Esc</Kbd>
+              <Kbd>{i18next.t("Esc")}</Kbd>
               <span>{escapeLabel}</span>
             </KbdGroup>
           </div>

@@ -91,8 +91,8 @@ export function PullRequestSearchInput({
         type="search"
         value={value}
         onChange={(event) => onChange(event.currentTarget.value)}
-        placeholder="Search pull requests, or label:bug"
-        aria-label="Search pull requests"
+        placeholder={i18next.t("Search pull requests, or label:bug")}
+        aria-label={i18next.t("Search pull requests")}
       />
     </InputGroup>
   );
@@ -121,21 +121,21 @@ export const pullRequestProjectKey = (project: {
 }) => JSON.stringify([project.environmentId, project.id]);
 
 const DRAFT_OPTIONS = [
-  { value: UNFILTERED_VALUE, label: "All", Icon: LayersIcon },
-  { value: "only", label: "Drafts only", Icon: GitPullRequestDraftIcon },
+  { value: UNFILTERED_VALUE, label: i18next.t("All"), Icon: LayersIcon },
+  { value: "only", label: i18next.t("Drafts only"), Icon: GitPullRequestDraftIcon },
   { value: "hide", label: i18next.t("Hide drafts"), Icon: EyeOffIcon },
 ] as const satisfies ReadonlyArray<PullRequestFilterOption<string>>;
 
 const REVIEW_OPTIONS = [
-  { value: UNFILTERED_VALUE, label: "All", Icon: LayersIcon },
-  { value: "approved", label: "Approved", Icon: CircleCheckIcon },
-  { value: "changes-requested", label: "Changes requested", Icon: CircleXIcon },
-  { value: "review-required", label: "Review required", Icon: CircleDashedIcon },
+  { value: UNFILTERED_VALUE, label: i18next.t("All"), Icon: LayersIcon },
+  { value: "approved", label: i18next.t("Approved"), Icon: CircleCheckIcon },
+  { value: "changes-requested", label: i18next.t("Changes requested"), Icon: CircleXIcon },
+  { value: "review-required", label: i18next.t("Review required"), Icon: CircleDashedIcon },
   { value: "none", label: i18next.t("No reviews"), Icon: CircleSlashIcon },
 ] as const satisfies ReadonlyArray<PullRequestFilterOption<string>>;
 
 const CHECKS_OPTIONS = [
-  { value: UNFILTERED_VALUE, label: "All", Icon: LayersIcon },
+  { value: UNFILTERED_VALUE, label: i18next.t("All"), Icon: LayersIcon },
   { value: "passing", label: i18next.t("Passing"), Icon: CircleCheckIcon },
   { value: "failing", label: i18next.t("Failing"), Icon: CircleXIcon },
 ] as const satisfies ReadonlyArray<PullRequestFilterOption<string>>;
@@ -294,7 +294,7 @@ export function PullRequestFiltersMenu({
       </MenuTrigger>
       <MenuPopup align="end" side="bottom" className="min-w-56">
         <PullRequestFilterRadioGroup
-          label="State"
+          label={i18next.t("State")}
           value={state}
           options={stateOptions}
           onChange={onState}
@@ -308,21 +308,21 @@ export function PullRequestFiltersMenu({
         />
         <MenuSeparator />
         <PullRequestFilterRadioGroup
-          label="Draft"
+          label={i18next.t("Draft")}
           value={filters.draft ?? UNFILTERED_VALUE}
           options={DRAFT_OPTIONS}
           onChange={(next) => onFilters(withFilter("draft", next))}
         />
         <MenuSeparator />
         <PullRequestFilterRadioGroup
-          label="Review"
+          label={i18next.t("Review")}
           value={filters.review ?? UNFILTERED_VALUE}
           options={REVIEW_OPTIONS}
           onChange={(next) => onFilters(withFilter("review", next))}
         />
         <MenuSeparator />
         <PullRequestFilterRadioGroup
-          label="Checks"
+          label={i18next.t("Checks")}
           value={filters.checks ?? UNFILTERED_VALUE}
           options={CHECKS_OPTIONS}
           onChange={(next) => onFilters(withFilter("checks", next))}
@@ -331,7 +331,7 @@ export function PullRequestFiltersMenu({
           <>
             <MenuSeparator />
             <PullRequestFilterRadioGroup
-              label="Host"
+              label={i18next.t("Host")}
               value={host ?? ALL_HOSTS_VALUE}
               options={hostOptions}
               onChange={(next) => onHost(next === ALL_HOSTS_VALUE ? undefined : next)}
@@ -342,7 +342,7 @@ export function PullRequestFiltersMenu({
           <>
             <MenuSeparator />
             <PullRequestFilterRadioGroup
-              label="Server"
+              label={i18next.t("Server")}
               value={server ?? ALL_SERVERS_VALUE}
               options={serverOptions}
               onChange={(next) =>
@@ -374,11 +374,11 @@ export function PullRequestFiltersMenu({
             }
           }}
         >
-          <MenuGroupLabel>Project</MenuGroupLabel>
+          <MenuGroupLabel>{i18next.t("Project")}</MenuGroupLabel>
           <MenuRadioItem value={ALL_PROJECTS_VALUE}>
             <span className="flex min-w-0 items-center gap-2">
               <LayersIcon aria-hidden className="size-3.5" />
-              All projects
+              {i18next.t("All projects")}
             </span>
           </MenuRadioItem>
           {/* The ones that can be chosen first: a list that opens with three disabled rows reads
@@ -408,7 +408,7 @@ export function PullRequestFiltersMenu({
                     <span className="min-w-0 flex-1 truncate">{project.title}</span>
                     {reason === undefined ? null : (
                       <span className="shrink-0 rounded-full border border-amber-500/40 bg-amber-500/10 px-1.5 py-px text-[10px] font-medium text-amber-600 dark:text-amber-400/90">
-                        Unavailable
+                        {i18next.t("Unavailable")}
                       </span>
                     )}
                   </span>

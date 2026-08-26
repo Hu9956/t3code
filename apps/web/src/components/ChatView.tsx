@@ -1948,7 +1948,7 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not reconnect environment",
+            title: i18next.t("Could not reconnect environment"),
             description: error instanceof Error ? error.message : "Failed to reconnect.",
           }),
         );
@@ -2212,7 +2212,7 @@ function ChatViewContent(props: ChatViewProps) {
                 variant="outline"
                 onClick={() => void navigate({ to: "/settings/connections" })}
               >
-                Connections
+                {i18next.t("Connections")}
               </Button>
             </>
           ),
@@ -2250,7 +2250,7 @@ function ChatViewContent(props: ChatViewProps) {
               <TooltipTrigger
                 render={
                   <button type="button" className="cursor-help rounded-sm text-left">
-                    Server update available
+                    {i18next.t("Server update available")}
                   </button>
                 }
               />
@@ -2285,7 +2285,7 @@ function ChatViewContent(props: ChatViewProps) {
         ...(updateInProgress || updateFailed || !versionMismatchDismissKey
           ? {}
           : {
-              dismissLabel: "Dismiss update notice",
+              dismissLabel: i18next.t("Dismiss update notice"),
               onDismiss: () => {
                 dismissVersionMismatch(versionMismatchDismissKey);
                 setDismissedVersionMismatchKey(versionMismatchDismissKey);
@@ -3400,7 +3400,7 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not delete action",
+            title: i18next.t("Could not delete action"),
             description: error instanceof Error ? error.message : "An unexpected error occurred.",
           }),
         );
@@ -3799,7 +3799,7 @@ function ChatViewContent(props: ChatViewProps) {
         stackedThreadToast({
           type: "error",
           title: i18next.t("Failed to copy path"),
-          description: "Clipboard API unavailable.",
+          description: i18next.t("Clipboard API unavailable."),
         }),
       );
       return;
@@ -4642,7 +4642,7 @@ function ChatViewContent(props: ChatViewProps) {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Checkout switched, but the thread could not be updated",
+              title: i18next.t("Checkout switched, but the thread could not be updated"),
               description: chatActionErrorMessage(squashAtomCommandFailure(updateResult)),
             }),
           );
@@ -4755,9 +4755,11 @@ function ChatViewContent(props: ChatViewProps) {
       id: `thread-woke:${activeThread?.id ?? "unknown"}`,
       variant: "info",
       icon: <AlarmClockIcon />,
-      title: "This thread woke from snooze",
-      description: "Dismiss to clear the Woke indicator, or send a message to keep going.",
-      dismissLabel: "Dismiss Woke notification",
+      title: i18next.t("This thread woke from snooze"),
+      description: i18next.t(
+        "Dismiss to clear the Woke indicator, or send a message to keep going.",
+      ),
+      dismissLabel: i18next.t("Dismiss Woke notification"),
       onDismiss: acknowledgeActiveThreadWoke,
     };
   }, [acknowledgeActiveThreadWoke, activeThread?.id, activeThreadWokeVisible]);
@@ -4875,14 +4877,14 @@ function ChatViewContent(props: ChatViewProps) {
           composerRef.current?.compactContext();
         }}
       >
-        Compact
+        {i18next.t("Compact")}
       </Button>
     );
     return {
       id: `resume-compaction:${resumeCompactionKey}`,
       variant: "info",
       icon: <Minimize2Icon />,
-      title: "Resume with less context",
+      title: i18next.t("Resume with less context"),
       description: `${formatContextWindowTokens(activeContextWindow.usedTokens)} tokens from an older session`,
       actions: compactDisabledReason ? (
         <Tooltip>
@@ -4950,7 +4952,9 @@ function ChatViewContent(props: ChatViewProps) {
         icon: <GitBranchIcon />,
         title: (
           <span className="flex min-w-0 items-baseline gap-1.5">
-            <span className="shrink-0 font-normal text-muted-foreground">Branch changed — was</span>
+            <span className="shrink-0 font-normal text-muted-foreground">
+              {i18next.t("Branch changed — was")}
+            </span>
             <Tooltip>
               <TooltipTrigger
                 render={
@@ -4960,8 +4964,9 @@ function ChatViewContent(props: ChatViewProps) {
                 }
               />
               <TooltipPopup side="top" className="max-w-80">
-                This thread last ran on {localCheckoutBranchMismatch.threadBranch}. Sending will
-                continue on {localCheckoutBranchMismatch.currentBranch}.
+                {i18next.t("This thread last ran on")}
+                {localCheckoutBranchMismatch.threadBranch}. Sending will continue on{" "}
+                {localCheckoutBranchMismatch.currentBranch}.
               </TooltipPopup>
             </Tooltip>
           </span>
@@ -4977,7 +4982,7 @@ function ChatViewContent(props: ChatViewProps) {
             {isRestoringThreadBranch ? "Restoring..." : "Restore branch"}
           </Button>
         ),
-        dismissLabel: "Dismiss branch change notice",
+        dismissLabel: i18next.t("Dismiss branch change notice"),
         onDismiss: () => {
           dismissBranchMismatchForSession(activeBranchMismatchKey);
           setBranchMismatchDismissTick((tick) => tick + 1);
@@ -5342,8 +5347,10 @@ function ChatViewContent(props: ChatViewProps) {
       toastManager.add(
         stackedThreadToast({
           type: "info",
-          title: "Annotation attached to draft",
-          description: "Sending is unavailable right now. Finish the current action, then send.",
+          title: i18next.t("Annotation attached to draft"),
+          description: i18next.t(
+            "Sending is unavailable right now. Finish the current action, then send.",
+          ),
         }),
       );
     };
@@ -5363,7 +5370,9 @@ function ChatViewContent(props: ChatViewProps) {
         stackedThreadToast({
           type: "warning",
           title: i18next.t("Not connected: message not sent"),
-          description: "Reconnecting to the environment. Try again once it is connected.",
+          description: i18next.t(
+            "Reconnecting to the environment. Try again once it is connected.",
+          ),
         }),
       );
       return;
@@ -5442,8 +5451,8 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "warning",
-            title: "Start a Codex thread first",
-            description: "Send a message before you submit feedback.",
+            title: i18next.t("Start a Codex thread first"),
+            description: i18next.t("Send a message before you submit feedback."),
           }),
         );
         return;
@@ -5489,7 +5498,7 @@ function ChatViewContent(props: ChatViewProps) {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not send feedback to OpenAI",
+              title: i18next.t("Could not send feedback to OpenAI"),
               description: chatActionErrorMessage(squashAtomCommandFailure(result)),
             }),
           );
@@ -5511,7 +5520,7 @@ function ChatViewContent(props: ChatViewProps) {
                   toastManager.add(
                     stackedThreadToast({
                       type: "error",
-                      title: "Could not copy thread ID",
+                      title: i18next.t("Could not copy thread ID"),
                       description: chatActionErrorMessage(error),
                     }),
                   );
@@ -5585,8 +5594,8 @@ function ChatViewContent(props: ChatViewProps) {
       toastManager.add(
         stackedThreadToast({
           type: "warning",
-          title: "Choose a project first",
-          description: "This draft no longer points to an available project.",
+          title: i18next.t("Choose a project first"),
+          description: i18next.t("This draft no longer points to an available project."),
         }),
       );
       return;
@@ -5902,7 +5911,7 @@ function ChatViewContent(props: ChatViewProps) {
               toastManager.add(
                 stackedThreadToast({
                   type: "success",
-                  title: "Started in background",
+                  title: i18next.t("Started in background"),
                   timeout: 5_000,
                   actionProps: {
                     children: i18next.t("Open"),
@@ -5924,7 +5933,7 @@ function ChatViewContent(props: ChatViewProps) {
             toastManager.add(
               stackedThreadToast({
                 type: "warning",
-                title: "Task started in the background",
+                title: i18next.t("Task started in the background"),
                 description:
                   error instanceof Error
                     ? `Could not open a fresh composer: ${error.message}`
@@ -6464,7 +6473,7 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not start implementation thread",
+            title: i18next.t("Could not start implementation thread"),
             description:
               error instanceof Error
                 ? error.message
@@ -6746,8 +6755,8 @@ function ChatViewContent(props: ChatViewProps) {
       <PullRequestDetailGhost />
     ) : activeRightPanelSurface?.kind === "pull-request" && !supportsPullRequests ? (
       <PullRequestsUnavailableState
-        title="Pull requests unavailable"
-        error="Update this environment's T3 Code server to browse pull requests."
+        title={i18next.t("Pull requests unavailable")}
+        error={i18next.t("Update this environment's T3 Code server to browse pull requests.")}
       />
     ) : activeRightPanelSurface?.kind === "pull-request" ? (
       // No onClose: the surface tab's own X owns closing here, and a second X in the header
@@ -6897,7 +6906,7 @@ function ChatViewContent(props: ChatViewProps) {
                   className="flex items-center gap-2 rounded-full border border-primary/25 bg-background/95 px-4 py-2.5 text-sm font-medium text-foreground shadow-lg"
                 >
                   <PaperclipIcon className="size-4 text-primary" aria-hidden="true" />
-                  Drop files to attach
+                  {i18next.t("Drop files to attach")}
                 </div>
               </div>
             ) : null}
@@ -6953,14 +6962,14 @@ function ChatViewContent(props: ChatViewProps) {
                   style={{ bottom: composerOverlayHeight + 4 }}
                 >
                   <Button
-                    aria-label="Scroll to end"
+                    aria-label={i18next.t("Scroll to end")}
                     onClick={() => scrollToEnd(true)}
                     className="pointer-events-auto gap-1.5 rounded-full px-3 text-muted-foreground hover:text-foreground"
                     size="xs"
                     variant="glass"
                   >
                     <ChevronDownIcon className="size-3.5" />
-                    Scroll to end
+                    {i18next.t("Scroll to end")}
                   </Button>
                 </div>
               )}
@@ -7171,19 +7180,22 @@ function ChatViewContent(props: ChatViewProps) {
               <AlertDialogPopup>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Switch to{" "}
+                    {i18next.t("Switch to")}{" "}
                     <code className="font-medium">
                       {localCheckoutBranchMismatch?.threadBranch ?? ""}
                     </code>
                     ?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    You have uncommitted changes. They'll carry over to the other branch, or block
-                    the switch if they conflict.
+                    {i18next.t(
+                      "You have uncommitted changes. They'll carry over to the other branch, or block\n                    the switch if they conflict.",
+                    )}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogClose render={<Button variant="outline" />}>Cancel</AlertDialogClose>
+                  <AlertDialogClose render={<Button variant="outline" />}>
+                    {i18next.t("Cancel")}
+                  </AlertDialogClose>
                   <Button
                     variant="default"
                     onClick={() => {
@@ -7191,7 +7203,7 @@ function ChatViewContent(props: ChatViewProps) {
                       void handleSwitchCheckoutToThread();
                     }}
                   >
-                    Switch branch
+                    {i18next.t("Switch branch")}
                   </Button>
                 </AlertDialogFooter>
               </AlertDialogPopup>

@@ -3,6 +3,7 @@ import { memo } from "react";
 
 import { cn } from "~/lib/utils";
 import { Button } from "../ui/button";
+import i18next from "i18next";
 
 /**
  * Bookmark control that shows the stash count and opens the stash menu. It
@@ -80,7 +81,7 @@ export const ComposerStashBadge = memo(function ComposerStashBadge(props: {
       onClick={props.onToggleMenu}
     >
       <BookmarkIcon className="size-3 shrink-0" aria-hidden="true" />
-      Stash
+      {i18next.t("Stash")}
       {count}
     </button>
   );

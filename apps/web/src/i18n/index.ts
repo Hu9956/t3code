@@ -9,7 +9,7 @@ import zhCN from "./locales/zh-CN.json";
  */
 export const SUPPORTED_LANGUAGES = [
   { code: "zh-CN", label: "简体中文" },
-  { code: "en", label: "English" },
+  { code: "en", label: i18next.t("English") },
 ] as const;
 
 function detectInitialLanguage(): string {

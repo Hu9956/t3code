@@ -60,6 +60,7 @@ import {
   useActiveBrowserRecordingTabIds,
 } from "~/browser/browserRecording";
 import { stackedThreadToast, toastManager } from "~/components/ui/toast";
+import i18next from "i18next";
 
 interface Props {
   threadRef: ScopedThreadRef;
@@ -231,7 +232,7 @@ export function PreviewView({
         const error = squashAtomCommandFailure(result);
         toastManager.add({
           type: "error",
-          title: "Unable to resize browser viewport",
+          title: i18next.t("Unable to resize browser viewport"),
           description: error instanceof Error ? error.message : "An error occurred.",
         });
         throw error;
@@ -294,7 +295,7 @@ export function PreviewView({
     void operation(runtimeTabId).catch((error) => {
       toastManager.add({
         type: "error",
-        title: "Unable to update popped-out preview",
+        title: i18next.t("Unable to update popped-out preview"),
         description: error instanceof Error ? error.message : "An error occurred.",
       });
     });
@@ -317,8 +318,8 @@ export function PreviewView({
                   toastId,
                   stackedThreadToast({
                     type: "error",
-                    title: "Unable to copy recording path",
-                    description: "Clipboard API unavailable.",
+                    title: i18next.t("Unable to copy recording path"),
+                    description: i18next.t("Clipboard API unavailable."),
                     actionProps: revealAction,
                   }),
                 );
@@ -339,7 +340,7 @@ export function PreviewView({
                     toastId,
                     stackedThreadToast({
                       type: "error",
-                      title: "Unable to copy recording path",
+                      title: i18next.t("Unable to copy recording path"),
                       description: error instanceof Error ? error.message : "An error occurred.",
                       actionProps: revealAction,
                     }),
@@ -357,7 +358,7 @@ export function PreviewView({
                 toastId,
                 stackedThreadToast({
                   type: "success",
-                  title: "Recording saved",
+                  title: i18next.t("Recording saved"),
                   actionProps: revealAction,
                   data: {
                     secondaryActionProps: {
@@ -374,7 +375,7 @@ export function PreviewView({
             toastId = toastManager.add(
               stackedThreadToast({
                 type: "success",
-                title: "Recording saved",
+                title: i18next.t("Recording saved"),
                 actionProps: revealAction,
                 data: {
                   secondaryActionProps: {
@@ -389,7 +390,7 @@ export function PreviewView({
           (error) => {
             toastManager.add({
               type: "error",
-              title: "Unable to stop recording",
+              title: i18next.t("Unable to stop recording"),
               description: error instanceof Error ? error.message : "An error occurred.",
             });
           },
@@ -400,7 +401,7 @@ export function PreviewView({
         void startBrowserRecording(runtimeTabId, threadRef, tabId).catch((error) => {
           toastManager.add({
             type: "error",
-            title: "Unable to start recording",
+            title: i18next.t("Unable to start recording"),
             description: error instanceof Error ? error.message : "An error occurred.",
           });
         });
@@ -504,7 +505,7 @@ export function PreviewView({
           toastId = toastManager.add(
             stackedThreadToast({
               type: "success",
-              title: "Screenshot saved",
+              title: i18next.t("Screenshot saved"),
               actionProps: {
                 children: "Copy image",
                 onClick: copyImage,
@@ -530,7 +531,7 @@ export function PreviewView({
         (error) => {
           toastManager.add({
             type: "error",
-            title: "Unable to capture screenshot",
+            title: i18next.t("Unable to capture screenshot"),
             description: error instanceof Error ? error.message : "An error occurred.",
           });
         },

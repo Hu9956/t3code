@@ -37,9 +37,9 @@ import i18next from "i18next";
 
 const WINDOW_OPTIONS = [
   { days: 1, label: i18next.t("Past 24h") },
-  { days: 7, label: "7 days" },
-  { days: 30, label: "30 days" },
-  { days: 90, label: "90 days" },
+  { days: 7, label: i18next.t("7 days") },
+  { days: 30, label: i18next.t("30 days") },
+  { days: 90, label: i18next.t("90 days") },
 ] as const;
 
 export function UsagePage() {
@@ -112,9 +112,9 @@ export function UsagePage() {
       : `${formatDayShort(window.sinceDay)} to ${formatDayShort(window.untilDay)}`;
   const topbarContent = (
     <div className="flex w-full min-w-0 items-center gap-3">
-      <WorkspaceBreadcrumb ariaLabel="Usage breadcrumb" className="min-w-0">
+      <WorkspaceBreadcrumb ariaLabel={i18next.t("Usage breadcrumb")} className="min-w-0">
         <WorkspaceBreadcrumbItem current>
-          <h1>Usage</h1>
+          <h1>{i18next.t("Usage")}</h1>
         </WorkspaceBreadcrumbItem>
         <WorkspaceBreadcrumbSeparator className="hidden md:flex" />
         <WorkspaceBreadcrumbItem className="hidden min-w-0 shrink md:flex">
@@ -123,7 +123,7 @@ export function UsagePage() {
       </WorkspaceBreadcrumb>
       <div className="ms-auto hidden min-w-0 items-center justify-end gap-2 lg:flex">
         <ToggleGroup
-          aria-label="Usage metric"
+          aria-label={i18next.t("Usage metric")}
           variant="segmented"
           value={[metric]}
           onValueChange={(next) => {
@@ -138,7 +138,7 @@ export function UsagePage() {
           ))}
         </ToggleGroup>
         <ToggleGroup
-          aria-label="Usage period"
+          aria-label={i18next.t("Usage period")}
           variant="segmented"
           value={[String(windowDays)]}
           onValueChange={(next) => {
@@ -152,7 +152,12 @@ export function UsagePage() {
             </Toggle>
           ))}
         </ToggleGroup>
-        <Button onClick={refreshWindow} aria-label="Refresh usage" size="icon-sm" variant="ghost">
+        <Button
+          onClick={refreshWindow}
+          aria-label={i18next.t("Refresh usage")}
+          size="icon-sm"
+          variant="ghost"
+        >
           <RefreshCwIcon className="size-3.5" />
         </Button>
       </div>
@@ -164,7 +169,7 @@ export function UsagePage() {
           }}
         >
           <SelectTrigger
-            aria-label="Usage metric"
+            aria-label={i18next.t("Usage metric")}
             size="compact"
             variant="ghost"
             className="w-auto min-w-0"
@@ -172,13 +177,13 @@ export function UsagePage() {
             <SelectValue>{metric === "cost" ? "Cost" : "Tokens"}</SelectValue>
           </SelectTrigger>
           <SelectPopup align="end" alignItemWithTrigger={false}>
-            <SelectItem value="cost">Cost</SelectItem>
-            <SelectItem value="tokens">Tokens</SelectItem>
+            <SelectItem value="cost">{i18next.t("Cost")}</SelectItem>
+            <SelectItem value="tokens">{i18next.t("Tokens")}</SelectItem>
           </SelectPopup>
         </Select>
         <Select value={String(windowDays)} onValueChange={(value) => selectWindow(Number(value))}>
           <SelectTrigger
-            aria-label="Usage period"
+            aria-label={i18next.t("Usage period")}
             size="compact"
             variant="ghost"
             className="w-auto min-w-0"
@@ -195,7 +200,12 @@ export function UsagePage() {
             ))}
           </SelectPopup>
         </Select>
-        <Button onClick={refreshWindow} aria-label="Refresh usage" size="icon-sm" variant="ghost">
+        <Button
+          onClick={refreshWindow}
+          aria-label={i18next.t("Refresh usage")}
+          size="icon-sm"
+          variant="ghost"
+        >
           <RefreshCwIcon className="size-3.5" />
         </Button>
       </div>
@@ -302,20 +312,23 @@ export function UsagePage() {
                 </section>
 
                 <section className="flex flex-col gap-2">
-                  <h2 className="text-sm font-medium text-foreground">Totals</h2>
+                  <h2 className="text-sm font-medium text-foreground">{i18next.t("Totals")}</h2>
                   <div className="grid grid-cols-2 gap-x-6 gap-y-4 py-1 md:grid-cols-5">
                     <Metric
                       label={i18next.t("Processed tokens")}
                       value={formatTokens(merged.totalTokens)}
                     />
-                    <Metric label="Cached input" value={formatTokens(merged.cachedInputTokens)} />
                     <Metric
-                      label="Uncached input"
+                      label={i18next.t("Cached input")}
+                      value={formatTokens(merged.cachedInputTokens)}
+                    />
+                    <Metric
+                      label={i18next.t("Uncached input")}
                       value={formatTokens(merged.uncachedInputTokens)}
                     />
                     <Metric label={i18next.t("Output")} value={formatTokens(merged.outputTokens)} />
                     <Metric
-                      label="Cache savings"
+                      label={i18next.t("Cache savings")}
                       value={formatUsd(merged.costQuality.cacheSavingsUsd)}
                     />
                   </div>
@@ -323,9 +336,11 @@ export function UsagePage() {
 
                 <section className="flex flex-col gap-3">
                   <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-sm font-medium text-foreground">Breakdown</h2>
+                    <h2 className="text-sm font-medium text-foreground">
+                      {i18next.t("Breakdown")}
+                    </h2>
                     <ToggleGroup
-                      aria-label="Usage breakdown"
+                      aria-label={i18next.t("Usage breakdown")}
                       variant="segmented"
                       value={[breakdown]}
                       onValueChange={(next) => {
@@ -335,7 +350,7 @@ export function UsagePage() {
                     >
                       {(
                         [
-                          { value: "model", label: "Model" },
+                          { value: "model", label: i18next.t("Model") },
                           { value: "time", label: isPast24Hours ? "Hour" : "Day" },
                         ] as const
                       ).map((option) => (
@@ -356,17 +371,17 @@ export function UsagePage() {
                       </colgroup>
                       <thead>
                         <tr className="border-b border-border text-left text-xs text-muted-foreground">
-                          <th className="py-2 font-normal">Model</th>
-                          <th className="py-2 text-right font-normal">Cost</th>
-                          <th className="py-2 text-right font-normal">Share</th>
-                          <th className="py-2 text-right font-normal">Tokens</th>
+                          <th className="py-2 font-normal">{i18next.t("Model")}</th>
+                          <th className="py-2 text-right font-normal">{i18next.t("Cost")}</th>
+                          <th className="py-2 text-right font-normal">{i18next.t("Share")}</th>
+                          <th className="py-2 text-right font-normal">{i18next.t("Tokens")}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {breakdownModels.length === 0 ? (
                           <tr>
                             <td colSpan={4} className="py-6 text-center text-muted-foreground">
-                              No activity in this window.
+                              {i18next.t("No activity in this window.")}
                             </td>
                           </tr>
                         ) : (
@@ -413,8 +428,8 @@ export function UsagePage() {
                               {PROVIDER_PRESENTATION[provider].label}
                             </th>
                           ))}
-                          <th className="py-2 text-right font-normal">Total</th>
-                          <th className="py-2 text-right font-normal">Tokens</th>
+                          <th className="py-2 text-right font-normal">{i18next.t("Total")}</th>
+                          <th className="py-2 text-right font-normal">{i18next.t("Tokens")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -424,7 +439,7 @@ export function UsagePage() {
                               colSpan={activeProviders.length + 3}
                               className="py-6 text-center text-muted-foreground"
                             >
-                              No activity in this window.
+                              {i18next.t("No activity in this window.")}
                             </td>
                           </tr>
                         ) : (
@@ -515,16 +530,19 @@ function UsageCoverageNotice({
   return (
     <div className="flex flex-col gap-1 border border-border px-3 py-2 text-xs text-muted-foreground">
       {failed.map((environment) => (
-        <span key={environment.label}>{environment.label} could not report usage.</span>
+        <span key={environment.label}>
+          {environment.label} {i18next.t("could not report usage.")}
+        </span>
       ))}
       {stale.map((environment) => (
         <span key={environment.label}>
-          {environment.label} runs an older server version and is excluded from totals.
+          {environment.label}{" "}
+          {i18next.t("runs an older server version and is excluded from totals.")}
         </span>
       ))}
       {duplicateSources.length > 0 ? (
         <span>
-          Counted once across environments sharing a transcript directory:{" "}
+          {i18next.t("Counted once across environments sharing a transcript directory:")}{" "}
           {duplicateSources.join(", ")}
         </span>
       ) : null}
@@ -626,7 +644,7 @@ function UsageSkeleton() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-sm font-medium text-foreground">Totals</h2>
+        <h2 className="text-sm font-medium text-foreground">{i18next.t("Totals")}</h2>
         <div className="grid grid-cols-2 gap-x-6 gap-y-4 py-1 md:grid-cols-5">
           {["Processed tokens", "Cached input", "Uncached input", "Output", "Cache savings"].map(
             (label) => (
@@ -641,7 +659,7 @@ function UsageSkeleton() {
 
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-medium text-foreground">Breakdown</h2>
+          <h2 className="text-sm font-medium text-foreground">{i18next.t("Breakdown")}</h2>
           <div className="h-7 w-28 rounded-lg bg-input/40" />
         </div>
         <div className="h-44 rounded-sm bg-muted/35" />

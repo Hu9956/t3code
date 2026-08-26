@@ -33,13 +33,15 @@ const MODE_OPTIONS: Record<SourceControlWritingStyleMode, { label: string; descr
     },
     conventional_commits: {
       label: i18next.t("Conventional Commits"),
-      description:
+      description: i18next.t(
         "Uses Conventional Commit prefixes for change descriptions; change request titles and descriptions stay concise.",
+      ),
     },
     custom: {
       label: i18next.t("Custom instructions"),
-      description:
+      description: i18next.t(
         "Applies your instructions to change descriptions and change request titles and descriptions in every project.",
+      ),
     },
   };
 
@@ -146,7 +148,9 @@ export function SourceControlWritingSettingsSection() {
 
       <SettingsRow
         title={i18next.t("Follow change request templates")}
-        description="Structures change request descriptions using the current repository's template when one is available."
+        description={i18next.t(
+          "Structures change request descriptions using the current repository's template when one is available.",
+        )}
         resetAction={
           style.followChangeRequestTemplates !== defaults.followChangeRequestTemplates ? (
             <SettingResetButton
@@ -178,7 +182,9 @@ export function SourceControlWritingSettingsSection() {
 
       <SettingsRow
         title={i18next.t("Source control writer model")}
-        description="Optional model override for change descriptions, change request titles and descriptions, and branch or bookmark names. Off uses the global text generation model."
+        description={i18next.t(
+          "Optional model override for change descriptions, change request titles and descriptions, and branch or bookmark names. Off uses the global text generation model.",
+        )}
         control={
           <div className="flex flex-wrap items-center justify-end gap-2">
             {usesDedicatedModel ? (
@@ -189,7 +195,9 @@ export function SourceControlWritingSettingsSection() {
                 instanceEntries={instanceEntries}
                 modelOptionsByInstance={modelOptionsByInstance}
                 triggerVariant="outline"
-                triggerClassName="min-w-0 max-w-none shrink-0 text-foreground/90 hover:text-foreground"
+                triggerClassName={i18next.t(
+                  "min-w-0 max-w-none shrink-0 text-foreground/90 hover:text-foreground",
+                )}
                 triggerAriaLabel={i18next.t("Source control writer model")}
                 onInstanceModelChange={(instanceId, model) => {
                   updateSettings({

@@ -18,6 +18,7 @@ import {
 } from "./providerIconUtils";
 import { shouldShowInstanceBadge, type ProviderInstanceEntry } from "../../providerInstances";
 import { ComposerControl, ComposerControlChevron } from "./ComposerControl";
+import i18next from "i18next";
 
 export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
   /**
@@ -187,7 +188,9 @@ export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
       <PopoverPopup
         align="start"
         className="before:hidden [--viewport-inline-padding:0]"
-        viewportClassName="!overflow-hidden rounded-[calc(var(--radius-lg)-1px)] p-0 [clip-path:inset(0_round_calc(var(--radius-lg)-1px))]"
+        viewportClassName={i18next.t(
+          "!overflow-hidden rounded-[calc(var(--radius-lg)-1px)] p-0 [clip-path:inset(0_round_calc(var(--radius-lg)-1px))]",
+        )}
       >
         <ModelPickerContent
           activeInstanceId={activeInstanceId}

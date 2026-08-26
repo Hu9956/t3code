@@ -1,6 +1,7 @@
 import type { UsageProviderKind } from "@t3tools/contracts";
 
 import { ClaudeAI, type Icon, OpenAI } from "../Icons";
+import i18next from "i18next";
 
 type UsageProviderPresentation = {
   readonly label: string;
@@ -15,12 +16,12 @@ type UsageProviderPresentation = {
  */
 export const PROVIDER_PRESENTATION = {
   codex: {
-    label: "Codex",
+    label: i18next.t("Codex"),
     color: "var(--contrast-foreground)",
     mark: OpenAI,
   },
   claude: {
-    label: "Claude Code",
+    label: i18next.t("Claude Code"),
     color: "#d97757",
     mark: ClaudeAI,
   },

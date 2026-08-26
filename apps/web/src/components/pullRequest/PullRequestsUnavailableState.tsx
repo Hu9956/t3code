@@ -9,6 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "../ui/empty";
+import i18next from "i18next";
 
 export function PullRequestsUnavailableState({
   title = "Could not load pull requests",
@@ -34,7 +35,7 @@ export function PullRequestsUnavailableState({
         <EmptyContent>
           <Button size="sm" variant="outline" onClick={onRetry}>
             <RefreshCwIcon className="size-3.5" />
-            Retry
+            {i18next.t("Retry")}
           </Button>
         </EmptyContent>
       ) : null}

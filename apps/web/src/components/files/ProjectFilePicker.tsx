@@ -56,14 +56,14 @@ function EmptyProjectFilePicker() {
     <CommandPaletteContent
       aria-label={i18next.t("File picker")}
       escapeLabel={i18next.t("Back")}
-      footerActionLabel="Open file"
-      inputProps={{ disabled: true, placeholder: "Search files…" }}
+      footerActionLabel={i18next.t("Open file")}
+      inputProps={{ disabled: true, placeholder: i18next.t("Search files…") }}
       mode="none"
       testId="project-file-picker"
       value=""
     >
       <div className="py-10 text-center text-sm text-muted-foreground">
-        Open a project to search its files.
+        {i18next.t("Open a project to search its files.")}
       </div>
     </CommandPaletteContent>
   );
@@ -121,8 +121,8 @@ function OpenProjectFilePicker(props: ProjectFilePickerProps & { target: ActiveP
       aria-label={i18next.t("File picker")}
       autoHighlight="always"
       escapeLabel={i18next.t("Back")}
-      footerActionLabel="Open file"
-      inputProps={{ placeholder: "Search files…" }}
+      footerActionLabel={i18next.t("Open file")}
+      inputProps={{ placeholder: i18next.t("Search files…") }}
       mode="none"
       onItemHighlighted={(value) => {
         setHighlightedItemValue(typeof value === "string" ? value : null);

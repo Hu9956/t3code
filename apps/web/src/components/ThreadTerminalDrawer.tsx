@@ -75,6 +75,7 @@ import {
   resolveTerminalFontSizePreference,
   TYPOGRAPHY_ADVANCED_STORAGE_KEY,
 } from "../appearanceFonts";
+import i18next from "i18next";
 
 const MIN_DRAWER_HEIGHT = 180;
 const MAX_DRAWER_HEIGHT_RATIO = 0.75;
@@ -263,8 +264,8 @@ export type TerminalContextMenuAction = "add-to-chat" | "copy" | "paste";
 /** Post-selection popup: just the two selection actions, always enabled. */
 export function terminalSelectionMenuItems(): ContextMenuItem<"add-to-chat" | "copy">[] {
   return [
-    { id: "add-to-chat", label: "Add to chat" },
-    { id: "copy", label: "Copy" },
+    { id: "add-to-chat", label: i18next.t("Add to chat") },
+    { id: "copy", label: i18next.t("Copy") },
   ];
 }
 
@@ -282,7 +283,7 @@ export function terminalContextMenuItems(options: {
       ...item,
       disabled: !options.hasSelection,
     })),
-    { id: "paste", label: "Paste" },
+    { id: "paste", label: i18next.t("Paste") },
   ];
 }
 
@@ -1407,7 +1408,7 @@ export default function ThreadTerminalDrawer({
           />
         ) : null}
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-4 py-6 text-center text-sm text-muted-foreground">
-          <p>No terminal sessions for this thread yet.</p>
+          <p>{i18next.t("No terminal sessions for this thread yet.")}</p>
           <Button size="xs" variant="outline" onClick={onNewTerminalAction}>
             {newTerminalActionLabel}
           </Button>

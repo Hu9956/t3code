@@ -38,6 +38,7 @@ import {
   reportRelayClientInstallProgress,
   requestRelayClientInstallConfirmation,
 } from "./relayClientInstallDialog";
+import i18next from "i18next";
 
 export function normalizeRelayBaseUrl(value: string | null | undefined): string | null {
   const trimmed = value?.trim();
@@ -84,7 +85,7 @@ function ensureRelayClientAvailable(
     });
     if (!confirmed) {
       return yield* new CloudEnvironmentLinkError({
-        message: "Relay client installation was cancelled.",
+        message: i18next.t("Relay client installation was cancelled."),
       });
     }
 
@@ -102,7 +103,7 @@ function ensureRelayClientAvailable(
       );
     if (Option.isNone(installed) || installed.value.type !== "complete") {
       return yield* new CloudEnvironmentLinkError({
-        message: "The relay client install completed without a final status.",
+        message: i18next.t("The relay client install completed without a final status."),
       });
     }
     const installedStatus = installed.value.status;
@@ -224,12 +225,12 @@ function ensureLinkedEnvironmentMatches(input: {
 }): Effect.Effect<void, CloudEnvironmentLinkError> {
   if (input.link.environmentId !== input.expectedEnvironmentId) {
     return new CloudEnvironmentLinkError({
-      message: "Relay returned credentials for a different environment.",
+      message: i18next.t("Relay returned credentials for a different environment."),
     });
   }
   if (input.link.endpoint.providerKind !== input.expectedProviderKind) {
     return new CloudEnvironmentLinkError({
-      message: "Relay returned credentials for a different endpoint provider.",
+      message: i18next.t("Relay returned credentials for a different endpoint provider."),
     });
   }
   return Effect.void;
@@ -285,7 +286,7 @@ export function listManagedCloudEnvironments(input: {
     const configuredRelayUrl = relayUrl();
     if (!configuredRelayUrl) {
       return yield* new CloudEnvironmentLinkError({
-        message: "T3CODE_RELAY_URL is not configured.",
+        message: i18next.t("T3CODE_RELAY_URL is not configured."),
       });
     }
     const relayClient = yield* ManagedRelay.ManagedRelayClient;
@@ -297,7 +298,7 @@ export function listManagedCloudEnvironments(input: {
         Effect.mapError(
           (cause) =>
             new CloudEnvironmentLinkError({
-              message: "Could not list relay-managed environments.",
+              message: i18next.t("Could not list relay-managed environments."),
               cause,
             }),
         ),
@@ -315,7 +316,7 @@ export function listCloudDevices(input: {
   return Effect.gen(function* () {
     if (!relayUrl()) {
       return yield* new CloudEnvironmentLinkError({
-        message: "T3CODE_RELAY_URL is not configured.",
+        message: i18next.t("T3CODE_RELAY_URL is not configured."),
       });
     }
     const relayClient = yield* ManagedRelay.ManagedRelayClient;
@@ -323,7 +324,7 @@ export function listCloudDevices(input: {
       Effect.mapError(
         (cause) =>
           new CloudEnvironmentLinkError({
-            message: "Could not list cloud devices.",
+            message: i18next.t("Could not list cloud devices."),
             cause,
           }),
       ),
@@ -412,7 +413,7 @@ export function linkPrimaryEnvironmentToCloud(input: {
     const configuredRelayUrl = relayUrl();
     if (!configuredRelayUrl) {
       return yield* new CloudEnvironmentLinkError({
-        message: "T3CODE_RELAY_URL is not configured.",
+        message: i18next.t("T3CODE_RELAY_URL is not configured."),
       });
     }
     const managedTunnelsEnabled = (input.mode ?? "managed") === "managed";

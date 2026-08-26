@@ -10,6 +10,7 @@ import {
   formatUsd,
 } from "@t3tools/shared/usageFormat";
 import { PROVIDER_ORDER, PROVIDER_PRESENTATION } from "./usageProviders";
+import i18next from "i18next";
 
 const VIEW_WIDTH = 960;
 const VIEW_HEIGHT = 260;
@@ -442,7 +443,7 @@ export function UsageProviderChart({
                 );
               })}
               <div className="mt-1 flex items-center justify-between gap-3 border-t border-border pt-1">
-                <span className="text-muted-foreground">Total</span>
+                <span className="text-muted-foreground">{i18next.t("Total")}</span>
                 <span className="text-foreground tabular-nums">
                   {format(hoveredColumn?.total ?? 0)}
                 </span>

@@ -222,7 +222,7 @@ export function FontFamilyPicker({
             />
             <ComboboxInput
               className="[&_input]:h-6.5 [&_input]:ps-5 [&_input]:font-sans [&_input]:leading-6.5"
-              inputClassName="rounded-none bg-transparent text-sm"
+              inputClassName={i18next.t("rounded-none bg-transparent text-sm")}
               placeholder={i18next.t("Search fonts…")}
               showTrigger={false}
               size="sm"

@@ -32,6 +32,7 @@ import { getProviderModelCapabilities } from "../../providerModels";
 import { cn } from "~/lib/utils";
 import { Badge } from "../ui/badge";
 import { ComposerControl, ComposerControlChevron, ComposerControlIcon } from "./ComposerControl";
+import i18next from "i18next";
 
 type ProviderOptions = ReadonlyArray<ProviderOptionSelection>;
 
@@ -54,7 +55,7 @@ function DefaultBadge() {
       variant="outline"
       className="inline-flex h-4 w-fit min-w-0 items-center justify-center gap-0 border-border/70 bg-muted/60 px-1.5 py-0 font-semibold text-[10px] text-muted-foreground leading-none sm:h-4"
     >
-      Default
+      {i18next.t("Default")}
     </Badge>
   );
 }
@@ -317,8 +318,9 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
               </div>
               {ultrathinkInBodyText && descriptor.id === primarySelectDescriptor?.id ? (
                 <div className="px-2 pb-1.5 text-muted-foreground/80 text-xs">
-                  Your prompt contains &quot;ultrathink&quot; in the text. Remove it to change this
-                  option.
+                  {i18next.t(
+                    "Your prompt contains &quot;ultrathink&quot; in the text. Remove it to change this\n                  option.",
+                  )}
                 </div>
               ) : null}
               <MenuRadioGroup
@@ -506,7 +508,7 @@ export const TraitsPicker = memo(function TraitsPicker({
           provider === "claudeAgent" ? "text-[#d97757]" : "text-foreground",
         )}
       />
-      <span className="sr-only">Fast mode on</span>
+      <span className="sr-only">{i18next.t("Fast mode on")}</span>
     </>
   ) : null;
 

@@ -25,6 +25,7 @@ import type {
   ThreadSession,
   TurnDiffSummary,
 } from "./types";
+import i18next from "i18next";
 
 export type ProviderPickerKind = ProviderDriverKind;
 
@@ -35,29 +36,29 @@ export const PROVIDER_OPTIONS: Array<{
   /** Shown on the model picker sidebar when relevant */
   pickerSidebarBadge?: "new" | "soon";
 }> = [
-  { value: ProviderDriverKind.make("codex"), label: "Codex", available: true },
-  { value: ProviderDriverKind.make("claudeAgent"), label: "Claude", available: true },
+  { value: ProviderDriverKind.make("codex"), label: i18next.t("Codex"), available: true },
+  { value: ProviderDriverKind.make("claudeAgent"), label: i18next.t("Claude"), available: true },
   {
     value: ProviderDriverKind.make("opencode"),
-    label: "OpenCode",
+    label: i18next.t("OpenCode"),
     available: true,
     pickerSidebarBadge: "new",
   },
   {
     value: ProviderDriverKind.make("cursor"),
-    label: "Cursor",
+    label: i18next.t("Cursor"),
     available: true,
     pickerSidebarBadge: "new",
   },
   {
     value: ProviderDriverKind.make("grok"),
-    label: "Grok",
+    label: i18next.t("Grok"),
     available: true,
     pickerSidebarBadge: "new",
   },
   {
     value: ProviderDriverKind.make("antigravity"),
-    label: "Antigravity",
+    label: i18next.t("Antigravity"),
     available: true,
     pickerSidebarBadge: "new",
   },

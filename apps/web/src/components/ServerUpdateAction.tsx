@@ -12,6 +12,7 @@ import { manualServerUpdateCommand } from "~/versionSkew";
 import { Button } from "./ui/button";
 import { toastManager } from "./ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
+import i18next from "i18next";
 
 // The wire "installing" stage is a sub-second launcher handoff, so the UI
 // folds it into the download phase; everything after the handoff is the
@@ -92,14 +93,14 @@ export function ServerUpdateAction({
     onCopy: ({ command }) => {
       toastManager.add({
         type: "success",
-        title: "Update command copied",
+        title: i18next.t("Update command copied"),
         description: `Run \`${command}\` on ${serverLabel} to update it.`,
       });
     },
     onError: (error) => {
       toastManager.add({
         type: "error",
-        title: "Could not copy update command",
+        title: i18next.t("Could not copy update command"),
         description: error.message,
       });
     },
@@ -121,7 +122,7 @@ export function ServerUpdateAction({
         }
         toastManager.add({
           type: "error",
-          title: "Server update failed",
+          title: i18next.t("Server update failed"),
           description: updateFailureMessage(squashAtomCommandFailure(result)),
         });
         return;
@@ -139,7 +140,7 @@ export function ServerUpdateAction({
   if (selfUpdate === "desktop-managed") {
     return (
       <span className="text-muted-foreground text-xs">
-        Update the desktop app on that machine to update this server.
+        {i18next.t("Update the desktop app on that machine to update this server.")}
       </span>
     );
   }
@@ -148,7 +149,7 @@ export function ServerUpdateAction({
     const command = manualServerUpdateCommand(targetVersion);
     return (
       <Button size="xs" variant="outline" onClick={() => copyToClipboard(command, { command })}>
-        Copy update command
+        {i18next.t("Copy update command")}
       </Button>
     );
   }

@@ -123,7 +123,7 @@ function CommentBody({
         value={comment.body}
         cwd={editing.cwd}
         environmentId={editing.environmentId}
-        label="Edit comment"
+        label={i18next.t("Edit comment")}
         saving={editing.saving}
         onSave={(body) => editing.onSave(comment, body)}
         onCancel={() => editing.onEdit(null)}
@@ -143,7 +143,7 @@ function CommentBody({
           size="icon-xs"
           variant="ghost"
           className="shrink-0 text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:opacity-100"
-          aria-label="Edit comment"
+          aria-label={i18next.t("Edit comment")}
           onClick={() => editing.onEdit(comment)}
         >
           <PencilIcon className="size-3" />
@@ -339,7 +339,7 @@ function CommentComposer({
     });
     setPosting(false);
     if (result._tag === "Failure") {
-      toastManager.add({ type: "error", title: "Could not post the comment" });
+      toastManager.add({ type: "error", title: i18next.t("Could not post the comment") });
       return;
     }
     setBody("");
@@ -355,7 +355,7 @@ function CommentComposer({
         value={body}
         rows={3}
         placeholder={i18next.t("Leave a comment")}
-        aria-label="Comment on this pull request"
+        aria-label={i18next.t("Comment on this pull request")}
         onChange={(event) => setBody(event.target.value)}
       />
       <div className="flex justify-end">
@@ -488,7 +488,7 @@ export function PullRequestSummaryTab({
     const result = await update({ environmentId, input: { ...reference, body } });
     setBodySaving(false);
     if (result._tag === "Failure") {
-      toastManager.add({ type: "error", title: "Could not save the description" });
+      toastManager.add({ type: "error", title: i18next.t("Could not save the description") });
       return;
     }
     setBodyScope(null);
@@ -514,7 +514,7 @@ export function PullRequestSummaryTab({
       });
       setCommentSaving(false);
       if (result._tag === "Failure") {
-        toastManager.add({ type: "error", title: "Could not save the comment" });
+        toastManager.add({ type: "error", title: i18next.t("Could not save the comment") });
         return;
       }
       setCommentScope(null);
@@ -526,10 +526,10 @@ export function PullRequestSummaryTab({
     <div className="h-full overflow-y-auto" data-pull-request-summary-scroll>
       <section className="px-4 py-3">
         <div>
-          <MetaRow icon={<UsersIcon className="size-3.5" />} label="Reviewers">
+          <MetaRow icon={<UsersIcon className="size-3.5" />} label={i18next.t("Reviewers")}>
             <span className="flex min-w-0 flex-wrap items-center gap-1.5">
               {reviewerEntries.length === 0 ? (
-                <span className="text-muted-foreground">None</span>
+                <span className="text-muted-foreground">{i18next.t("None")}</span>
               ) : (
                 <span className="flex items-center -space-x-1">
                   {reviewerEntries.map((entry) => {
@@ -638,7 +638,7 @@ export function PullRequestSummaryTab({
               </span>
             </MetaRow>
           ) : null}
-          <MetaRow icon={<MessageSquareIcon className="size-3.5" />} label="Comments">
+          <MetaRow icon={<MessageSquareIcon className="size-3.5" />} label={i18next.t("Comments")}>
             {activityPending
               ? "Loading conversation…"
               : activityError
@@ -650,7 +650,7 @@ export function PullRequestSummaryTab({
         </div>
       </section>
 
-      <Section title="Description">
+      <Section title={i18next.t("Description")}>
         <div className="group">
           {bodyScope === detail.url ? (
             <PullRequestMarkdownEditor
@@ -659,8 +659,8 @@ export function PullRequestSummaryTab({
               value={detail.body}
               cwd={detail.workspaceRoot}
               environmentId={environmentId}
-              label="Pull request description"
-              placeholder="Describe this pull request"
+              label={i18next.t("Pull request description")}
+              placeholder={i18next.t("Describe this pull request")}
               saving={bodySaving}
               onSave={(body) => void saveBody(body)}
               onCancel={() => setBodyScope(null)}
@@ -678,7 +678,7 @@ export function PullRequestSummaryTab({
                   size="icon-xs"
                   variant="ghost"
                   className="shrink-0 text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:opacity-100"
-                  aria-label="Edit description"
+                  aria-label={i18next.t("Edit description")}
                   onClick={() => setBodyScope(detail.url)}
                 >
                   <PencilIcon className="size-3" />
@@ -697,9 +697,9 @@ export function PullRequestSummaryTab({
         </div>
       </Section>
 
-      <Section title="Checks" count={detail.checks.length}>
+      <Section title={i18next.t("Checks")} count={detail.checks.length}>
         {detail.checks.length === 0 ? (
-          <p className="text-xs text-muted-foreground">No checks reported.</p>
+          <p className="text-xs text-muted-foreground">{i18next.t("No checks reported.")}</p>
         ) : (
           <div className="space-y-0.5">
             {detail.checks.map((check, index) => {
@@ -751,7 +751,7 @@ export function PullRequestSummaryTab({
       </Section>
 
       <Section
-        title="Comments"
+        title={i18next.t("Comments")}
         {...(activityPending || activityError ? {} : { count: detail.commentCount })}
         actions={
           !activityPending && !activityError && detail.comments.length > 0 ? (
@@ -780,12 +780,15 @@ export function PullRequestSummaryTab({
           <>
             {detail.commentsTruncated ? (
               <p className="mb-2 rounded-md border border-amber-500/30 bg-amber-500/5 px-2 py-1.5 text-xs">
-                This conversation is longer than this page reads in one go. The most recent{" "}
-                {detail.comments.length} are here; open it on the host to read the rest.
+                {i18next.t(
+                  "This conversation is longer than this page reads in one go. The most recent",
+                )}{" "}
+                {detail.comments.length}{" "}
+                {i18next.t("are here; open it on the host to read the rest.")}
               </p>
             ) : null}
             {detail.comments.length === 0 ? (
-              <p className="py-2 text-xs text-muted-foreground">No comments yet.</p>
+              <p className="py-2 text-xs text-muted-foreground">{i18next.t("No comments yet.")}</p>
             ) : (
               <div className="space-y-3">
                 {hiddenCommentCount > 0 ? (
@@ -800,7 +803,8 @@ export function PullRequestSummaryTab({
                       setShown({ url: detail.url, count: shownComments + COMMENT_PAGE })
                     }
                   >
-                    Show {Math.min(hiddenCommentCount, COMMENT_PAGE)} earlier{" "}
+                    {i18next.t("Show")}
+                    {Math.min(hiddenCommentCount, COMMENT_PAGE)} earlier{" "}
                     {hiddenCommentCount === 1 ? "comment" : "comments"}
                   </Button>
                 ) : null}

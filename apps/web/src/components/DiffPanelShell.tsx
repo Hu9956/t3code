@@ -4,6 +4,7 @@ import { isElectron } from "~/env";
 import { cn } from "~/lib/utils";
 
 import { Skeleton } from "./ui/skeleton";
+import i18next from "i18next";
 
 export type DiffPanelMode = "inline" | "sheet" | "sidebar" | "embedded";
 
@@ -93,7 +94,7 @@ export function DiffPanelLoadingState(props: { label: string }) {
       aria-live="polite"
       aria-label={props.label}
     >
-      <DiffFileHeaderSkeleton titleClassName="w-1/2 max-w-64" />
+      <DiffFileHeaderSkeleton titleClassName={i18next.t("w-1/2 max-w-64")} />
       <div className="flex h-6 items-center gap-2 px-2 pr-3">
         <div className="h-px flex-1 bg-border/40" />
         <Skeleton className="h-2.5 w-24 rounded-full" />
@@ -104,8 +105,8 @@ export function DiffPanelLoadingState(props: { label: string }) {
         <DiffCodeLineSkeleton contentClassName="w-4/5" />
         <DiffCodeLineSkeleton contentClassName="w-3/5" />
       </div>
-      <DiffFileHeaderSkeleton titleClassName="w-2/5 max-w-52" />
-      <DiffFileHeaderSkeleton titleClassName="w-3/5 max-w-72" />
+      <DiffFileHeaderSkeleton titleClassName={i18next.t("w-2/5 max-w-52")} />
+      <DiffFileHeaderSkeleton titleClassName={i18next.t("w-3/5 max-w-72")} />
       <span className="sr-only">{props.label}</span>
     </div>
   );

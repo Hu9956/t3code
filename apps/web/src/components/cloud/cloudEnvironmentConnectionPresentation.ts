@@ -2,6 +2,7 @@ import {
   connectionStatusText,
   type EnvironmentConnectionPresentation,
 } from "@t3tools/client-runtime/connection";
+import i18next from "i18next";
 
 export interface SavedCloudEnvironmentConnectionPresentation {
   readonly buttonLabel: string;
@@ -20,37 +21,37 @@ export function presentSavedCloudEnvironmentConnection(
   switch (connection.phase) {
     case "connected":
       return {
-        buttonLabel: "Connected",
+        buttonLabel: i18next.t("Connected"),
         statusText: connectionStatusText(connection),
         tone: "connected",
       };
     case "connecting":
       return {
-        buttonLabel: "Connecting…",
+        buttonLabel: i18next.t("Connecting…"),
         statusText: connectionStatusText(connection),
         tone: "connecting",
       };
     case "reconnecting":
       return {
-        buttonLabel: "Reconnecting…",
+        buttonLabel: i18next.t("Reconnecting…"),
         statusText: connectionStatusText(connection),
         tone: "connecting",
       };
     case "error":
       return {
-        buttonLabel: "Connection failed",
+        buttonLabel: i18next.t("Connection failed"),
         statusText: connectionStatusText(connection),
         tone: "error",
       };
     case "offline":
       return {
-        buttonLabel: "Offline",
+        buttonLabel: i18next.t("Offline"),
         statusText: connectionStatusText(connection),
         tone: "idle",
       };
     case "available":
       return {
-        buttonLabel: "Not connected",
+        buttonLabel: i18next.t("Not connected"),
         statusText: connectionStatusText(connection),
         tone: "idle",
       };

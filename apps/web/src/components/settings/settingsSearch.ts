@@ -1,4 +1,5 @@
 import { isElectron } from "~/env";
+import i18next from "i18next";
 
 export type SettingsPath =
   | "/settings/general"
@@ -27,8 +28,8 @@ export interface SettingsSearchItem {
 export const SETTINGS_SECTION_LABELS: Readonly<Record<SettingsPath, string>> = {
   "/settings/general": "General",
   "/settings/appearance": "Appearance",
-  "/settings/keybindings": "Keybindings",
-  "/settings/providers": "Providers",
+  "/settings/keybindings": i18next.t("Keybindings"),
+  "/settings/providers": i18next.t("Providers"),
   "/settings/integrations": "Integrations",
   "/settings/source-control": "Source Control",
   "/settings/connections": "Connections",
@@ -44,14 +45,14 @@ export const SETTINGS_SECTION_LABELS: Readonly<Record<SettingsPath, string>> = {
 export const SETTINGS_SEARCH_ITEMS = [
   {
     id: "color-scheme",
-    title: "Color scheme",
+    title: i18next.t("Color scheme"),
     to: "/settings/appearance",
     // The scheme tiles sit at the top of the Appearance section.
     targetId: "appearance",
   },
   {
     id: "theme",
-    title: "Themes",
+    title: i18next.t("Themes"),
     to: "/settings/appearance",
     // Theme cards live directly under the scheme tiles; the section is the
     // stable scroll destination for both.
@@ -60,197 +61,197 @@ export const SETTINGS_SEARCH_ITEMS = [
   {
     // Prefixed because the slider control already owns the `appearance-contrast` id.
     id: "setting-appearance-contrast",
-    title: "Contrast",
+    title: i18next.t("Contrast"),
     to: "/settings/appearance",
   },
   {
     // Prefixed because the slider control already owns the `glass-opacity` id.
     id: "setting-glass-opacity",
-    title: "Glass opacity",
+    title: i18next.t("Glass opacity"),
     to: "/settings/appearance",
   },
   {
     id: "environment-identification",
-    title: "Environment identification",
+    title: i18next.t("Environment identification"),
     to: "/settings/appearance",
     // The setting is stage-dependent, so its parent section is the stable destination.
     targetId: "appearance",
   },
   {
     id: "interface-font",
-    title: "Interface font",
+    title: i18next.t("Interface font"),
     to: "/settings/appearance",
   },
   {
     id: "prompt-font",
-    title: "Prompt font",
+    title: i18next.t("Prompt font"),
     to: "/settings/appearance",
   },
   {
     id: "code-font",
-    title: "Code font",
+    title: i18next.t("Code font"),
     to: "/settings/appearance",
   },
   {
     id: "terminal-font",
-    title: "Terminal font",
+    title: i18next.t("Terminal font"),
     to: "/settings/appearance",
   },
   {
     id: "font-smoothing",
-    title: "Font smoothing",
+    title: i18next.t("Font smoothing"),
     to: "/settings/appearance",
   },
   {
     id: "word-wrap",
-    title: "Word wrap",
+    title: i18next.t("Word wrap"),
     to: "/settings/appearance",
   },
   {
     id: "project-grouping",
-    title: "Project grouping",
+    title: i18next.t("Project grouping"),
     to: "/settings/general",
   },
   {
     id: "auto-settle-inactive-threads",
-    title: "Auto-settle inactive threads",
+    title: i18next.t("Auto-settle inactive threads"),
     to: "/settings/general",
   },
   {
     id: "auto-settle-merged-threads",
-    title: "Auto-settle merged threads",
+    title: i18next.t("Auto-settle merged threads"),
     to: "/settings/general",
   },
   {
     id: "time-format",
-    title: "Time format",
+    title: i18next.t("Time format"),
     to: "/settings/general",
   },
   {
     id: "hide-whitespace-changes",
-    title: "Hide whitespace changes",
+    title: i18next.t("Hide whitespace changes"),
     to: "/settings/general",
   },
   {
     id: "skills-in-slash-menu",
-    title: "Show skills in slash menu",
+    title: i18next.t("Show skills in slash menu"),
     to: "/settings/general",
   },
   {
     id: "provider-update-checks",
-    title: "Provider update checks",
+    title: i18next.t("Provider update checks"),
     to: "/settings/general",
   },
   {
     id: "new-threads",
-    title: "New threads",
+    title: i18next.t("New threads"),
     to: "/settings/general",
   },
   {
     id: "start-from-origin",
-    title: "Start from origin",
+    title: i18next.t("Start from origin"),
     to: "/settings/general",
     targetId: "new-threads",
   },
   {
     id: "add-project-starts-in",
-    title: "Add project starts in",
+    title: i18next.t("Add project starts in"),
     to: "/settings/general",
   },
   {
     id: "archive-confirmation",
-    title: "Archive confirmation",
+    title: i18next.t("Archive confirmation"),
     to: "/settings/general",
   },
   {
     id: "delete-confirmation",
-    title: "Delete confirmation",
+    title: i18next.t("Delete confirmation"),
     to: "/settings/general",
   },
   {
     id: "quit-confirmation",
-    title: "Hold to quit",
+    title: i18next.t("Hold to quit"),
     to: "/settings/general",
     desktopOnly: true,
   },
   {
     id: "text-generation-model",
-    title: "Text generation model",
+    title: i18next.t("Text generation model"),
     to: "/settings/general",
   },
   {
     id: "diagnostics",
-    title: "Diagnostics",
+    title: i18next.t("Diagnostics"),
     to: "/settings/general",
   },
   {
     id: "legacy-plan-mode",
-    title: "Plan mode (legacy)",
+    title: i18next.t("Plan mode (legacy)"),
     to: "/settings/general",
   },
   {
     id: "legacy-token-streaming",
-    title: "Stream token by token (legacy)",
+    title: i18next.t("Stream token by token (legacy)"),
     to: "/settings/general",
   },
   {
     id: "legacy-sidebar",
-    title: "Sidebar (legacy)",
+    title: i18next.t("Sidebar (legacy)"),
     to: "/settings/general",
   },
   {
     id: "keybindings",
-    title: "Keybindings",
+    title: i18next.t("Keybindings"),
     to: "/settings/keybindings",
   },
   {
     id: "providers",
-    title: "Providers",
+    title: i18next.t("Providers"),
     to: "/settings/providers",
   },
   {
     id: "agent-browser-access",
-    title: "Agent browser access",
+    title: i18next.t("Agent browser access"),
     to: "/settings/integrations",
     targetId: "browser",
   },
   {
     id: "browser-default-viewport",
-    title: "Default browser viewport",
+    title: i18next.t("Default browser viewport"),
     to: "/settings/integrations",
     targetId: "browser",
   },
   {
     id: "browser-default-zoom",
-    title: "Default browser zoom",
+    title: i18next.t("Default browser zoom"),
     to: "/settings/integrations",
     targetId: "browser",
   },
   {
     id: "browser-default-appearance",
-    title: "Default browser appearance",
+    title: i18next.t("Default browser appearance"),
     to: "/settings/integrations",
     targetId: "browser",
   },
   {
     id: "browser-auto-show-floating-preview",
-    title: "Auto-show floating preview",
+    title: i18next.t("Auto-show floating preview"),
     to: "/settings/integrations",
     targetId: "browser",
   },
   {
     id: "source-control",
-    title: "Source control",
+    title: i18next.t("Source control"),
     to: "/settings/source-control",
   },
   {
     id: "remote-environments",
-    title: "Remote environments",
+    title: i18next.t("Remote environments"),
     to: "/settings/connections",
   },
   {
     id: "archive",
-    title: "Archived threads",
+    title: i18next.t("Archived threads"),
     to: "/settings/archived",
   },
 ] as const satisfies ReadonlyArray<SettingsSearchItem>;

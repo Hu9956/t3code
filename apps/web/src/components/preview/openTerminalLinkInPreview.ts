@@ -7,6 +7,7 @@ import type { OpenPreviewMutation } from "~/browser/openFileInPreview";
 import { recordVisitForThread } from "~/browserHistoryStore";
 import { applyPreviewServerSnapshot, isPreviewSupportedInRuntime } from "~/previewStateStore";
 import { useRightPanelStore } from "~/rightPanelStore";
+import i18next from "i18next";
 
 const terminalLinkErrorContext = {
   environmentId: Schema.String,
@@ -65,8 +66,8 @@ export async function openTerminalLinkInPreview<E>(
   try {
     choice = await input.localApi.contextMenu.show(
       [
-        { id: "open-in-preview", label: "Open in preview" },
-        { id: "open-in-browser", label: "Open in browser" },
+        { id: "open-in-preview", label: i18next.t("Open in preview") },
+        { id: "open-in-browser", label: i18next.t("Open in browser") },
       ],
       input.position,
     );

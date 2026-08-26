@@ -236,8 +236,11 @@ export function AddProviderInstanceDialog({
           <DialogHeader>
             <DialogTitle>{i18next.t("Add provider instance")}</DialogTitle>
             <DialogDescription>
-              Configure an additional provider instance on {environmentLabel} — for example, a
-              second Codex install pointed at a different workspace.
+              {i18next.t("Configure an additional provider instance on")}
+              {environmentLabel}{" "}
+              {i18next.t(
+                "— for example, a\n              second Codex install pointed at a different workspace.",
+              )}
             </DialogDescription>
             <AddProviderInstanceWizardSteps
               currentStep={wizardStep}
@@ -254,7 +257,7 @@ export function AddProviderInstanceDialog({
             <AnimatedHeight>
               <div className={cn("grid gap-2", wizardStep !== 0 && "hidden")}>
                 <div id="add-instance-driver-label" className="text-sm font-medium text-foreground">
-                  Driver
+                  {i18next.t("Driver")}
                 </div>
                 <RadioGroup
                   value={driver}
@@ -307,7 +310,7 @@ export function AddProviderInstanceDialog({
                           {option.label}
                         </span>
                         <Badge variant="warning" size="sm">
-                          Coming Soon
+                          {i18next.t("Coming Soon")}
                         </Badge>
                       </RadioPrimitive.Root>
                     );
@@ -324,7 +327,7 @@ export function AddProviderInstanceDialog({
                   onChange={(event) => setLabel(event.target.value)}
                 />
                 <span className="text-[11px] text-muted-foreground">
-                  Shown in the provider list. Optional.
+                  {i18next.t("Shown in the provider list. Optional.")}
                 </span>
               </label>
 
@@ -345,7 +348,9 @@ export function AddProviderInstanceDialog({
                   <span className="text-[11px] text-destructive">{instanceIdError}</span>
                 ) : (
                   <span className="text-[11px] text-muted-foreground">
-                    Routing key used by threads and sessions. Letters, digits, '-', or '_'.
+                    {i18next.t(
+                      "Routing key used by threads and sessions. Letters, digits, '-', or '_'.",
+                    )}
                   </span>
                 )}
               </label>
@@ -390,12 +395,12 @@ export function AddProviderInstanceDialog({
                       className="h-7 px-2 text-xs text-muted-foreground"
                       onClick={() => setAccentColor("")}
                     >
-                      Clear
+                      {i18next.t("Clear")}
                     </Button>
                   ) : null}
                 </div>
                 <span className="text-[11px] text-muted-foreground">
-                  Optional marker shown in the picker.
+                  {i18next.t("Optional marker shown in the picker.")}
                 </span>
               </div>
 
@@ -412,7 +417,9 @@ export function AddProviderInstanceDialog({
               ) : wizardStep === 2 ? (
                 <div className="grid gap-2">
                   <p className="text-sm text-muted-foreground">
-                    This driver has no required configuration. You can add the instance now.
+                    {i18next.t(
+                      "This driver has no required configuration. You can add the instance now.",
+                    )}
                   </p>
                 </div>
               ) : null}
@@ -435,11 +442,11 @@ export function AddProviderInstanceDialog({
             </Button>
             {wizardStep < ADD_PROVIDER_WIZARD_STEPS.length - 1 ? (
               <Button size="sm" onClick={() => navigateToStep(wizardStep + 1)}>
-                Next
+                {i18next.t("Next")}
               </Button>
             ) : (
               <Button size="sm" onClick={handleSave}>
-                Add instance
+                {i18next.t("Add instance")}
               </Button>
             )}
           </DialogFooter>

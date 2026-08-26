@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
+import i18next from "i18next";
 
 function describeSshTarget(request: DesktopSshPasswordPromptRequest): string {
   return request.username ? `${request.username}@${request.destination}` : request.destination;
@@ -158,10 +159,11 @@ function ActiveSshPasswordPrompt({
     >
       <DialogPopup className="max-w-md" showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>SSH Password Required</DialogTitle>
+          <DialogTitle>{i18next.t("SSH Password Required")}</DialogTitle>
           <DialogDescription>
-            T3 needs your SSH password to connect to <code>{target}</code>. The password is passed
-            to the local SSH process for this connection attempt and is not saved by T3 Code.
+            {i18next.t("T3 needs your SSH password to connect to")}
+            <code>{target}</code>. The password is passed to the local SSH process for this
+            connection attempt and is not saved by T3 Code.
           </DialogDescription>
         </DialogHeader>
         <DialogPanel className="space-y-3" scrollFade={false}>
@@ -202,7 +204,7 @@ function ActiveSshPasswordPrompt({
               <p className="text-sm text-destructive">{visibleResponseError}</p>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Use SSH keys to avoid repeated password prompts on new SSH sessions.
+                {i18next.t("Use SSH keys to avoid repeated password prompts on new SSH sessions.")}
               </p>
             )}
           </form>
@@ -212,7 +214,7 @@ function ActiveSshPasswordPrompt({
             {isExpired ? "Dismiss" : "Cancel"}
           </Button>
           <Button disabled={isResponding || isExpired} form={formId} type="submit">
-            Continue
+            {i18next.t("Continue")}
           </Button>
         </DialogFooter>
       </DialogPopup>

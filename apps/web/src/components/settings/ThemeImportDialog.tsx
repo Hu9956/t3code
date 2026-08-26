@@ -131,9 +131,9 @@ function ThemeJsonEditor({
         id={id}
         onChange={(event) => onChange(event.currentTarget.value)}
         onScroll={syncScroll}
-        placeholder={
-          '{\n  "version": 1,\n  "name": "Aurora",\n  "appearance": "light",\n  "colors": { ... }\n}'
-        }
+        placeholder={i18next.t(
+          '{\n  "version": 1,\n  "name": "Aurora",\n  "appearance": "light",\n  "colors": { ... }\n}',
+        )}
         spellCheck={false}
         value={value}
       />
@@ -440,7 +440,7 @@ export function ThemeImportDialog({
           <div className="flex items-center gap-3" aria-hidden>
             <div className="h-px flex-1 bg-border" />
             <span className="text-muted-foreground text-[11px] uppercase tracking-wider">
-              or import a file
+              {i18next.t("or import a file")}
             </span>
             <div className="h-px flex-1 bg-border" />
           </div>
@@ -499,10 +499,10 @@ export function ThemeImportDialog({
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Button size="sm" onClick={() => resolveConflicts("update")}>
-                      Update existing
+                      {i18next.t("Update existing")}
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => resolveConflicts("copy")}>
-                      Keep both
+                      {i18next.t("Keep both")}
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setConflicts(null)}>
                       {i18next.t("Back")}

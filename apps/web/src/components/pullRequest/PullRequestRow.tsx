@@ -14,6 +14,7 @@ import {
   PullRequestMetaLine,
   PullRequestStateGlyph,
 } from "./pullRequestPresentation";
+import i18next from "i18next";
 
 function PullRequestRowImpl({
   entry,
@@ -119,7 +120,7 @@ function PullRequestRowImpl({
           )}
           {matchedElsewhere ? (
             <span className="shrink-0 rounded-full border border-border/60 px-1.5 text-[10px]">
-              matched in the description
+              {i18next.t("matched in the description")}
             </span>
           ) : null}
         </PullRequestMetaLine>

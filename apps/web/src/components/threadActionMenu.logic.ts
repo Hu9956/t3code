@@ -65,8 +65,8 @@ export function buildThreadActionMenuItems(
     ...(state.supports.pinning
       ? [
           state.isPinned
-            ? { id: "unpin" as const, label: "Unpin thread", icon: "pin-off" }
-            : { id: "pin" as const, label: "Pin thread", icon: "pin" },
+            ? { id: "unpin" as const, label: i18next.t("Unpin thread"), icon: "pin-off" }
+            : { id: "pin" as const, label: i18next.t("Pin thread"), icon: "pin" },
         ]
       : []),
     // Both lifecycle actions stay available on pinned threads: settling
@@ -75,17 +75,21 @@ export function buildThreadActionMenuItems(
     ...(state.supports.settlement
       ? [
           state.isSettled
-            ? { id: "unsettle" as const, label: "Un-settle thread", icon: "circle-check" }
-            : { id: "settle" as const, label: "Settle thread", icon: "circle-check" },
+            ? {
+                id: "unsettle" as const,
+                label: i18next.t("Un-settle thread"),
+                icon: "circle-check",
+              }
+            : { id: "settle" as const, label: i18next.t("Settle thread"), icon: "circle-check" },
         ]
       : []),
     ...(state.supports.snooze
       ? [
           state.isSnoozed
-            ? { id: "unsnooze" as const, label: "Wake thread", icon: "clock" }
+            ? { id: "unsnooze" as const, label: i18next.t("Wake thread"), icon: "clock" }
             : {
                 id: "snooze" as const,
-                label: "Snooze",
+                label: i18next.t("Snooze"),
                 icon: "clock",
                 disabled: !state.canSnoozeNow,
                 children: state.snoozePresets.map((preset) => ({
@@ -95,7 +99,7 @@ export function buildThreadActionMenuItems(
               },
         ]
       : []),
-    { id: "rename", label: "Rename thread", icon: "pencil", separatorBefore: true },
+    { id: "rename", label: i18next.t("Rename thread"), icon: "pencil", separatorBefore: true },
     ...(state.supports.titleRegeneration
       ? [
           {
@@ -109,15 +113,15 @@ export function buildThreadActionMenuItems(
     { id: "mark-unread", label: i18next.t("Mark unread"), icon: "mail-open" },
     {
       id: "copy",
-      label: "Copy",
+      label: i18next.t("Copy"),
       icon: "copy",
       separatorBefore: true,
       children: [
-        { id: "copy-path", label: "Path", icon: "folder" },
+        { id: "copy-path", label: i18next.t("Path"), icon: "folder" },
         ...(state.branch
-          ? [{ id: "copy-branch" as const, label: "Branch", icon: "git-branch" }]
+          ? [{ id: "copy-branch" as const, label: i18next.t("Branch"), icon: "git-branch" }]
           : []),
-        { id: "copy-thread-id", label: "Thread ID", icon: "hash" },
+        { id: "copy-thread-id", label: i18next.t("Thread ID"), icon: "hash" },
       ],
     },
     // Archive removes the thread from the sidebar while keeping its
@@ -127,14 +131,14 @@ export function buildThreadActionMenuItems(
     // styling.
     {
       id: "archive",
-      label: "Archive thread",
+      label: i18next.t("Archive thread"),
       icon: "archive",
       disabled: state.isRunning,
       separatorBefore: true,
     },
     {
       id: "delete",
-      label: "Delete",
+      label: i18next.t("Delete"),
       destructive: true,
       icon: "trash",
     },

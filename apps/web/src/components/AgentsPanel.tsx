@@ -38,16 +38,16 @@ import i18next from "i18next";
  * user problem). Only settled states differentiate.
  */
 const STATUS_VISUALS: Record<RuntimeSubagent["status"], { dotClass: string; label: string }> = {
-  pending: { dotClass: "bg-info", label: "Working" },
-  running: { dotClass: "bg-info", label: "Working" },
-  waiting: { dotClass: "bg-info", label: "Working" },
+  pending: { dotClass: "bg-info", label: i18next.t("Working") },
+  running: { dotClass: "bg-info", label: i18next.t("Working") },
+  waiting: { dotClass: "bg-info", label: i18next.t("Working") },
   // Idle reads as settled (muted, not sky): a resting Codex child looks done
   // unless resumed — live-test: sky idle dots read as stuck in-progress.
   idle: { dotClass: "bg-muted-foreground/50", label: i18next.t("Idle · resumable") },
-  completed: { dotClass: "bg-success", label: "Completed" },
-  failed: { dotClass: "bg-destructive", label: "Failed" },
-  cancelled: { dotClass: "bg-muted-foreground/60", label: "Stopped" },
-  interrupted: { dotClass: "bg-muted-foreground/60", label: "Stopped" },
+  completed: { dotClass: "bg-success", label: i18next.t("Completed") },
+  failed: { dotClass: "bg-destructive", label: i18next.t("Failed") },
+  cancelled: { dotClass: "bg-muted-foreground/60", label: i18next.t("Stopped") },
+  interrupted: { dotClass: "bg-muted-foreground/60", label: i18next.t("Stopped") },
 };
 
 function StatusDot({ status }: { status: RuntimeSubagent["status"] }) {
@@ -288,7 +288,7 @@ function WorkflowScriptView({
           size="icon-micro"
           variant="ghost-muted"
           onClick={onClose}
-          aria-label="Close script"
+          aria-label={i18next.t("Close script")}
           className="ml-auto"
         >
           <X aria-hidden className="size-3" />
@@ -301,9 +301,11 @@ function WorkflowScriptView({
             {result.value.truncated ? "\n… (truncated)" : ""}
           </pre>
         ) : result._tag === "Failure" ? (
-          <p className="text-xs text-destructive-foreground">Could not load the script.</p>
+          <p className="text-xs text-destructive-foreground">
+            {i18next.t("Could not load the script.")}
+          </p>
         ) : (
-          <p className="text-xs text-muted-foreground">Loading…</p>
+          <p className="text-xs text-muted-foreground">{i18next.t("Loading…")}</p>
         )}
       </div>
     </div>
@@ -424,7 +426,7 @@ function ExpandedWorkflowSection({
           size="icon-micro"
           variant="ghost-muted"
           onClick={onCollapse}
-          aria-label="Collapse workflow"
+          aria-label={i18next.t("Collapse workflow")}
         >
           <ChevronDown aria-hidden className="size-3" />
         </Button>
@@ -534,10 +536,11 @@ export function AgentsPanel({
     return (
       <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
         <Bot aria-hidden className="size-6 text-muted-foreground/60" />
-        <p className="text-sm font-medium">No agents yet</p>
+        <p className="text-sm font-medium">{i18next.t("No agents yet")}</p>
         <p className="max-w-56 text-xs text-muted-foreground">
-          When this thread spawns subagents or runs a workflow, they show up here with live status,
-          activity, and token usage.
+          {i18next.t(
+            "When this thread spawns subagents or runs a workflow, they show up here with live status,\n          activity, and token usage.",
+          )}
         </p>
       </div>
     );
@@ -558,7 +561,7 @@ export function AgentsPanel({
           {model.directAgents.length > 0 ? (
             <section>
               <div className="px-1.5 pt-1 text-[.65rem] font-medium uppercase tracking-wider text-muted-foreground">
-                Direct spawns
+                {i18next.t("Direct spawns")}
               </div>
               {model.directAgents.map((agent) => (
                 <AgentRow key={agent.id} agent={agent} />

@@ -24,6 +24,7 @@ import {
   selectChangedFilePreview,
   summarizeChangedFileScopes,
 } from "./changedFilesPresentation";
+import i18next from "i18next";
 
 const EMPTY_DIRECTORY_OVERRIDES: Record<string, boolean> = {};
 
@@ -86,7 +87,8 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
             />
             <span className="flex shrink-0 items-center gap-1 whitespace-nowrap font-medium text-foreground text-xs leading-4">
               <span>
-                {files.length} changed file{files.length === 1 ? "" : "s"}
+                {files.length} {i18next.t("changed file")}
+                {files.length === 1 ? "" : "s"}
               </span>
               {hasNonZeroStat(summaryStat) && (
                 <DiffStatLabel
@@ -138,15 +140,15 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
                   type="button"
                   size="xs"
                   variant="outline"
-                  aria-label="Open diff"
+                  aria-label={i18next.t("Open diff")}
                   onClick={() => onOpenTurnDiff(turnId, files[0]?.path)}
                 />
               }
             >
               <FileDiffIcon className="size-3" />
-              <span className="hidden @[24rem]/changed-files:inline">Open diff</span>
+              <span className="hidden @[24rem]/changed-files:inline">{i18next.t("Open diff")}</span>
             </TooltipTrigger>
-            <TooltipPopup side="top">Open the full diff</TooltipPopup>
+            <TooltipPopup side="top">{i18next.t("Open the full diff")}</TooltipPopup>
           </Tooltip>
         </div>
       </div>
@@ -200,7 +202,8 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
               className="rounded-md px-1.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => onExpandedChange(true)}
             >
-              Show all {files.length} files
+              {i18next.t("Show all")}
+              {files.length} files
             </button>
           </div>
         </div>

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
+import i18next from "i18next";
 
 export function ClerkUserProfilePage({
   action,
@@ -56,7 +57,7 @@ export function ClerkUserProfileRefreshButton({
       onClick={onClick}
     >
       <RefreshCwIcon aria-hidden="true" className={cn("size-3.5", isPending && "animate-spin")} />
-      Refresh
+      {i18next.t("Refresh")}
     </Button>
   );
 }

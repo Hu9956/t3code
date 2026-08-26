@@ -150,7 +150,7 @@ export function PreviewChromeRow({
             >
               <ArrowRight />
             </TooltipTrigger>
-            <TooltipPopup>Forward</TooltipPopup>
+            <TooltipPopup>{i18next.t("Forward")}</TooltipPopup>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger
@@ -200,7 +200,7 @@ export function PreviewChromeRow({
                       inputRef.current?.blur();
                     }
                   }}
-                  placeholder="Search or enter URL"
+                  placeholder={i18next.t("Search or enter URL")}
                   spellCheck={false}
                   disabled={inputDisabled}
                   data-preview-url-input
@@ -221,14 +221,14 @@ export function PreviewChromeRow({
                       variant="ghost"
                       size="icon-xs"
                       onClick={onOpenInBrowser}
-                      aria-label="Open in system browser"
+                      aria-label={i18next.t("Open in system browser")}
                       type="button"
                     />
                   }
                 >
                   <ExternalLink />
                 </TooltipTrigger>
-                <TooltipPopup>Open in system browser</TooltipPopup>
+                <TooltipPopup>{i18next.t("Open in system browser")}</TooltipPopup>
               </Tooltip>
             </InputGroupAddon>
           ) : null}

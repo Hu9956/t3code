@@ -41,6 +41,7 @@ import {
   type ProviderInstanceEntry,
 } from "../../providerInstances";
 import { providerModelKey, sortProviderModelItems } from "../../modelOrdering";
+import i18next from "i18next";
 
 type ModelPickerItem = {
   slug: string;
@@ -613,7 +614,12 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
               ? {
                   disabledInstanceIds: lockedDisabledInstanceIds,
                   getDisabledInstanceTooltip: (entry: ProviderInstanceEntry) =>
-                    `${entry.displayName} is unavailable in this thread. Start a new thread to switch providers.`,
+                    i18next.t(
+                      "{{displayName}} is unavailable in this thread. Start a new thread to switch providers.",
+                      {
+                        displayName: entry.displayName,
+                      },
+                    ),
                 }
               : {})}
           />
@@ -665,8 +671,8 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
                 <ComboboxInput
                   ref={searchInputRef}
                   className="[&_input]:h-6.5 [&_input]:font-sans [&_input]:leading-6.5"
-                  inputClassName="rounded-none bg-transparent text-sm"
-                  placeholder="Search models..."
+                  inputClassName={i18next.t("rounded-none bg-transparent text-sm")}
+                  placeholder={i18next.t("Search models...")}
                   showTrigger={false}
                   startAddon={
                     <SearchIcon className="-translate-x-0.5 size-4 shrink-0 text-muted-foreground opacity-70" />
@@ -726,10 +732,12 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
                           value={modelKey}
                           aria-expanded={legacySection.isExpanded}
                           className="group w-full cursor-pointer rounded-md px-2 py-2"
-                          contentClassName="flex w-full items-center gap-3"
+                          contentClassName={i18next.t("flex w-full items-center gap-3")}
                         >
                           <div className="min-w-0 flex-1 text-left">
-                            <div className="text-xs font-medium leading-snug">Legacy models</div>
+                            <div className="text-xs font-medium leading-snug">
+                              {i18next.t("Legacy models")}
+                            </div>
                             <div className="mt-1 text-xs font-normal leading-snug text-muted-foreground/70">
                               {legacySection.legacyModels.length} models
                             </div>
@@ -777,7 +785,7 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
                   estimatedItemSize={52}
                   drawDistance={480}
                   recycleItems
-                  contentContainerClassName="pl-2 pr-px"
+                  contentContainerClassName={i18next.t("pl-2 pr-px")}
                   ItemSeparatorComponent={ModelListSeparator}
                   onLayout={updateModelListScrollFades}
                   onScroll={updateModelListScrollFades}
@@ -792,7 +800,7 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
               </ComboboxListVirtualized>
             </div>
             <ComboboxEmpty className="not-empty:py-6 empty:h-0 text-xs font-normal leading-snug">
-              No models found
+              {i18next.t("No models found")}
             </ComboboxEmpty>
           </div>
         </Combobox>

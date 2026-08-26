@@ -18,7 +18,7 @@ const onCopy = (ref: React.RefObject<HTMLButtonElement | null>) => {
         anchor: ref.current,
       },
       timeout: ANCHORED_TOAST_TIMEOUT_MS,
-      title: "Copied!",
+      title: i18next.t("Copied!"),
     });
   }
 };
@@ -62,7 +62,7 @@ export const MessageCopyButton = memo(function MessageCopyButton({
       <TooltipTrigger
         render={
           <Button
-            aria-label="Copy link"
+            aria-label={i18next.t("Copy link")}
             disabled={isCopied}
             onClick={() => copyToClipboard(text)}
             ref={ref}
@@ -76,7 +76,7 @@ export const MessageCopyButton = memo(function MessageCopyButton({
         {isCopied ? <CheckIcon className="size-3 text-primary" /> : <CopyIcon className="size-3" />}
       </TooltipTrigger>
       <TooltipPopup>
-        <p>Copy to clipboard</p>
+        <p>{i18next.t("Copy to clipboard")}</p>
       </TooltipPopup>
     </Tooltip>
   );

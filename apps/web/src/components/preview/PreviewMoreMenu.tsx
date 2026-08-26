@@ -25,9 +25,9 @@ const COLOR_SCHEME_OPTIONS: ReadonlyArray<{
   value: DesktopPreviewColorScheme;
   label: string;
 }> = [
-  { value: "system", label: "System" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
+  { value: "system", label: i18next.t("System") },
+  { value: "light", label: i18next.t("Light") },
+  { value: "dark", label: i18next.t("Dark") },
 ];
 
 interface Props {
@@ -96,14 +96,14 @@ export function PreviewMoreMenu({
         >
           <MoreVertical />
         </TooltipTrigger>
-        <TooltipPopup>More</TooltipPopup>
+        <TooltipPopup>{i18next.t("More")}</TooltipPopup>
       </Tooltip>
       <MenuPopup align="end" sideOffset={6} className="min-w-56">
         <MenuItem onClick={callTab(bridge.hardReload)} disabled={tabDisabled}>
-          Hard reload
+          {i18next.t("Hard reload")}
         </MenuItem>
         <MenuItem onClick={callTab(bridge.openDevTools)} disabled={tabDisabled}>
-          Open DevTools
+          {i18next.t("Open DevTools")}
         </MenuItem>
         <MenuItem onClick={onNativePictureInPicture} disabled={tabDisabled}>
           {nativePictureInPicture
@@ -114,7 +114,7 @@ export function PreviewMoreMenu({
           {deviceToolbarVisible ? "Hide device toolbar" : "Show device toolbar"}
         </MenuItem>
         <MenuSub>
-          <MenuSubTrigger disabled={tabDisabled}>Appearance</MenuSubTrigger>
+          <MenuSubTrigger disabled={tabDisabled}>{i18next.t("Appearance")}</MenuSubTrigger>
           <MenuSubPopup className="min-w-32">
             <MenuRadioGroup
               value={colorScheme}
@@ -144,14 +144,14 @@ export function PreviewMoreMenu({
           className="justify-between"
           disabled={tabDisabled}
         >
-          <span>Zoom</span>
+          <span>{i18next.t("Zoom")}</span>
           <span className="flex items-center gap-1">
             <Button
               variant="outline"
               size="icon-xs"
               type="button"
               onClick={callTab(bridge.zoomOut)}
-              aria-label="Zoom out"
+              aria-label={i18next.t("Zoom out")}
               disabled={tabDisabled}
             >
               <Minus />
@@ -164,7 +164,7 @@ export function PreviewMoreMenu({
               size="icon-xs"
               type="button"
               onClick={callTab(bridge.zoomIn)}
-              aria-label="Zoom in"
+              aria-label={i18next.t("Zoom in")}
               disabled={tabDisabled}
             >
               <PlusIcon />
@@ -174,7 +174,7 @@ export function PreviewMoreMenu({
               size="icon-xs"
               type="button"
               onClick={callTab(bridge.resetZoom)}
-              aria-label="Reset zoom"
+              aria-label={i18next.t("Reset zoom")}
               className="[:hover,[data-pressed]]:bg-foreground/10"
               disabled={tabDisabled}
             >
@@ -184,10 +184,10 @@ export function PreviewMoreMenu({
         </MenuItem>
         <MenuSeparator />
         <MenuItem onClick={() => void bridge.clearCookies().catch(() => undefined)}>
-          Clear cookies
+          {i18next.t("Clear cookies")}
         </MenuItem>
         <MenuItem onClick={() => void bridge.clearCache().catch(() => undefined)}>
-          Clear cache
+          {i18next.t("Clear cache")}
         </MenuItem>
       </MenuPopup>
     </Menu>

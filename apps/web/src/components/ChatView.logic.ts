@@ -403,12 +403,12 @@ export function buildExpiredTerminalContextToastCopy(
   if (variant === "empty") {
     return {
       title: `${noun} won't be sent`,
-      description: "Remove it or re-add it to include terminal output.",
+      description: i18next.t("Remove it or re-add it to include terminal output."),
     };
   }
   return {
     title: `${noun} omitted from message`,
-    description: "Re-add it if you want that terminal output included.",
+    description: i18next.t("Re-add it if you want that terminal output included."),
   };
 }
 
@@ -526,8 +526,10 @@ export function getStartedThreadModelChangeBlockReason(input: {
     return null;
   }
   return {
-    title: "Start a new chat to change models",
-    description: "This provider does not allow switching models after a conversation has started.",
+    title: i18next.t("Start a new chat to change models"),
+    description: i18next.t(
+      "This provider does not allow switching models after a conversation has started.",
+    ),
   };
 }
 

@@ -266,7 +266,7 @@ function RightPanelEmptyState(props: {
 
   const actions = [
     {
-      label: "Browser",
+      label: i18next.t("Browser"),
       description: i18next.t("Open a local app or URL."),
       icon: Globe2,
       shortcut: "B",
@@ -276,8 +276,8 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      label: "Terminal",
-      description: "Start a shell in this workspace.",
+      label: i18next.t("Terminal"),
+      description: i18next.t("Start a shell in this workspace."),
       icon: TerminalSquare,
       shortcut: "T",
       available: props.terminalAvailable,
@@ -286,8 +286,8 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      label: "Files",
-      description: "Browse and read workspace files.",
+      label: i18next.t("Files"),
+      description: i18next.t("Browse and read workspace files."),
       icon: Files,
       shortcut: "F",
       available: props.filesAvailable,
@@ -296,8 +296,8 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      label: "Diff",
-      description: "Review changes in this thread.",
+      label: i18next.t("Diff"),
+      description: i18next.t("Review changes in this thread."),
       icon: FileDiff,
       shortcut: "D",
       available: props.diffAvailable,
@@ -306,8 +306,8 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      label: "Pull request",
-      description: "Open this branch's pull request.",
+      label: i18next.t("Pull request"),
+      description: i18next.t("Open this branch's pull request."),
       icon: GitPullRequest,
       shortcut: "P",
       available: props.pullRequestAvailable,
@@ -316,7 +316,7 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      label: "Agents",
+      label: i18next.t("Agents"),
       description: i18next.t("Follow subagents and workflows."),
       icon: Bot,
       shortcut: "A",
@@ -430,9 +430,9 @@ function RightPanelEmptyState(props: {
     >
       <div className="relative w-full max-w-lg">
         <div className="absolute inset-x-0 bottom-full mb-5 text-center">
-          <h3 className="font-medium text-foreground text-sm">Open a surface</h3>
+          <h3 className="font-medium text-foreground text-sm">{i18next.t("Open a surface")}</h3>
           <p className="mt-1 text-muted-foreground text-xs">
-            Choose what to show in the right panel.
+            {i18next.t("Choose what to show in the right panel.")}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -605,7 +605,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
 
   const addSurfaceActions = [
     {
-      label: "Browser",
+      label: i18next.t("Browser"),
       icon: Globe2,
       shortcut: "B",
       available: props.browserAvailable,
@@ -613,7 +613,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
       onClick: props.onAddBrowser,
     },
     {
-      label: "Terminal",
+      label: i18next.t("Terminal"),
       icon: TerminalSquare,
       shortcut: "T",
       available: props.terminalAvailable,
@@ -621,7 +621,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
       onClick: props.onAddTerminal,
     },
     {
-      label: "Files",
+      label: i18next.t("Files"),
       icon: Files,
       shortcut: "F",
       available: props.filesAvailable,
@@ -629,7 +629,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
       onClick: props.onAddFiles,
     },
     {
-      label: "Diff",
+      label: i18next.t("Diff"),
       icon: FileDiff,
       shortcut: "D",
       available: props.diffAvailable,
@@ -637,7 +637,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
       onClick: props.onAddDiff,
     },
     {
-      label: "Pull request",
+      label: i18next.t("Pull request"),
       icon: GitPullRequest,
       shortcut: "P",
       available: props.pullRequestAvailable,
@@ -645,7 +645,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
       onClick: props.onAddPullRequest,
     },
     {
-      label: "Agents",
+      label: i18next.t("Agents"),
       icon: Bot,
       shortcut: "A",
       available: props.agentsAvailable,
@@ -676,7 +676,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
 
       const items: ContextMenuItem<TabContextMenuAction>[] = [];
       if (surface.kind === "file") {
-        items.push({ id: "copy-path", label: "Copy path" });
+        items.push({ id: "copy-path", label: i18next.t("Copy path") });
       }
       const menuPreviewTabId = previewTabIdOf(surface, props.previewSessions);
       // Desktop overlay state only arrives once the preview manager has created
@@ -698,20 +698,20 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
         });
       }
       items.push(
-        { id: "close", label: "Close" },
+        { id: "close", label: i18next.t("Close") },
         {
           id: "close-others",
-          label: "Close others",
+          label: i18next.t("Close others"),
           disabled: props.surfaces.length <= 1,
         },
         {
           id: "close-to-right",
-          label: "Close to the right",
+          label: i18next.t("Close to the right"),
           disabled: surfaceIndex >= props.surfaces.length - 1,
         },
         {
           id: "close-all",
-          label: "Close all",
+          label: i18next.t("Close all"),
           disabled: props.surfaces.length === 0,
         },
       );
@@ -894,7 +894,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                 <MenuTrigger
                   render={
                     <Button
-                      aria-label="Add panel surface"
+                      aria-label={i18next.t("Add panel surface")}
                       className="size-6 shrink-0 text-muted-foreground hover:text-foreground"
                       size="icon-xs"
                       variant="ghost"

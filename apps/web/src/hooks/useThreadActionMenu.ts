@@ -95,13 +95,17 @@ export function useThreadActionMenu(input: {
   const { copyToClipboard: copyBranchToClipboard } = useCopyToClipboard<{ branch: string }>({
     target: "branch name",
     onCopy: ({ branch }) => {
-      toastManager.add({ type: "success", title: "Branch copied", description: branch });
+      toastManager.add({ type: "success", title: i18next.t("Branch copied"), description: branch });
     },
     onError: (error) => failureToast(i18next.t("Failed to copy branch"), error),
   });
   const { copyToClipboard: copyThreadIdToClipboard } = useCopyToClipboard<{ threadId: ThreadId }>({
     onCopy: ({ threadId }) => {
-      toastManager.add({ type: "success", title: "Thread ID copied", description: threadId });
+      toastManager.add({
+        type: "success",
+        title: i18next.t("Thread ID copied"),
+        description: threadId,
+      });
     },
     onError: (error) => failureToast(i18next.t("Failed to copy thread ID"), error),
   });
@@ -250,7 +254,7 @@ export function useThreadActionMenu(input: {
                 stackedThreadToast({
                   type: "error",
                   title: i18next.t("Path unavailable"),
-                  description: "This thread does not have a workspace path to copy.",
+                  description: i18next.t("This thread does not have a workspace path to copy."),
                 }),
               );
               return;

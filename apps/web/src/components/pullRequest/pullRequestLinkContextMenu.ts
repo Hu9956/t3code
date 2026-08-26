@@ -4,6 +4,7 @@ import { writeTextToClipboard } from "~/hooks/useCopyToClipboard";
 import { readLocalApi } from "~/localApi";
 
 import { toastManager } from "../ui/toast";
+import i18next from "i18next";
 
 export type PullRequestLinkContextMenuAction = "copy-link" | "open-external";
 
@@ -23,7 +24,7 @@ export function pullRequestLinkContextMenuItems(
   openLabel: string,
 ): readonly ContextMenuItem<PullRequestLinkContextMenuAction>[] {
   return [
-    { id: "copy-link", label: "Copy link", icon: "copy" },
+    { id: "copy-link", label: i18next.t("Copy link"), icon: "copy" },
     { id: "open-external", label: openLabel },
   ];
 }

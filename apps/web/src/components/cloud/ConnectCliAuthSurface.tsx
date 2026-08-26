@@ -14,6 +14,7 @@ import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { AuthSurfaceShell } from "../auth/AuthSurfaceShell";
 import { resolveClerkSignInProps } from "../clerk/authRedirect";
 import { Button } from "../ui/button";
+import i18next from "i18next";
 
 function ConnectCliAuthMessage({
   eyebrow,
@@ -39,9 +40,10 @@ function ConnectCliAuthMessage({
 
 const invalidLinkMessage = {
   eyebrow: "Authorization request",
-  title: "This connect link is incomplete",
-  description:
+  title: i18next.t("This connect link is incomplete"),
+  description: i18next.t(
     "The link is missing its authorization request. Re-run `t3 connect` in your terminal and open the freshly printed URL.",
+  ),
 } as const;
 
 /**
@@ -108,7 +110,7 @@ export function ConnectCliAuthorizeSurface() {
             ? "Step 1 of 2 · Browser authorization"
             : "Browser authorization"
         }
-        title="Connecting your terminal"
+        title={i18next.t("Connecting your terminal")}
         description={
           isSignedIn
             ? "Redirecting to authorize T3 Connect for your CLI…"
@@ -118,7 +120,7 @@ export function ConnectCliAuthorizeSurface() {
       {isLoaded && !isSignedIn ? (
         <div className="mt-6">
           <Button type="button" onClick={openSignIn}>
-            Sign in
+            {i18next.t("Sign in")}
           </Button>
         </div>
       ) : null}
@@ -140,9 +142,11 @@ export function ConnectCliCallbackSurface() {
     return (
       <AuthSurfaceShell>
         <ConnectCliAuthMessage
-          eyebrow="Step 2 of 2 · Terminal handoff"
-          title="Authorization did not complete"
-          description="No authorization code was returned. Re-run `t3 connect` in your terminal and try again."
+          eyebrow={i18next.t("Step 2 of 2 · Terminal handoff")}
+          title={i18next.t("Authorization did not complete")}
+          description={i18next.t(
+            "No authorization code was returned. Re-run `t3 connect` in your terminal and try again.",
+          )}
         />
       </AuthSurfaceShell>
     );
@@ -156,9 +160,11 @@ export function ConnectCliCallbackSurface() {
     return (
       <AuthSurfaceShell>
         <ConnectCliAuthMessage
-          eyebrow="Step 2 of 2 · Terminal handoff"
-          title="This code belongs to a different request"
-          description="This authorization response does not match a connect request started in this browser. Re-run `t3 connect` in your terminal and open the freshly printed URL in this browser."
+          eyebrow={i18next.t("Step 2 of 2 · Terminal handoff")}
+          title={i18next.t("This code belongs to a different request")}
+          description={i18next.t(
+            "This authorization response does not match a connect request started in this browser. Re-run `t3 connect` in your terminal and open the freshly printed URL in this browser.",
+          )}
         />
       </AuthSurfaceShell>
     );
@@ -170,8 +176,8 @@ export function ConnectCliCallbackSurface() {
   return (
     <AuthSurfaceShell>
       <ConnectCliAuthMessage
-        eyebrow="Step 2 of 2 · Terminal handoff"
-        title="Almost connected"
+        eyebrow={i18next.t("Step 2 of 2 · Terminal handoff")}
+        title={i18next.t("Almost connected")}
         description={
           accountLabel
             ? `Enter this code in your waiting terminal to connect it as ${accountLabel}.`
@@ -182,9 +188,11 @@ export function ConnectCliCallbackSurface() {
       <div className="mt-6 overflow-hidden rounded-xl border border-border/80 bg-background/65">
         <div className="flex items-center justify-between border-b border-border/70 px-4 py-2.5">
           <span className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-            One-time authorization code
+            {i18next.t("One-time authorization code")}
           </span>
-          <span className="font-mono text-[10px] text-muted-foreground">expires shortly</span>
+          <span className="font-mono text-[10px] text-muted-foreground">
+            {i18next.t("expires shortly")}
+          </span>
         </div>
         <code
           className="block p-4 font-mono text-sm leading-relaxed break-all select-all"
@@ -201,8 +209,9 @@ export function ConnectCliCallbackSurface() {
       </div>
 
       <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-        Only enter this code in a terminal session you started yourself. Anyone holding it can link
-        their machine to your T3 Connect account while it is valid.
+        {i18next.t(
+          "Only enter this code in a terminal session you started yourself. Anyone holding it can link\n        their machine to your T3 Connect account while it is valid.",
+        )}
       </p>
     </AuthSurfaceShell>
   );

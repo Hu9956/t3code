@@ -64,6 +64,7 @@ import {
   setProjectFileQueryData,
   useProjectFileQuery,
 } from "./projectFilesQueryState";
+import i18next from "i18next";
 
 interface FilePreviewPanelProps {
   environmentId: EnvironmentId;
@@ -144,7 +145,7 @@ function WorkspaceImagePreview(props: {
   if (assetUrl._tag === "Failure" || (assetUrl._tag === "Success" && failedUrl === assetUrl.url)) {
     return (
       <div className="flex min-h-0 flex-1 items-center justify-center px-6 text-center text-xs leading-relaxed text-destructive">
-        Unable to load workspace image.
+        {i18next.t("Unable to load workspace image.")}
       </div>
     );
   }
@@ -849,7 +850,7 @@ export default function FilePreviewPanel({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Unable to open file in browser",
+          title: i18next.t("Unable to open file in browser"),
           description: error instanceof Error ? error.message : "An error occurred.",
         }),
       );
@@ -950,7 +951,7 @@ export default function FilePreviewPanel({
                     className="shrink-0"
                     pressed={false}
                     onPressedChange={handleOpenInBrowser}
-                    aria-label="Open file in preview browser"
+                    aria-label={i18next.t("Open file in preview browser")}
                     variant="ghost"
                     size="sm"
                   >
@@ -958,7 +959,7 @@ export default function FilePreviewPanel({
                   </Toggle>
                 }
               />
-              <TooltipPopup>Open file in preview browser</TooltipPopup>
+              <TooltipPopup>{i18next.t("Open file in preview browser")}</TooltipPopup>
             </Tooltip>
           ) : null}
           <Tooltip>
@@ -984,7 +985,8 @@ export default function FilePreviewPanel({
       ) : null}
       {relativePath && file.data?.truncated ? (
         <div className="shrink-0 border-b border-warning/20 bg-warning-surface px-3 py-1.5 text-[11px] text-warning-foreground">
-          Preview limited to the first 1 MB of a {file.data.byteLength.toLocaleString()} byte file.
+          {i18next.t("Preview limited to the first 1 MB of a")}
+          {file.data.byteLength.toLocaleString()} {i18next.t("byte file.")}
         </div>
       ) : null}
       <div className="flex min-h-0 flex-1 overflow-hidden">

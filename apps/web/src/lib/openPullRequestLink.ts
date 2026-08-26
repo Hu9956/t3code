@@ -320,7 +320,7 @@ export function useOpenPrLink(threadRef?: ScopedThreadRef) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Unable to open pull request link",
+            title: i18next.t("Unable to open pull request link"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );

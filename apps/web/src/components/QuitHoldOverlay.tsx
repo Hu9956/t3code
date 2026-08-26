@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { isMacPlatform } from "../lib/utils";
+import i18next from "i18next";
 
 // Matches the hold duration in apps/desktop/src/window/QuitHold.ts: the hint
 // from a quick tap lingers for as long as a full hold would have taken.
@@ -40,7 +41,8 @@ export function QuitHoldOverlay() {
       className="pointer-events-none fixed inset-x-0 top-[22%] z-100 flex justify-center"
     >
       <div className="rounded-full bg-neutral-700/95 px-8 py-4 text-2xl font-bold text-white shadow-xl">
-        Hold {shortcut} to Quit
+        {i18next.t("Hold")}
+        {shortcut} {i18next.t("to Quit")}
       </div>
     </div>
   );

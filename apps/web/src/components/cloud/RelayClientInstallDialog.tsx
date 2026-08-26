@@ -18,17 +18,18 @@ import {
   DialogPopup,
   DialogTitle,
 } from "../ui/dialog";
+import i18next from "i18next";
 const installSteps: ReadonlyArray<{
   readonly stage: RelayClientInstallProgressStage;
   readonly label: string;
 }> = [
-  { stage: "checking", label: "Checking current installation" },
-  { stage: "waiting_for_lock", label: "Waiting for installer" },
-  { stage: "downloading", label: "Downloading relay client" },
-  { stage: "verifying", label: "Verifying download" },
-  { stage: "installing", label: "Installing relay client" },
-  { stage: "validating", label: "Validating executable" },
-  { stage: "activating", label: "Activating installation" },
+  { stage: "checking", label: i18next.t("Checking current installation") },
+  { stage: "waiting_for_lock", label: i18next.t("Waiting for installer") },
+  { stage: "downloading", label: i18next.t("Downloading relay client") },
+  { stage: "verifying", label: i18next.t("Verifying download") },
+  { stage: "installing", label: i18next.t("Installing relay client") },
+  { stage: "validating", label: i18next.t("Validating executable") },
+  { stage: "activating", label: i18next.t("Activating installation") },
 ];
 
 export function RelayClientInstallDialog() {
@@ -85,20 +86,22 @@ export function RelayClientInstallDialog() {
                 </p>
               </div>
               <progress
-                aria-label="Relay client installation progress"
+                aria-label={i18next.t("Relay client installation progress")}
                 className="h-2 w-full appearance-none overflow-hidden rounded-full bg-muted [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-primary"
                 max={installSteps.length}
                 value={activeStepIndex + 1}
               />
               <p className="text-xs leading-relaxed text-muted-foreground">
-                Keep T3 Code open while the relay client is installed.
+                {i18next.t("Keep T3 Code open while the relay client is installed.")}
               </p>
             </div>
           ) : (
             <div className="rounded-xl border border-border/70 bg-muted/35 p-3">
-              <p className="text-sm font-medium text-foreground">Managed relay client</p>
+              <p className="text-sm font-medium text-foreground">
+                {i18next.t("Managed relay client")}
+              </p>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                T3 Code will download and install version{" "}
+                {i18next.t("T3 Code will download and install version")}{" "}
                 {view.status === "confirming" ? view.version : ""} locally.
               </p>
             </div>
@@ -110,10 +113,10 @@ export function RelayClientInstallDialog() {
               variant="outline"
               onClick={() => respondToRelayClientInstallConfirmation(false)}
             >
-              Cancel
+              {i18next.t("Cancel")}
             </Button>
             <Button onClick={() => respondToRelayClientInstallConfirmation(true)}>
-              Download and install
+              {i18next.t("Download and install")}
             </Button>
           </DialogFooter>
         ) : null}

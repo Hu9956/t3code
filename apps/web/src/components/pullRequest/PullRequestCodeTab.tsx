@@ -83,6 +83,7 @@ import {
   usePullRequestReviewStore,
   type PendingReviewComment,
 } from "./pullRequestReviewStore";
+import i18next from "i18next";
 
 /** Everything pinned to one line of one file: what is already there, and what is being added. */
 interface ReviewAnnotationGroup {
@@ -672,9 +673,9 @@ export function PullRequestCodeTab({
         >
           {diffQuery.error !== null ? (
             <>
-              <span>The rest of this diff could not be loaded.</span>
+              <span>{i18next.t("The rest of this diff could not be loaded.")}</span>
               <Button size="xs" variant="outline" onClick={() => diffQuery.refresh()}>
-                Retry
+                {i18next.t("Retry")}
               </Button>
             </>
           ) : diffQuery.isPending ? (
@@ -810,7 +811,7 @@ export function PullRequestCodeTab({
           if (result._tag === "Failure") {
             toastManager.add({
               type: "error",
-              title: "More comments could not be loaded",
+              title: i18next.t("More comments could not be loaded"),
             });
             return null;
           }
@@ -882,11 +883,11 @@ export function PullRequestCodeTab({
             kind="draft"
             rangeLabel={`${draft.path}:${getReviewPositionAnchor(draft.position).line}`}
             text=""
-            submitLabel="Add to review"
+            submitLabel={i18next.t("Add to review")}
             {...(onAddToAgentSelection
               ? {
                   secondaryAction: {
-                    label: "Add to agent",
+                    label: i18next.t("Add to agent"),
                     onAction: (text: string) =>
                       finishSelection(draft, text, (comment) =>
                         onAddToAgentSelection({ comment, request: text }),
@@ -941,7 +942,7 @@ export function PullRequestCodeTab({
               type="button"
               size="icon-sm"
               variant="ghost"
-              aria-label="Close review"
+              aria-label={i18next.t("Close review")}
               className="absolute right-2 top-2"
               onClick={() => setReviewOpen(false)}
             >
@@ -967,7 +968,7 @@ export function PullRequestCodeTab({
             variant="glass"
           >
             <MessageSquareIcon className="size-3.5" />
-            Review
+            {i18next.t("Review")}
             {pendingComments.length > 0 ? (
               <span className="flex size-4 items-center justify-center rounded-full bg-accent text-[10px] tabular-nums text-accent-foreground">
                 {pendingComments.length}
@@ -1015,7 +1016,7 @@ export function PullRequestCodeTab({
                 className={commit === null ? "bg-foreground/[0.08]" : undefined}
                 onClick={() => onSelectedCommitChange(null)}
               >
-                <span>All commits</span>
+                <span>{i18next.t("All commits")}</span>
               </DropdownMenuItem>
               {orderedCommits.slice(0, visibleCommitCount).map((entry) => (
                 <DropdownMenuItem
@@ -1044,7 +1045,8 @@ export function PullRequestCodeTab({
                   onClick={() => setVisibleCommitCount((count) => count + COMMIT_PAGE_SIZE)}
                 >
                   <span className="text-muted-foreground">
-                    Show more ({orderedCommits.length - visibleCommitCount} left)
+                    {i18next.t("Show more (")}
+                    {orderedCommits.length - visibleCommitCount} left)
                   </span>
                 </DropdownMenuItem>
               ) : null}
@@ -1062,13 +1064,14 @@ export function PullRequestCodeTab({
             <Tooltip>
               <TooltipTrigger render={<span className="flex shrink-0 items-center" />}>
                 <TriangleAlertIcon
-                  aria-label="Some of this diff was not shown"
+                  aria-label={i18next.t("Some of this diff was not shown")}
                   className="size-3.5 text-amber-600 dark:text-amber-500"
                 />
               </TooltipTrigger>
               <TooltipPopup side="bottom">
-                The host withheld part of this diff — a binary file, or a change too large to
-                inline.
+                {i18next.t(
+                  "The host withheld part of this diff — a binary file, or a change too large to\n                inline.",
+                )}
               </TooltipPopup>
             </Tooltip>
           ) : null}
@@ -1076,12 +1079,14 @@ export function PullRequestCodeTab({
             <Tooltip>
               <TooltipTrigger render={<span className="flex shrink-0 items-center" />}>
                 <MessageSquareOffIcon
-                  aria-label="Line comments are written from the whole change"
+                  aria-label={i18next.t("Line comments are written from the whole change")}
                   className="size-3.5"
                 />
               </TooltipTrigger>
               <TooltipPopup side="bottom">
-                A comment is anchored to the whole change, so switch to All commits to write one.
+                {i18next.t(
+                  "A comment is anchored to the whole change, so switch to All commits to write one.",
+                )}
               </TooltipPopup>
             </Tooltip>
           ) : null}
@@ -1128,10 +1133,10 @@ export function PullRequestCodeTab({
             }
           }}
         >
-          <Toggle aria-label="Stacked diff view" value="stacked" variant="ghost">
+          <Toggle aria-label={i18next.t("Stacked diff view")} value="stacked" variant="ghost">
             <Rows3Icon className="size-3.5" />
           </Toggle>
-          <Toggle aria-label="Split diff view" value="split" variant="ghost">
+          <Toggle aria-label={i18next.t("Split diff view")} value="split" variant="ghost">
             <Columns2Icon className="size-3.5" />
           </Toggle>
         </ToggleGroup>
@@ -1176,7 +1181,9 @@ export function PullRequestCodeTab({
   // Under the toolbar rather than in place of it, so choosing a commit does not take the
   // dropdown that was just used off the screen while its diff loads.
   if (diffQuery.isPending && loadedSlices.length === 0) {
-    return withReviewBar(<DiffPanelLoadingState label="Loading pull request diff..." />);
+    return withReviewBar(
+      <DiffPanelLoadingState label={i18next.t("Loading pull request diff...")} />,
+    );
   }
 
   // A slice that fails once there are files on screen is reported at the end of them instead:
@@ -1298,7 +1305,10 @@ export function PullRequestCodeTab({
                       {threads.map((thread) => (
                         <div key={thread.id}>
                           {thread.line === null ? null : (
-                            <p className="px-3 text-xs text-muted-foreground">Line {thread.line}</p>
+                            <p className="px-3 text-xs text-muted-foreground">
+                              {i18next.t("Line")}
+                              {thread.line}
+                            </p>
                           )}
                           {renderThreadCard(thread)}
                         </div>

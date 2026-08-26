@@ -236,7 +236,8 @@ function LastSampleLabel({ sampledAt }: { sampledAt: DateTime.Utc | null }) {
   }
   return (
     <span className="text-[11px] text-muted-foreground/60">
-      Updated <span className="font-mono tabular-nums">{relative.value}</span>
+      {i18next.t("Updated")}
+      <span className="font-mono tabular-nums">{relative.value}</span>
       {relative.suffix ? ` ${relative.suffix}` : ""}
     </span>
   );
@@ -420,13 +421,13 @@ function ResourceHistoryChart({
     <div className="border-t border-border/60 px-4 py-4 sm:px-5">
       <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-muted-foreground/65">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-3 rounded-full bg-foreground/70" /> CPU average
+          <span className="h-1.5 w-3 rounded-full bg-foreground/70" /> {i18next.t("CPU average")}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-3 rounded-full bg-sky-500/70" /> I/O reads
+          <span className="h-1.5 w-3 rounded-full bg-sky-500/70" /> {i18next.t("I/O reads")}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-3 rounded-full bg-amber-500/80" /> I/O writes
+          <span className="h-1.5 w-3 rounded-full bg-amber-500/80" /> {i18next.t("I/O writes")}
         </span>
       </div>
       <div className="flex h-32 items-end gap-1 overflow-hidden rounded-lg border border-border/40 bg-muted/8 px-2 pt-3 pb-2">
@@ -467,10 +468,22 @@ function ResourceHistoryChart({
                 }
               />
               <TooltipPopup side="top" className="space-y-0.5 text-left">
-                <div>CPU avg {bucket.avgCpuPercent.toFixed(1)}%</div>
-                <div>CPU peak {bucket.maxCpuPercent.toFixed(1)}%</div>
-                <div>Read {formatBytes(bucket.ioReadBytes)}</div>
-                <div>Write {formatBytes(bucket.ioWriteBytes)}</div>
+                <div>
+                  {i18next.t("CPU avg")}
+                  {bucket.avgCpuPercent.toFixed(1)}%
+                </div>
+                <div>
+                  {i18next.t("CPU peak")}
+                  {bucket.maxCpuPercent.toFixed(1)}%
+                </div>
+                <div>
+                  {i18next.t("Read")}
+                  {formatBytes(bucket.ioReadBytes)}
+                </div>
+                <div>
+                  {i18next.t("Write")}
+                  {formatBytes(bucket.ioWriteBytes)}
+                </div>
               </TooltipPopup>
             </Tooltip>
           );
@@ -554,7 +567,7 @@ function ProcessActions({
         className="cursor-pointer text-[10px] font-semibold text-muted-foreground hover:text-foreground disabled:opacity-50"
         onClick={() => onSignal(process, "SIGINT")}
       >
-        INT
+        {i18next.t("INT")}
       </button>
       <button
         type="button"
@@ -623,8 +636,8 @@ function ProcessTable({
             <th className="px-3 py-2 text-right font-semibold">{i18next.t("CPU")}</th>
             <th className="px-3 py-2 text-right font-semibold">{i18next.t("CPU Time")}</th>
             <th className="px-3 py-2 text-right font-semibold">{i18next.t("Memory")}</th>
-            <th className="px-3 py-2 text-right font-semibold">Read/s</th>
-            <th className="px-3 py-2 text-right font-semibold">Write/s</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Read/s")}</th>
+            <th className="px-3 py-2 text-right font-semibold">{i18next.t("Write/s")}</th>
             <th className="px-3 py-2 text-right font-semibold">{i18next.t("Read Total")}</th>
             <th className="px-3 py-2 text-right font-semibold">{i18next.t("Write Total")}</th>
             <th className="px-3 py-2 text-right font-semibold">{i18next.t("PID")}</th>
@@ -635,7 +648,7 @@ function ProcessTable({
           {visible.length === 0 ? (
             <tr>
               <td colSpan={11} className="px-4 py-5 text-xs text-muted-foreground sm:px-5">
-                Waiting for the native process monitor.
+                {i18next.t("Waiting for the native process monitor.")}
               </td>
             </tr>
           ) : null}
@@ -734,7 +747,7 @@ function HistoryProcessTable({
           {processes.length === 0 ? (
             <tr>
               <td colSpan={9} className="px-4 py-5 text-xs text-muted-foreground sm:px-5">
-                No retained process samples in this window.
+                {i18next.t("No retained process samples in this window.")}
               </td>
             </tr>
           ) : null}
@@ -815,7 +828,7 @@ function AttributionTable({ entries }: { entries: ReadonlyArray<ResourceAttribut
           {entries.length === 0 ? (
             <tr>
               <td colSpan={6} className="px-4 py-5 text-xs text-muted-foreground sm:px-5">
-                No instrumented application I/O has been recorded yet.
+                {i18next.t("No instrumented application I/O has been recorded yet.")}
               </td>
             </tr>
           ) : null}
@@ -1011,16 +1024,18 @@ export function ResourceTelemetryDiagnostics() {
           <div className="flex flex-col gap-3 border-b border-border/60 bg-linear-to-r from-muted/45 via-muted/20 to-transparent px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">
-                T3 system footprint
+                {i18next.t("T3 system footprint")}
               </div>
               <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground">
-                Live native counters for the server, providers, terminals, desktop processes, and
-                the monitor itself.
+                {i18next.t(
+                  "Live native counters for the server, providers, terminals, desktop processes, and\n                the monitor itself.",
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground/65">
               <span className="size-1.5 rounded-full bg-emerald-500" />
-              Sampling every {snapshot ? formatSampleInterval(snapshot.sampleIntervalMs) : "..."}
+              {i18next.t("Sampling every")}
+              {snapshot ? formatSampleInterval(snapshot.sampleIntervalMs) : "..."}
             </div>
           </div>
           <div className="grid grid-cols-2 divide-x divide-y divide-border/55 md:grid-cols-3">
@@ -1110,7 +1125,7 @@ export function ResourceTelemetryDiagnostics() {
           collectorNeedsRetry ? (
             <Button size="xs" variant="outline" disabled={isRetrying} onClick={retryCollector}>
               <RotateCcwIcon className={cn("size-3", isRetrying && "animate-spin")} />
-              Retry monitor
+              {i18next.t("Retry monitor")}
             </Button>
           ) : null
         }
@@ -1121,7 +1136,7 @@ export function ResourceTelemetryDiagnostics() {
               <span className="flex size-6 items-center justify-center rounded-md bg-muted/60">
                 <BatteryIcon className="size-3.5" />
               </span>
-              Host state
+              {i18next.t("Host state")}
             </div>
             {hasHostPowerSignal && snapshot ? (
               <>
@@ -1175,11 +1190,12 @@ export function ResourceTelemetryDiagnostics() {
             ) : (
               <div className="rounded-xl border border-dashed border-border/70 bg-muted/20 px-4 py-5">
                 <div className="text-[13px] font-medium text-foreground">
-                  Desktop host signals not connected
+                  {i18next.t("Desktop host signals not connected")}
                 </div>
                 <p className="mt-1.5 max-w-sm text-[11px] leading-relaxed text-muted-foreground/70">
-                  Power, idle, lock, and thermal state are supplied by the desktop host. Process
-                  telemetry remains fully active in this browser session.
+                  {i18next.t(
+                    "Power, idle, lock, and thermal state are supplied by the desktop host. Process\n                  telemetry remains fully active in this browser session.",
+                  )}
                 </p>
               </div>
             )}
@@ -1189,7 +1205,7 @@ export function ResourceTelemetryDiagnostics() {
               <span className="flex size-6 items-center justify-center rounded-md bg-muted/60">
                 <GaugeIcon className="size-3.5" />
               </span>
-              Collection health
+              {i18next.t("Collection health")}
             </div>
             {snapshot ? (
               <>
@@ -1236,7 +1252,7 @@ export function ResourceTelemetryDiagnostics() {
               </>
             ) : (
               <div className="py-4 text-xs text-muted-foreground">
-                Waiting for collector health.
+                {i18next.t("Waiting for collector health.")}
               </div>
             )}
           </div>
@@ -1279,7 +1295,8 @@ export function ResourceTelemetryDiagnostics() {
         headerAction={
           snapshot ? (
             <span className="text-[10px] text-muted-foreground/55">
-              Identity: <span className="font-mono">{i18next.t("PID + start time")}</span>
+              {i18next.t("Identity:")}
+              <span className="font-mono">{i18next.t("PID + start time")}</span>
             </span>
           ) : null
         }
@@ -1304,9 +1321,9 @@ export function ResourceTelemetryDiagnostics() {
       >
         <div className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_1px_1px_rgb(0_0_0/0.03)]">
           <div className="bg-muted/15 px-4 py-3 text-[11px] leading-relaxed text-muted-foreground sm:px-5">
-            Native counters identify which process is reading or writing. These application-level
-            counters identify known T3 operations so process spikes can be correlated with specific
-            persistence and logging paths.
+            {i18next.t(
+              "Native counters identify which process is reading or writing. These application-level\n            counters identify known T3 operations so process spikes can be correlated with specific\n            persistence and logging paths.",
+            )}
           </div>
           <AttributionTable entries={snapshot?.attribution.entries ?? []} />
         </div>

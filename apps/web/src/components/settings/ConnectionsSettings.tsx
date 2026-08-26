@@ -708,7 +708,9 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
           </p>
           {shareablePairingUrl === null ? (
             <p className="text-[11px] text-muted-foreground/70">
-              Copy the token and pair from another client using this backend&apos;s reachable host.
+              {i18next.t(
+                "Copy the token and pair from another client using this backend&apos;s reachable host.",
+              )}
             </p>
           ) : null}
         </div>
@@ -735,7 +737,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
             {canCopyToClipboard ? (
               shareablePairingUrl ? null : (
                 <Button size="xs" variant="outline" onClick={handleCopyCode}>
-                  Copy code
+                  {i18next.t("Copy code")}
                 </Button>
               )
             ) : (
@@ -787,7 +789,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
                 </Button>
                 {canCopyToClipboard ? (
                   <Button variant="outline" size="xs" onClick={handleCopyCode}>
-                    Copy code
+                    {i18next.t("Copy code")}
                   </Button>
                 ) : null}
               </DialogFooter>
@@ -873,7 +875,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
               </Button>
             </div>
             <Button size="xs" variant="ghost" onClick={handleCopyCode}>
-              Copy code only
+              {i18next.t("Copy code only")}
             </Button>
           </div>
           {canRenderQrForSelection ? (
@@ -889,8 +891,9 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
           ) : (
             <div className="flex size-[192px] shrink-0 items-center justify-center self-center rounded-xl border border-border/50 p-4 sm:self-start">
               <p className="text-center text-[11px] text-muted-foreground/70">
-                No QR for this endpoint. Another device scanning a loopback link would dial itself;
-                copy the URL for use on this machine instead.
+                {i18next.t(
+                  "No QR for this endpoint. Another device scanning a loopback link would dial itself;\n                copy the URL for use on this machine instead.",
+                )}
               </p>
             </div>
           )}
@@ -949,7 +952,7 @@ const ConnectedClientListRow = memo(function ConnectedClientListRow({
             <h3 className="text-sm font-medium text-foreground">{primaryLabel}</h3>
             {clientSession.current ? (
               <span className="text-[10px] text-muted-foreground/80 rounded-md border border-border/50 bg-muted/50 px-1 py-0.5">
-                This device
+                {i18next.t("This device")}
               </span>
             ) : null}
           </div>
@@ -1051,7 +1054,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
           render={
             <Button size="xs" variant="default">
               <PlusIcon className="size-3" />
-              Create link
+              {i18next.t("Create link")}
             </Button>
           }
         />
@@ -1059,14 +1062,15 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
           <DialogHeader>
             <DialogTitle>{i18next.t("Create pairing link")}</DialogTitle>
             <DialogDescription>
-              Generate a one-time link that another device can use to pair with this backend as an
-              authorized client.
+              {i18next.t(
+                "Generate a one-time link that another device can use to pair with this backend as an\n              authorized client.",
+              )}
             </DialogDescription>
           </DialogHeader>
           <DialogPanel className="space-y-5">
             <label className="block">
               <span className="mb-1.5 block text-xs font-medium text-foreground">
-                Client label (optional)
+                {i18next.t("Client label (optional)")}
               </span>
               <Input
                 value={pairingLabel}
@@ -1083,7 +1087,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
                     {i18next.t("Permissions")}
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    Limit what the paired client can do.
+                    {i18next.t("Limit what the paired client can do.")}
                   </p>
                 </div>
                 <div className="flex gap-1">
@@ -1093,7 +1097,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
                     disabled={isCreatingPairingLink}
                     onClick={() => setPairingScopes([AuthOrchestrationReadScope])}
                   >
-                    Read only
+                    {i18next.t("Read only")}
                   </Button>
                   <Button
                     size="xs"
@@ -1132,7 +1136,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
                 </p>
               ) : pairingScopes.includes(AuthAccessWriteScope) ? (
                 <p className="text-xs text-warning">
-                  This client can create or revoke access for other devices.
+                  {i18next.t("This client can create or revoke access for other devices.")}
                 </p>
               ) : null}
             </section>
@@ -1272,14 +1276,14 @@ const AdvertisedEndpointListRow = memo(function AdvertisedEndpointListRow({
           ) : null}
           {!isAvailable ? (
             <span className="shrink-0 rounded-md border border-border/70 px-1 py-0.5 text-[10px] text-muted-foreground">
-              Setup required
+              {i18next.t("Setup required")}
             </span>
           ) : null}
         </div>
         <div className="ml-auto flex min-h-6 shrink-0 items-center justify-end gap-2">
           {isDefault ? (
             <span className="rounded-md border border-primary/30 bg-primary/10 px-1 py-0.5 text-[10px] text-primary">
-              Default
+              {i18next.t("Default")}
             </span>
           ) : null}
           {needsTailscaleSetup ? (
@@ -1304,7 +1308,7 @@ const AdvertisedEndpointListRow = memo(function AdvertisedEndpointListRow({
           ) : null}
           {!needsTailscaleSetup && !isDefault ? (
             <Button size="xs" variant="outline" onClick={() => onSetDefault(endpoint)}>
-              Set as default
+              {i18next.t("Set as default")}
             </Button>
           ) : null}
         </div>
@@ -1464,7 +1468,7 @@ function SavedBackendListRow({
                     type="button"
                     className="w-fit cursor-help rounded-sm text-left text-muted-foreground text-xs"
                   >
-                    Server update available
+                    {i18next.t("Server update available")}
                   </button>
                 }
               />
@@ -1483,7 +1487,7 @@ function SavedBackendListRow({
                   className="shrink-0 underline underline-offset-2"
                   onClick={() => copyTraceId(errorTraceId)}
                 >
-                  Copy trace ID
+                  {i18next.t("Copy trace ID")}
                 </button>
               ) : null}
             </p>
@@ -1505,12 +1509,14 @@ function SavedBackendListRow({
               <TooltipTrigger
                 render={
                   <Button size="xs" variant="outline" disabled>
-                    Managed above
+                    {i18next.t("Managed above")}
                   </Button>
                 }
               />
               <TooltipPopup side="top" className="max-w-80 whitespace-pre-wrap leading-tight">
-                The WSL backend is managed by the WSL setting above — turn it on or off there.
+                {i18next.t(
+                  "The WSL backend is managed by the WSL setting above — turn it on or off there.",
+                )}
               </TooltipPopup>
             </Tooltip>
           ) : (
@@ -1703,10 +1709,12 @@ function ConfiguredCloudLinkRow({ canManageRelay }: { readonly canManageRelay: b
       ) : null}
       <SettingsRow
         title={i18next.t("Publish agent activity")}
-        description="Send activity from this environment to your mobile clients for push notifications and Live Activities. Works without a T3 Connect tunnel."
+        description={i18next.t(
+          "Send activity from this environment to your mobile clients for push notifications and Live Activities. Works without a T3 Connect tunnel.",
+        )}
         control={
           <CloudLinkSwitch
-            ariaLabel="Publish agent activity to mobile clients"
+            ariaLabel={i18next.t("Publish agent activity to mobile clients")}
             checked={publishAgentActivity}
             disabled={!canManageRelay || !isSignedIn || primaryCloudLinkState.isPending || isBusy}
             disabledReason={disabledReason}
@@ -1732,8 +1740,10 @@ function EmptyRemoteEnvironments({ cloudEnabled = true }: { readonly cloudEnable
         <EmptyTitle>{i18next.t("No saved remote environments")}</EmptyTitle>
         <EmptyDescription>
           {cloudEnabled
-            ? "Click “Add environment” to pair another environment, or connect one from T3 Connect."
-            : "Click “Add environment” to pair another environment."}
+            ? i18next.t(
+                "Click “Add environment” to pair another environment, or connect one from T3 Connect.",
+              )
+            : i18next.t("Click “Add environment” to pair another environment.")}
         </EmptyDescription>
       </EmptyHeader>
     </Empty>
@@ -2470,7 +2480,7 @@ export function ConnectionsSettings() {
       </div>
       <div>
         <span className="mt-1 block text-[11px] text-muted-foreground">
-          Paste a full pairing URL here to fill both fields automatically.
+          {i18next.t("Paste a full pairing URL here to fill both fields automatically.")}
         </span>
       </div>
     </div>
@@ -2495,7 +2505,7 @@ export function ConnectionsSettings() {
       <div className="space-y-3">
         <label className="block">
           <span className="mb-1.5 block text-xs font-medium text-foreground">
-            SSH host or alias
+            {i18next.t("SSH host or alias")}
           </span>
           <Input
             value={savedBackendSshHost}
@@ -2566,7 +2576,7 @@ export function ConnectionsSettings() {
             ) : (
               <RefreshCwIcon className="size-3" />
             )}
-            Refresh
+            {i18next.t("Refresh")}
           </Button>
         </div>
         <ScrollArea scrollFade className="max-h-56">
@@ -2828,7 +2838,9 @@ export function ConnectionsSettings() {
       return (
         <SettingsRow
           title={i18next.t("WSL backend")}
-          description="WSL is no longer available, so the Windows backend is running instead. Switch off the WSL backend to clear this preference."
+          description={i18next.t(
+            "WSL is no longer available, so the Windows backend is running instead. Switch off the WSL backend to clear this preference.",
+          )}
           status={
             desktopWslError ? (
               <span className="block text-destructive">{desktopWslError}</span>
@@ -2840,7 +2852,7 @@ export function ConnectionsSettings() {
               disabled={isUpdatingWslBackend}
               onClick={() => handleSelectWslMode(BACKEND_VALUE_WSL_OFF)}
             >
-              Switch to Windows
+              {i18next.t("Switch to Windows")}
             </Button>
           }
         />
@@ -2865,13 +2877,16 @@ export function ConnectionsSettings() {
       <>
         <SettingsRow
           title={i18next.t("WSL backend")}
-          description="Run a second backend inside a WSL distro alongside the Windows one. Pick a distro to start it; pick Off to stop it. Projects opened against the WSL backend live on the Linux side; Windows projects stay where they are."
+          description={i18next.t(
+            "Run a second backend inside a WSL distro alongside the Windows one. Pick a distro to start it; pick Off to stop it. Projects opened against the WSL backend live on the Linux side; Windows projects stay where they are.",
+          )}
           status={
             desktopWslError ? (
               <span className="block text-destructive">{desktopWslError}</span>
             ) : desktopWslState.preflightError ? (
               <span className="block text-destructive">
-                WSL backend couldn't start: {desktopWslState.preflightError}
+                {i18next.t("WSL backend couldn't start:")}
+                {desktopWslState.preflightError}
               </span>
             ) : null
           }
@@ -2892,11 +2907,11 @@ export function ConnectionsSettings() {
               </SelectTrigger>
               <SelectPopup align="end" alignItemWithTrigger={false}>
                 <SelectItem hideIndicator value={BACKEND_VALUE_WSL_OFF}>
-                  Off
+                  {i18next.t("Off")}
                 </SelectItem>
                 {desktopWslState.distros.length === 0 ? (
                   <SelectItem hideIndicator value={BACKEND_VALUE_DEFAULT_WSL}>
-                    Default distro
+                    {i18next.t("Default distro")}
                   </SelectItem>
                 ) : (
                   desktopWslState.distros.map((distro) => (
@@ -2913,7 +2928,9 @@ export function ConnectionsSettings() {
         {desktopWslState.enabled ? (
           <SettingsRow
             title={i18next.t("WSL only")}
-            description="Stop the Windows backend and run only the WSL backend. Useful if you develop entirely inside WSL and don't want a second backend process. T3 Code restarts when you change this."
+            description={i18next.t(
+              "Stop the Windows backend and run only the WSL backend. Useful if you develop entirely inside WSL and don't want a second backend process. T3 Code restarts when you change this.",
+            )}
             className="bg-muted/20 pl-7 sm:pl-8"
             control={
               <Switch
@@ -3033,8 +3050,9 @@ export function ConnectionsSettings() {
             }
           />
           <TooltipPopup side="top">
-            Network exposure changes restart the backend and must be controlled where the server
-            process is launched.
+            {i18next.t(
+              "Network exposure changes restart the backend and must be controlled where the server\n            process is launched.",
+            )}
           </TooltipPopup>
         </Tooltip>
       }
@@ -3063,7 +3081,7 @@ export function ConnectionsSettings() {
                       <TooltipTrigger
                         render={
                           <button type="button" className="w-fit cursor-help rounded-sm text-left">
-                            Update to match this client.
+                            {i18next.t("Update to match this client.")}
                           </button>
                         }
                       />
@@ -3169,7 +3187,7 @@ export function ConnectionsSettings() {
                   {isUpdatingDesktopServerExposure ? (
                     <>
                       <Spinner className="size-3.5" />
-                      Restarting…
+                      {i18next.t("Restarting…")}
                     </>
                   ) : pendingDesktopServerExposureMode === "network-accessible" ? (
                     "Restart and enable"
@@ -3233,7 +3251,7 @@ export function ConnectionsSettings() {
                       {isUpdatingWslBackend ? (
                         <>
                           <Spinner className="size-3.5" />
-                          Applying…
+                          {i18next.t("Applying…")}
                         </>
                       ) : (
                         "Use only WSL"
@@ -3247,7 +3265,7 @@ export function ConnectionsSettings() {
                       {isUpdatingWslBackend ? (
                         <>
                           <Spinner className="size-3.5" />
-                          Applying…
+                          {i18next.t("Applying…")}
                         </>
                       ) : (
                         "Run both backends"
@@ -3268,7 +3286,7 @@ export function ConnectionsSettings() {
                     {isUpdatingWslBackend ? (
                       <>
                         <Spinner className="size-3.5" />
-                        Applying…
+                        {i18next.t("Applying…")}
                       </>
                     ) : pendingWslChange?.kind === "disable" ? (
                       pendingWslChange.wasWslOnly ? (
@@ -3299,7 +3317,7 @@ export function ConnectionsSettings() {
               <AlertDialogHeader>
                 <AlertDialogTitle>{i18next.t("Disable Tailscale HTTPS?")}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  T3 Code will restart the local backend without Tailscale Serve.
+                  {i18next.t("T3 Code will restart the local backend without Tailscale Serve.")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -3317,7 +3335,7 @@ export function ConnectionsSettings() {
                   {isUpdatingTailscaleServe ? (
                     <>
                       <Spinner className="size-3.5" />
-                      Restarting…
+                      {i18next.t("Restarting…")}
                     </>
                   ) : (
                     "Restart and disable"
@@ -3337,8 +3355,9 @@ export function ConnectionsSettings() {
               <DialogHeader>
                 <DialogTitle>{i18next.t("Set up Tailscale HTTPS?")}</DialogTitle>
                 <DialogDescription>
-                  T3 Code will restart the local backend with Tailscale Serve enabled and ask
-                  Tailscale to proxy HTTPS traffic to this backend.
+                  {i18next.t(
+                    "T3 Code will restart the local backend with Tailscale Serve enabled and ask\n                  Tailscale to proxy HTTPS traffic to this backend.",
+                  )}
                 </DialogDescription>
               </DialogHeader>
               <DialogPanel className="space-y-4">
@@ -3397,7 +3416,7 @@ export function ConnectionsSettings() {
                   {isUpdatingTailscaleServe ? (
                     <>
                       <Spinner className="size-3.5" />
-                      Restarting…
+                      {i18next.t("Restarting…")}
                     </>
                   ) : (
                     "Enable"
@@ -3411,7 +3430,9 @@ export function ConnectionsSettings() {
         <SettingsSection title={i18next.t("This environment")}>
           <SettingsRow
             title={i18next.t("Administrative access")}
-            description="Pairing links and client-session management require the access:write scope for this backend."
+            description={i18next.t(
+              "Pairing links and client-session management require the access:write scope for this backend.",
+            )}
           />
           <CloudLinkRow canManageRelay={canManageRelay} />
         </SettingsSection>

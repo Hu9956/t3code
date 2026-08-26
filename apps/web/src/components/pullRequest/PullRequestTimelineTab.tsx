@@ -50,6 +50,7 @@ import {
   pullRequestReviewOutcomeStaleLabel,
   pullRequestReviewOutcomeToneClassName,
 } from "./pullRequestPresentation";
+import i18next from "i18next";
 
 /** What every comment on the timeline needs to react; only the subject differs between them. */
 interface ReactionSurface {
@@ -160,7 +161,7 @@ function OpenOnHostButton({ url, onOpen }: { url: string | null; onOpen: (url: s
       size="icon-xs"
       variant="ghost"
       className="-mr-1 -mt-1 shrink-0 text-muted-foreground"
-      aria-label="Open activity on host"
+      aria-label={i18next.t("Open activity on host")}
       onClick={() => onOpen(url)}
     >
       <ExternalLinkIcon className="size-3" />
@@ -199,7 +200,7 @@ function ConversationCard({
     });
     setSaving(false);
     if (result._tag === "Failure") {
-      toastManager.add({ type: "error", title: "Could not save the comment" });
+      toastManager.add({ type: "error", title: i18next.t("Could not save the comment") });
       return;
     }
     setEditing(false);
@@ -231,7 +232,7 @@ function ConversationCard({
               size="icon-xs"
               variant="ghost"
               className="-mt-1 shrink-0 text-muted-foreground opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:opacity-100"
-              aria-label="Edit comment"
+              aria-label={i18next.t("Edit comment")}
               onClick={() => setEditing(true)}
             >
               <PencilIcon className="size-3" />
@@ -246,7 +247,7 @@ function ConversationCard({
             value={editable.body}
             cwd={cwd}
             environmentId={reactions.environmentId}
-            label="Edit comment"
+            label={i18next.t("Edit comment")}
             saving={saving}
             onSave={(body) => void save(body)}
             onCancel={() => setEditing(false)}
@@ -408,16 +409,16 @@ function LifecycleEvent({ event }: { event: PullRequestTimelineEvent }) {
     event.kind === "opened"
       ? {
           icon: <GitPullRequestIcon className="size-3.5" />,
-          label: "Pull request opened",
+          label: i18next.t("Pull request opened"),
         }
       : event.kind === "merged"
         ? {
             icon: <GitMergeIcon className="size-3.5" />,
-            label: "Pull request merged",
+            label: i18next.t("Pull request merged"),
           }
         : {
             icon: <GitPullRequestClosedIcon className="size-3.5" />,
-            label: "Pull request closed",
+            label: i18next.t("Pull request closed"),
           };
 
   return (
@@ -489,7 +490,9 @@ function ReviewVerdictEvent({
                 }
               >
                 {pullRequestReviewOutcomeLabel(outcome)}
-                {stale ? <span className="sr-only">, before the latest commits</span> : null}
+                {stale ? (
+                  <span className="sr-only">{i18next.t(", before the latest commits")}</span>
+                ) : null}
               </TooltipTrigger>
               <TooltipPopup>{pullRequestReviewOutcomeStaleLabel(outcome)}</TooltipPopup>
             </Tooltip>
@@ -614,7 +617,7 @@ export function PullRequestTimelineTab({
         {events.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
             <GitPullRequestIcon className="mb-2 size-5" />
-            <p className="text-xs">No activity yet.</p>
+            <p className="text-xs">{i18next.t("No activity yet.")}</p>
           </div>
         ) : null}
       </div>

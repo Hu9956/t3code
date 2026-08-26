@@ -57,7 +57,7 @@ export const ExpandedImageDialog = memo(function ExpandedImageDialog({
       <button
         type="button"
         className="absolute inset-0 z-0 cursor-zoom-out"
-        aria-label="Close image preview"
+        aria-label={i18next.t("Close image preview")}
         onClick={onClose}
       />
       {preview.images.length > 1 && (
@@ -79,7 +79,7 @@ export const ExpandedImageDialog = memo(function ExpandedImageDialog({
           variant="ghost"
           className="absolute right-2 top-2"
           onClick={onClose}
-          aria-label="Close image preview"
+          aria-label={i18next.t("Close image preview")}
         >
           <XIcon />
         </Button>

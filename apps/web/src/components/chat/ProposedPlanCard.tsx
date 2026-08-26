@@ -60,7 +60,7 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Could not copy plan",
+          title: i18next.t("Could not copy plan"),
           description: error instanceof Error ? error.message : "An error occurred while copying.",
         }),
       );
@@ -90,8 +90,8 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Workspace path is unavailable",
-          description: "This thread does not have a workspace path to save into.",
+          title: i18next.t("Workspace path is unavailable"),
+          description: i18next.t("This thread does not have a workspace path to save into."),
         }),
       );
       return;
@@ -108,7 +108,7 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
     if (!relativePath) {
       toastManager.add({
         type: "warning",
-        title: "Enter a workspace path",
+        title: i18next.t("Enter a workspace path"),
       });
       return;
     }
@@ -138,7 +138,7 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not save plan",
+            title: i18next.t("Could not save plan"),
             description: error instanceof Error ? error.message : "An error occurred while saving.",
           }),
         );
@@ -150,7 +150,7 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
     <div className="rounded-[24px] border border-border/80 bg-card/70 p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <Badge variant="secondary">Plan</Badge>
+          <Badge variant="secondary">{i18next.t("Plan")}</Badge>
           <p className="truncate text-sm font-medium text-foreground">{title}</p>
         </div>
         <Menu>
@@ -165,9 +165,9 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
             <MenuItem onClick={handleCopyPlan}>
               {isCopied ? "Copied!" : "Copy to clipboard"}
             </MenuItem>
-            <MenuItem onClick={handleDownload}>Download as markdown</MenuItem>
+            <MenuItem onClick={handleDownload}>{i18next.t("Download as markdown")}</MenuItem>
             <MenuItem onClick={openSaveDialog} disabled={!workspaceRoot || isSavingToWorkspace}>
-              Save to workspace
+              {i18next.t("Save to workspace")}
             </MenuItem>
           </MenuPopup>
         </Menu>
@@ -217,14 +217,17 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
       >
         <DialogPopup className="max-w-xl">
           <DialogHeader>
-            <DialogTitle>Save plan to workspace</DialogTitle>
+            <DialogTitle>{i18next.t("Save plan to workspace")}</DialogTitle>
             <DialogDescription>
-              Enter a path relative to <code>{workspaceRoot ?? "the workspace"}</code>.
+              {i18next.t("Enter a path relative to")}
+              <code>{workspaceRoot ?? "the workspace"}</code>.
             </DialogDescription>
           </DialogHeader>
           <DialogPanel className="space-y-3">
             <label htmlFor={savePathInputId} className="grid gap-1.5">
-              <span className="text-xs font-medium text-foreground">Workspace path</span>
+              <span className="text-xs font-medium text-foreground">
+                {i18next.t("Workspace path")}
+              </span>
               <Input
                 id={savePathInputId}
                 value={savePath}
@@ -242,7 +245,7 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
               onClick={() => setIsSaveDialogOpen(false)}
               disabled={isSavingToWorkspace}
             >
-              Cancel
+              {i18next.t("Cancel")}
             </Button>
             <Button
               size="sm"

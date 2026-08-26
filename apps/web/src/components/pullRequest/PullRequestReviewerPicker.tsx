@@ -26,6 +26,7 @@ import { toastManager } from "../ui/toast";
 import { PullRequestPeopleGhost } from "./PullRequestGhosts";
 import { PullRequestActorLabel } from "./pullRequestPresentation";
 import { readableFailure } from "./pullRequestDetail.logic";
+import i18next from "i18next";
 
 /** Long lists are common — an organisation repository lists everyone — so what arrived can be
  * narrowed here. It narrows only what arrived: the host is asked once, when the menu opens. */
@@ -109,13 +110,18 @@ export function PullRequestReviewerPicker({
       <Tooltip>
         <TooltipTrigger
           render={
-            <Button size="icon-xs" variant="ghost" disabled aria-label="Request a review">
+            <Button
+              size="icon-xs"
+              variant="ghost"
+              disabled
+              aria-label={i18next.t("Request a review")}
+            >
               <UserPlusIcon className="size-3.5" />
             </Button>
           }
         />
         <TooltipPopup side="bottom">
-          Asking someone to review needs write access on this repository
+          {i18next.t("Asking someone to review needs write access on this repository")}
         </TooltipPopup>
       </Tooltip>
     );
@@ -125,7 +131,7 @@ export function PullRequestReviewerPicker({
     <Menu open={open} onOpenChange={setOpen}>
       <MenuTrigger
         render={
-          <Button size="icon-xs" variant="ghost" aria-label="Request a review">
+          <Button size="icon-xs" variant="ghost" aria-label={i18next.t("Request a review")}>
             <UserPlusIcon className="size-3.5" />
           </Button>
         }
@@ -136,8 +142,8 @@ export function PullRequestReviewerPicker({
             autoFocus
             value={query}
             onChange={(event) => setQuery(event.currentTarget.value)}
-            placeholder="Search people with access"
-            aria-label="Search people with access"
+            placeholder={i18next.t("Search people with access")}
+            aria-label={i18next.t("Search people with access")}
             size="compact"
           />
         </div>
@@ -146,7 +152,8 @@ export function PullRequestReviewerPicker({
             <PullRequestPeopleGhost rows={4} />
           ) : candidatesQuery.error !== null ? (
             <p className="p-2 text-xs text-muted-foreground">
-              The people with access could not be read. {candidatesQuery.error}
+              {i18next.t("The people with access could not be read.")}
+              {candidatesQuery.error}
             </p>
           ) : candidates.length === 0 ? (
             <p className="p-2 text-xs text-muted-foreground">
@@ -168,7 +175,10 @@ export function PullRequestReviewerPicker({
                   <span className="shrink-0 text-muted-foreground">team</span>
                 ) : null}
                 {candidate.isRequested ? (
-                  <CheckIcon aria-label="Already asked" className="size-3.5 shrink-0" />
+                  <CheckIcon
+                    aria-label={i18next.t("Already asked")}
+                    className="size-3.5 shrink-0"
+                  />
                 ) : null}
               </button>
             ))
@@ -177,8 +187,9 @@ export function PullRequestReviewerPicker({
             // Typing filters what arrived; it does not ask the host again, so this says what the
             // list is rather than offering a search that would find nothing further.
             <p className="px-2 py-1.5 text-xs text-muted-foreground">
-              This repository has more people with access than are listed here. Ask for the rest on
-              the host.
+              {i18next.t(
+                "This repository has more people with access than are listed here. Ask for the rest on\n              the host.",
+              )}
             </p>
           ) : null}
         </div>

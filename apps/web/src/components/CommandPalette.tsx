@@ -326,7 +326,7 @@ function buildAddProjectRemoteSourceReadiness(
 ): AddProjectRemoteSourceReadiness {
   const unavailable = {
     ready: false,
-    hint: "Provider status unavailable. Open Settings -> Source Control and rescan.",
+    hint: i18next.t("Provider status unavailable. Open Settings -> Source Control and rescan."),
   } as const;
   const defaultReadiness: AddProjectRemoteSourceReadiness = {
     url: { ready: true, hint: null },
@@ -1043,7 +1043,7 @@ function OpenCommandPaletteDialog(props: {
           renderDescription: (project) => {
             const location = projectEnvironmentLocationById.get(project.environmentId) ?? {
               kind: "remote",
-              label: "Remote",
+              label: i18next.t("Remote"),
             };
             return (
               <span className="flex min-w-0 items-center gap-1">
@@ -1261,7 +1261,7 @@ function OpenCommandPaletteDialog(props: {
           value: `action:add-project:${environmentId}:local`,
           searchTerms: ["local", "folder", "directory", "browse"],
           title: i18next.t("Local folder"),
-          description: "Browse a folder on disk",
+          description: i18next.t("Browse a folder on disk"),
           icon: <FolderPlusIcon className={ITEM_ICON_CLASS} />,
           keepOpen: true,
           run: async () => {
@@ -1298,7 +1298,7 @@ function OpenCommandPaletteDialog(props: {
                       openSourceControlSettings();
                     }}
                   >
-                    Setup Required
+                    {i18next.t("Setup Required")}
                   </Button>
                 }
               />
@@ -1339,7 +1339,9 @@ function OpenCommandPaletteDialog(props: {
         });
       }
 
-      return [{ value: `sources:${environmentId}`, label: "Sources", items: sourceItems }];
+      return [
+        { value: `sources:${environmentId}`, label: i18next.t("Sources"), items: sourceItems },
+      ];
     },
     [openSourceControlSettings, startAddProjectBrowse, startAddProjectClone],
   );
@@ -1473,7 +1475,7 @@ function OpenCommandPaletteDialog(props: {
       groups: [
         {
           value: "projects",
-          label: "Projects",
+          label: i18next.t("Projects"),
           items: enumerateCommandPaletteItems(prioritized),
         },
       ],
@@ -1502,7 +1504,8 @@ function OpenCommandPaletteDialog(props: {
         searchTerms: ["new thread", "chat", "create", "draft"],
         title: (
           <>
-            New thread in <span className="font-semibold">{activeProjectTitle}</span>
+            {i18next.t("New thread in")}
+            <span className="font-semibold">{activeProjectTitle}</span>
           </>
         ),
         icon: <SquarePenIcon className={ITEM_ICON_CLASS} />,
@@ -1702,7 +1705,7 @@ function OpenCommandPaletteDialog(props: {
           stackedThreadToast({
             type: "error",
             title: i18next.t("Failed to add project"),
-            description: "Windows-style paths are only supported on Windows.",
+            description: i18next.t("Windows-style paths are only supported on Windows."),
           }),
         );
         return;
@@ -1713,7 +1716,7 @@ function OpenCommandPaletteDialog(props: {
           stackedThreadToast({
             type: "error",
             title: i18next.t("Failed to add project"),
-            description: "Relative paths require an active project.",
+            description: i18next.t("Relative paths require an active project."),
           }),
         );
         return;
@@ -1898,7 +1901,7 @@ function OpenCommandPaletteDialog(props: {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Repository lookup failed",
+              title: i18next.t("Repository lookup failed"),
               description: errorMessage(squashAtomCommandFailure(lookupResult)),
             }),
           );
@@ -1933,8 +1936,8 @@ function OpenCommandPaletteDialog(props: {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Clone failed",
-          description: "Windows-style paths are only supported on Windows.",
+          title: i18next.t("Clone failed"),
+          description: i18next.t("Windows-style paths are only supported on Windows."),
         }),
       );
       return;
@@ -1944,8 +1947,8 @@ function OpenCommandPaletteDialog(props: {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Clone failed",
-          description: "Relative paths require an active project.",
+          title: i18next.t("Clone failed"),
+          description: i18next.t("Relative paths require an active project."),
         }),
       );
       return;
@@ -1973,7 +1976,7 @@ function OpenCommandPaletteDialog(props: {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Clone failed",
+            title: i18next.t("Clone failed"),
             description: errorMessage(squashAtomCommandFailure(cloneResult)),
           }),
         );
@@ -2051,7 +2054,9 @@ function OpenCommandPaletteDialog(props: {
   const cloneDestinationBrowseGroups = useMemo(
     () =>
       browseGroups.map((group) =>
-        group.value === "directories" ? { ...group, label: "Select where to clone" } : group,
+        group.value === "directories"
+          ? { ...group, label: i18next.t("Select where to clone") }
+          : group,
       ),
     [browseGroups],
   );
@@ -2361,10 +2366,12 @@ function OpenCommandPaletteDialog(props: {
         >
           <span>{isRemoteProjectPending ? t("Working") : remoteProjectButtonLabel}</span>
           <KbdGroup className="pointer-events-none -me-0.5 items-center gap-1">
-            <Kbd>Enter</Kbd>
+            <Kbd>{i18next.t("Enter")}</Kbd>
           </KbdGroup>
         </TooltipTrigger>
-        <TooltipPopup side="top">{remoteProjectButtonLabel ?? t("Continue")} (Enter)</TooltipPopup>
+        <TooltipPopup side="top">
+          {remoteProjectButtonLabel ?? t("Continue")} {i18next.t("(Enter)")}
+        </TooltipPopup>
       </Tooltip>
     ) : isBrowsing ? (
       <Tooltip>

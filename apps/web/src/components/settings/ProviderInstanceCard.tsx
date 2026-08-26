@@ -516,12 +516,14 @@ export function ProviderInstanceCard({
       statusDotClassName={statusStyle.dot}
       indicatorBackground="var(--card)"
       className="size-5"
-      iconClassName="size-4 text-foreground/80"
-      badgeClassName="right-[-0.125rem] bottom-[-0.125rem] h-3 min-w-3 px-0.5 text-[7px]"
+      iconClassName={i18next.t("size-4 text-foreground/80")}
+      badgeClassName={i18next.t(
+        "right-[-0.125rem] bottom-[-0.125rem] h-3 min-w-3 px-0.5 text-[7px]",
+      )}
     />
   ) : FallbackIconComponent ? (
     <span className="relative inline-flex size-5 shrink-0 items-center justify-center">
-      <FallbackIconComponent className="size-4 text-foreground/80" aria-hidden />
+      <FallbackIconComponent className={i18next.t("size-4 text-foreground/80")} aria-hidden />
       <span
         className={cn(
           "pointer-events-none absolute -left-0.5 -top-0.5 size-2 rounded-full ring-2 ring-card",
@@ -799,9 +801,10 @@ export function ProviderInstanceCard({
               <div>
                 <p className="text-xs text-muted-foreground">
                   {i18next.t("This instance uses a driver (")}
-                  <code className="text-foreground">{String(instance.driver)}</code>) that is not
-                  shipped with the current build. Configuration values are preserved but cannot be
-                  edited from this surface.
+                  <code className="text-foreground">{String(instance.driver)}</code>
+                  {i18next.t(
+                    ") that is not\n                  shipped with the current build. Configuration values are preserved but cannot be\n                  edited from this surface.",
+                  )}
                 </p>
               </div>
             )}

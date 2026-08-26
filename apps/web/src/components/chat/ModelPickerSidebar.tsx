@@ -9,6 +9,7 @@ import {
   shouldShowInstanceBadge,
   type ProviderInstanceEntry,
 } from "../../providerInstances";
+import i18next from "i18next";
 
 /**
  * Build the hover tooltip for an instance button. Mirrors the old
@@ -111,7 +112,7 @@ export const ModelPickerSidebar = memo(function ModelPickerSidebar(props: {
                         )}
                         onClick={() => handleSelect("favorites")}
                         type="button"
-                        aria-label="Favorites"
+                        aria-label={i18next.t("Favorites")}
                       >
                         <StarIcon className="size-5 fill-current shrink-0" aria-hidden />
                       </button>
@@ -123,7 +124,7 @@ export const ModelPickerSidebar = memo(function ModelPickerSidebar(props: {
                     align="center"
                     className={PICKER_TOOLTIP_CLASS}
                   >
-                    Favorites
+                    {i18next.t("Favorites")}
                   </TooltipPopup>
                 </Tooltip>
               </div>

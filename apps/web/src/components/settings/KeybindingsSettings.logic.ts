@@ -12,6 +12,7 @@ import {
 } from "@t3tools/shared/keybindings";
 
 import { isMacPlatform } from "../../lib/utils";
+import i18next from "i18next";
 
 export type KeybindingSource = "Default" | "Custom" | "Project";
 
@@ -83,7 +84,7 @@ export function parseWhenExpressionDraft(
   if (!ast) {
     return {
       ok: false,
-      message: "Use variables with !, &&, ||, and parentheses.",
+      message: i18next.t("Use variables with !, &&, ||, and parentheses."),
     };
   }
 

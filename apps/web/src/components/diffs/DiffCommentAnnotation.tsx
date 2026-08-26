@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 
 import { isCommentSubmitShortcut } from "./commentSubmitShortcut";
+import i18next from "i18next";
 
 interface DiffCommentSecondaryAction {
   readonly label: string;
@@ -60,7 +61,7 @@ export function DiffCommentAnnotation({
             className="-my-1 -mr-1 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover/comment:opacity-100 focus-visible:opacity-100 max-sm:opacity-100"
             variant="ghost"
             size="icon-xs"
-            aria-label="Delete comment"
+            aria-label={i18next.t("Delete comment")}
             onClick={onDelete}
           >
             <Trash2 className="size-3" />
@@ -102,14 +103,16 @@ export function DiffCommentAnnotation({
         }}
       />
       <div className="mt-1.5 flex items-center gap-1">
-        <span className="mr-auto text-[10px] text-muted-foreground/70">⌘/Ctrl Enter to send</span>
+        <span className="mr-auto text-[10px] text-muted-foreground/70">
+          {i18next.t("⌘/Ctrl Enter to send")}
+        </span>
         <Button
           className="text-muted-foreground hover:text-foreground"
           variant="ghost"
           size="xs"
           onClick={onCancel}
         >
-          Cancel
+          {i18next.t("Cancel")}
         </Button>
         {secondaryAction ? (
           <Button

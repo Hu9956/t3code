@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
+import i18next from "i18next";
 
 type ConfirmationCopy = {
   readonly title: string;
@@ -48,7 +49,7 @@ export function resolveConfirmDialogCopy(message: string): ConfirmationCopy {
   }
 
   return {
-    title: "Confirm action",
+    title: i18next.t("Confirm action"),
     description: normalizedMessage || "This action requires your confirmation.",
   };
 }

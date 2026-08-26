@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import i18next from "i18next";
 
 interface BranchToolbarEnvironmentSelectorProps {
   envLocked: boolean;
@@ -83,7 +84,7 @@ export const BranchToolbarEnvironmentSelector = memo(function BranchToolbarEnvir
         variant="ghost"
         size="xs"
         className="min-w-0 max-w-full font-medium"
-        aria-label="Run on"
+        aria-label={i18next.t("Run on")}
         data-composer-context-control
       >
         {activeEnvironment?.isPrimary ? (
@@ -105,7 +106,7 @@ export const BranchToolbarEnvironmentSelector = memo(function BranchToolbarEnvir
       </SelectTrigger>
       <SelectPopup>
         <SelectGroup>
-          <SelectGroupLabel>Run on</SelectGroupLabel>
+          <SelectGroupLabel>{i18next.t("Run on")}</SelectGroupLabel>
           {availableEnvironments.map((env) => (
             <SelectItem key={env.environmentId} value={env.environmentId}>
               <span className="inline-flex items-center gap-1.5">

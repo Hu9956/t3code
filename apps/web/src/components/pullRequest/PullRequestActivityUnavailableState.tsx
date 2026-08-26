@@ -3,6 +3,7 @@ import { RefreshCwIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
 
 import { Button } from "../ui/button";
+import i18next from "i18next";
 
 export function PullRequestActivityUnavailableState({
   error,
@@ -20,11 +21,13 @@ export function PullRequestActivityUnavailableState({
         compact ? "py-3" : "min-h-48 px-4 py-10",
       )}
     >
-      <p className="text-sm font-medium text-foreground">Could not load pull request activity</p>
+      <p className="text-sm font-medium text-foreground">
+        {i18next.t("Could not load pull request activity")}
+      </p>
       <p className="max-w-md text-xs text-muted-foreground">{error}</p>
       <Button size="sm" variant="outline" onClick={onRetry}>
         <RefreshCwIcon aria-hidden className="size-3.5" />
-        Retry
+        {i18next.t("Retry")}
       </Button>
     </div>
   );

@@ -9,6 +9,7 @@ import {
   getChangeRequestTerminology,
   type ChangeRequestTerminology,
 } from "../sourceControlPresentation";
+import i18next from "i18next";
 
 export type GitActionIconName = "commit" | "push" | "pr";
 
@@ -124,7 +125,7 @@ export function buildMenuItems(
 
   const commitItem: GitActionMenuItem = {
     id: "commit",
-    label: "Commit",
+    label: i18next.t("Commit"),
     disabled: !canCommit,
     icon: "commit",
     kind: "open_dialog",
@@ -139,7 +140,7 @@ export function buildMenuItems(
     commitItem,
     {
       id: "push",
-      label: "Push",
+      label: i18next.t("Push"),
       disabled: !canPush,
       icon: "push",
       kind: "open_dialog",
@@ -171,15 +172,20 @@ export function resolveQuickAction(
   hasPrimaryRemote = true,
 ): GitQuickAction {
   if (isBusy) {
-    return { label: "Commit", disabled: true, kind: "show_hint", hint: "Git action in progress." };
+    return {
+      label: i18next.t("Commit"),
+      disabled: true,
+      kind: "show_hint",
+      hint: i18next.t("Git action in progress."),
+    };
   }
 
   if (!gitStatus) {
     return {
-      label: "Commit",
+      label: i18next.t("Commit"),
       disabled: true,
       kind: "show_hint",
-      hint: "Git status is unavailable.",
+      hint: i18next.t("Git status is unavailable."),
     };
   }
 
@@ -194,7 +200,7 @@ export function resolveQuickAction(
 
   if (!hasBranch) {
     return {
-      label: "Commit",
+      label: i18next.t("Commit"),
       disabled: true,
       kind: "show_hint",
       hint: `Create and checkout a ref before pushing or opening a ${terminology.singular}.`,
@@ -203,10 +209,15 @@ export function resolveQuickAction(
 
   if (hasChanges) {
     if (!gitStatus.hasUpstream && !hasPrimaryRemote) {
-      return { label: "Commit", disabled: false, kind: "run_action", action: "commit" };
+      return { label: i18next.t("Commit"), disabled: false, kind: "run_action", action: "commit" };
     }
     if (hasOpenPr || isDefaultRef) {
-      return { label: "Commit & push", disabled: false, kind: "run_action", action: "commit_push" };
+      return {
+        label: i18next.t("Commit & push"),
+        disabled: false,
+        kind: "run_action",
+        action: "commit_push",
+      };
     }
     return {
       label: `Commit, push & ${terminology.shortLabel}`,
@@ -222,7 +233,7 @@ export function resolveQuickAction(
         return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
       }
       return {
-        label: "Publish repository",
+        label: i18next.t("Publish repository"),
         disabled: false,
         kind: "open_publish",
       };
@@ -232,15 +243,15 @@ export function resolveQuickAction(
         return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
       }
       return {
-        label: "Push",
+        label: i18next.t("Push"),
         disabled: true,
         kind: "show_hint",
-        hint: "No local commits to push.",
+        hint: i18next.t("No local commits to push."),
       };
     }
     if (hasOpenPr || isDefaultRef) {
       return {
-        label: "Push",
+        label: i18next.t("Push"),
         disabled: false,
         kind: "run_action",
         action: isDefaultRef ? "commit_push" : "push",
@@ -256,16 +267,16 @@ export function resolveQuickAction(
 
   if (isDiverged) {
     return {
-      label: "Sync ref",
+      label: i18next.t("Sync ref"),
       disabled: true,
       kind: "show_hint",
-      hint: "Branch has diverged from upstream. Rebase/merge first.",
+      hint: i18next.t("Branch has diverged from upstream. Rebase/merge first."),
     };
   }
 
   if (isBehind) {
     return {
-      label: "Pull",
+      label: i18next.t("Pull"),
       disabled: false,
       kind: "run_pull",
     };
@@ -274,7 +285,7 @@ export function resolveQuickAction(
   if (isAhead) {
     if (hasOpenPr || isDefaultRef) {
       return {
-        label: "Push",
+        label: i18next.t("Push"),
         disabled: false,
         kind: "run_action",
         action: isDefaultRef ? "commit_push" : "push",
@@ -302,10 +313,10 @@ export function resolveQuickAction(
   }
 
   return {
-    label: "Commit",
+    label: i18next.t("Commit"),
     disabled: true,
     kind: "show_hint",
-    hint: "Branch is up to date. No action needed.",
+    hint: i18next.t("Branch is up to date. No action needed."),
   };
 }
 
@@ -335,13 +346,13 @@ export function resolveDefaultBranchActionDialogCopy(input: {
   if (input.action === "push" || input.action === "commit_push") {
     if (input.includesCommit) {
       return {
-        title: "Commit & push to default ref?",
+        title: i18next.t("Commit & push to default ref?"),
         description: `This action will commit and push changes${suffix}`,
         continueLabel: `Commit & push to ${branchLabel}`,
       };
     }
     return {
-      title: "Push to default ref?",
+      title: i18next.t("Push to default ref?"),
       description: `This action will push local commits${suffix}`,
       continueLabel: `Push to ${branchLabel}`,
     };

@@ -8,6 +8,7 @@ import {
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "../ui/collapsible";
 import { cn } from "~/lib/utils";
+import i18next from "i18next";
 
 interface PendingUserInputPanelProps {
   pendingUserInputs: PendingUserInput[];
@@ -221,7 +222,9 @@ const ComposerPendingUserInputCard = memo(function ComposerPendingUserInputCard(
         <div className="pt-2 pb-0.5">
           <p className="text-sm text-foreground/85">{activeQuestion.question}</p>
           {activeQuestion.multiSelect ? (
-            <p className="mt-1 text-secondary-label text-xs">Select one or more options.</p>
+            <p className="mt-1 text-secondary-label text-xs">
+              {i18next.t("Select one or more options.")}
+            </p>
           ) : null}
           <div className="mt-2 space-y-0.5">
             {activeQuestion.options.map((option, index) => {

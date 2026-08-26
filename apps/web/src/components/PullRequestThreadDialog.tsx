@@ -199,11 +199,15 @@ export function PullRequestThreadDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <SourceControlIcon className="size-4" />
-            Checkout {terminology.singular}
+            {i18next.t("Checkout")}
+            {terminology.singular}
           </DialogTitle>
           <DialogDescription>
-            Resolve a {sourceControlPresentation.providerName} {terminology.singular}, then create
-            the draft thread in the main repo or in a dedicated worktree.
+            {i18next.t("Resolve a")}
+            {sourceControlPresentation.providerName} {terminology.singular}
+            {i18next.t(
+              ", then create\n            the draft thread in the main repo or in a dedicated worktree.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <DialogPanel className="space-y-4">
@@ -251,7 +255,8 @@ export function PullRequestThreadDialog({
           {isResolving ? (
             <div className="flex items-center gap-2 text-muted-foreground text-xs">
               <Spinner className="size-3.5" />
-              Resolving {terminology.singular}...
+              {i18next.t("Resolving")}
+              {terminology.singular}...
             </div>
           ) : null}
 
@@ -265,7 +270,7 @@ export function PullRequestThreadDialog({
             onClick={() => onOpenChange(false)}
             disabled={preparePullRequestThreadAction.isPending}
           >
-            Cancel
+            {i18next.t("Cancel")}
           </Button>
           <Button
             type="button"

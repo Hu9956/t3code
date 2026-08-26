@@ -201,7 +201,7 @@ function ConfiguredConnectOnboardingDialog() {
     if (!ok) return;
     toastManager.add({
       type: "success",
-      title: "T3 Connect enabled",
+      title: i18next.t("T3 Connect enabled"),
       description: exposeEnvironment
         ? "This environment is available to your other devices through T3 Connect."
         : "This environment publishes agent activity to your mobile clients.",
@@ -220,10 +220,11 @@ function ConfiguredConnectOnboardingDialog() {
     >
       <DialogPopup className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>Set up T3 Connect</DialogTitle>
+          <DialogTitle>{i18next.t("Set up T3 Connect")}</DialogTitle>
           <DialogDescription>
-            Mesh your devices together — publish this environment and connect the rest, all in one
-            place.
+            {i18next.t(
+              "Mesh your devices together — publish this environment and connect the rest, all in one\n            place.",
+            )}
           </DialogDescription>
           {steps.length > 1 ? (
             <OnboardingStepper
@@ -254,13 +255,13 @@ function ConfiguredConnectOnboardingDialog() {
               checked={dontShowAgain}
               onCheckedChange={(checked) => setDontShowAgain(checked === true)}
             />
-            Don&apos;t show this again
+            {i18next.t("Don&apos;t show this again")}
           </label>
           <div className="flex flex-col-reverse gap-2 sm:flex-row">
             {step === "publish" ? (
               <>
                 <Button variant="ghost" disabled={isApplying} onClick={() => setStep("devices")}>
-                  Not now
+                  {i18next.t("Not now")}
                 </Button>
                 <Button
                   disabled={
@@ -273,7 +274,7 @@ function ConfiguredConnectOnboardingDialog() {
               </>
             ) : (
               <Button disabled={isApplying} onClick={complete}>
-                Done
+                {i18next.t("Done")}
               </Button>
             )}
           </div>
@@ -331,7 +332,8 @@ function OnboardingStepper({
             {index < currentIndex ? <CheckIcon className="size-3" /> : null}
           </span>
           <span className="text-[10px] font-medium uppercase text-muted-foreground">
-            Step {index + 1}
+            {i18next.t("Step")}
+            {index + 1}
           </span>
           <span className="truncate text-xs font-semibold text-foreground">
             {STEP_LABELS[step]}
@@ -361,7 +363,7 @@ function PublishStep({
     <div className="space-y-3">
       <div className="rounded-lg border">
         <OnboardingToggleRow
-          title="Publish this environment"
+          title={i18next.t("Publish this environment")}
           description={i18next.t(
             "Make this environment available to your other devices through T3 Connect.",
           )}
@@ -370,8 +372,10 @@ function PublishStep({
           onCheckedChange={onExposeEnvironmentChange}
         />
         <OnboardingToggleRow
-          title="Publish agent activity"
-          description="Send activity from this environment to your mobile clients for push notifications and Live Activities."
+          title={i18next.t("Publish agent activity")}
+          description={i18next.t(
+            "Send activity from this environment to your mobile clients for push notifications and Live Activities.",
+          )}
           checked={publishAgentActivity}
           disabled={disabled}
           onCheckedChange={onPublishAgentActivityChange}
@@ -426,8 +430,9 @@ function DevicesStep() {
         showSavedEnvironments
         empty={
           <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-            No other environments are published to your account yet. Publish one from another device
-            and it will show up here.
+            {i18next.t(
+              "No other environments are published to your account yet. Publish one from another device\n            and it will show up here.",
+            )}
           </p>
         }
       />

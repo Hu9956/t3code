@@ -6,6 +6,7 @@ import { cn } from "~/lib/utils";
 import { type PromptStashEntry } from "../../promptStashStore";
 import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command";
 import { Button } from "../ui/button";
+import i18next from "i18next";
 
 const SNIPPET_MAX_CHARS = 90;
 
@@ -117,7 +118,7 @@ export const ComposerStashMenu = memo(function ComposerStashMenu(props: {
           <Button
             variant="ghost-muted"
             size="icon-micro"
-            aria-label="Close stash"
+            aria-label={i18next.t("Close stash")}
             onPointerDown={(event) => event.preventDefault()}
             onClick={onClose}
           >
@@ -128,7 +129,9 @@ export const ComposerStashMenu = memo(function ComposerStashMenu(props: {
           <CommandGroup>
             {entries.length === 0 ? (
               <p className="px-3 py-1.5 text-secondary-label text-xs">
-                Nothing stashed yet. Press ⌘S with a prompt in the composer to stash it.
+                {i18next.t(
+                  "Nothing stashed yet. Press ⌘S with a prompt in the composer to stash it.",
+                )}
               </p>
             ) : (
               entries.map((entry) => (
@@ -183,7 +186,7 @@ export const ComposerStashMenu = memo(function ComposerStashMenu(props: {
                     variant="ghost"
                     size="icon-xs"
                     className="pointer-events-none shrink-0 [--control-icon-color:currentColor] opacity-0 shadow-none! transition-opacity pointer-coarse:pointer-events-auto pointer-coarse:opacity-100 group-hover/stash:pointer-events-auto group-hover/stash:opacity-100 group-focus-within/stash:pointer-events-auto group-focus-within/stash:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100"
-                    aria-label="Delete stashed prompt"
+                    aria-label={i18next.t("Delete stashed prompt")}
                     onClick={(event) => {
                       event.stopPropagation();
                       onDelete(entry);

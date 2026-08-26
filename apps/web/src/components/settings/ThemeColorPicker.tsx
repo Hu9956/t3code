@@ -371,7 +371,7 @@ function ThemeColorPickerPanel({
         <div className="grid grid-cols-[1fr_1.2fr] gap-2">
           <label className="grid min-w-0 gap-1">
             <span className="px-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-              HEX
+              {i18next.t("HEX")}
             </span>
             <span className="flex min-w-0 items-center gap-2 rounded-lg border border-input bg-background px-2 focus-within:border-ring">
               <span
@@ -397,7 +397,7 @@ function ThemeColorPickerPanel({
           </label>
           <label className="grid min-w-0 gap-1">
             <span className="px-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-              RGB
+              {i18next.t("RGB")}
             </span>
             <span className="flex min-w-0 items-center rounded-lg border border-input bg-background px-2 focus-within:border-ring">
               <input
