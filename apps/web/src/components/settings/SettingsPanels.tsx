@@ -161,6 +161,8 @@ const TIMESTAMP_FORMAT_LABELS = {
   "24-hour": "24-hour",
 } as const;
 
+type TimestampFormatLabelKey = keyof typeof TIMESTAMP_FORMAT_LABELS;
+
 const BACKGROUND_ACTIVITY_PROFILE_LABELS: Record<BackgroundActivityProfile, string> = {
   balanced: "Balanced",
   performance: "Performance",
