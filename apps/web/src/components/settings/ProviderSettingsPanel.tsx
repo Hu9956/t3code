@@ -90,6 +90,7 @@ import {
   SettingsSection,
   useRelativeTimeTick,
 } from "./settingsLayout";
+import { useTranslation } from "react-i18next";
 import {
   buildProviderEnvironmentOptions,
   classifyProviderEnvironmentAccess,
@@ -122,6 +123,7 @@ const PROVIDER_SETTINGS = DRIVER_OPTIONS.map((definition) => ({
 
 function ProviderLastChecked({ lastCheckedAt }: { lastCheckedAt: string | null }) {
   useRelativeTimeTick();
+  const { t } = useTranslation();
   const lastCheckedRelative = getRelativeTimeState(lastCheckedAt);
 
   if (lastCheckedRelative.status === "missing") {
@@ -129,18 +131,20 @@ function ProviderLastChecked({ lastCheckedAt }: { lastCheckedAt: string | null }
   }
 
   if (lastCheckedRelative.status === "invalid") {
-    return <span className="text-[11px] text-muted-foreground/50">Checked unavailable</span>;
+    return <span className="text-[11px] text-muted-foreground/50">{t("Checked unavailable")}</span>;
   }
 
   return (
     <span className="text-[11px] text-muted-foreground/60">
       {lastCheckedRelative.suffix ? (
         <>
-          Checked <span className="font-mono tabular-nums">{lastCheckedRelative.value}</span>{" "}
+          {t("Checked")} <span className="font-mono tabular-nums">{lastCheckedRelative.value}</span>{" "}
           {lastCheckedRelative.suffix}
         </>
       ) : (
-        <>Checked {lastCheckedRelative.value}</>
+        <>
+          {t("Checked")} {lastCheckedRelative.value}
+        </>
       )}
     </span>
   );
@@ -169,16 +173,17 @@ function EnvironmentUnavailableRow({
   readonly environment: EnvironmentPresentation;
   readonly access: Exclude<ProviderEnvironmentAccess, { kind: "editable" | "read-only" }>;
 }) {
+  const { t } = useTranslation();
   const isLoading = access.kind === "loading";
   const title = isLoading
-    ? "Loading provider settings"
+    ? t("Loading provider settings")
     : access.kind === "error"
-      ? "Could not connect to this device"
-      : "Provider settings are unavailable";
+      ? t("Could not connect to this device")
+      : t("Provider settings are unavailable");
   const description = isLoading
     ? access.reason === "permissions"
-      ? "Checking what this session is allowed to change."
-      : `Waiting for ${environment.label}'s configuration.`
+      ? t("Checking what this session is allowed to change.")
+      : t("Waiting for {{name}}'s configuration.", { name: environment.label })
     : connectionStatusText(environment.connection);
   // No spinner: this state can persist indefinitely for a wedged device, and a
   // continuously repainting animation would run the whole time.
@@ -190,6 +195,7 @@ function EnvironmentUnavailableRow({
 }
 
 export function ProviderSettingsPanel() {
+  const { t } = useTranslation();
   const { environments, isReady } = useEnvironments();
   const primaryEnvironmentId = usePrimaryEnvironmentId();
   const options = useMemo(
@@ -368,6 +374,7 @@ export function EnvironmentProviderSettings({
    */
   readonly readOnly?: boolean;
 }) {
+  const { t } = useTranslation();
   const settings = useEnvironmentSettings(environmentId);
   const updateSettings = useUpdateEnvironmentSettings(environmentId);
   const serverProviders =
@@ -682,13 +689,13 @@ export function EnvironmentProviderSettings({
                         size="icon-micro"
                         variant="ghost-muted"
                         onClick={() => setIsAddInstanceDialogOpen(true)}
-                        aria-label="Add provider instance"
+                        aria-label={t("Add provider instance")}
                       >
                         <PlusIcon className="size-3" />
                       </Button>
                     }
                   />
-                  <TooltipPopup side="top">Add provider instance</TooltipPopup>
+                  <TooltipPopup side="top">{t("Add provider instance")}</TooltipPopup>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger
@@ -698,7 +705,7 @@ export function EnvironmentProviderSettings({
                         variant="ghost-muted"
                         disabled={isRefreshingProviders}
                         onClick={() => void refreshProviders()}
-                        aria-label="Refresh provider status"
+                        aria-label={t("Refresh provider status")}
                       >
                         {isRefreshingProviders ? (
                           <LoaderIcon className="size-3 animate-spin" />
@@ -708,7 +715,7 @@ export function EnvironmentProviderSettings({
                       </Button>
                     }
                   />
-                  <TooltipPopup side="top">Refresh provider status</TooltipPopup>
+                  <TooltipPopup side="top">{t("Refresh provider status")}</TooltipPopup>
                 </Tooltip>
               </>
             ) : null}
@@ -717,8 +724,11 @@ export function EnvironmentProviderSettings({
       >
         {readOnly ? (
           <SettingsRow
-            title="Limited permissions"
-            description={`This session can view ${environmentLabel}'s providers, but its credential does not allow changing their configuration.`}
+            title={t("Limited permissions")}
+            description={t(
+              "This session can view {{name}}'s providers, but its credential does not allow changing their configuration.",
+              { name: environmentLabel },
+            )}
           />
         ) : null}
         <div
@@ -732,15 +742,17 @@ export function EnvironmentProviderSettings({
           <SettingsRow
             title={
               <span className="inline-flex items-center gap-1.5">
-                Health check interval
+                {t("Health check interval")}
                 <PolicyTooltip>
-                  This interval is configured here, then the shared Background activity policy
-                  decides whether provider probes may run when the timer fires. Custom intervals
-                  appear as Advanced in General settings.
+                  {t(
+                    "This interval is configured here, then the shared Background activity policy decides whether provider probes may run when the timer fires. Custom intervals appear as Advanced in General settings.",
+                  )}
                 </PolicyTooltip>
               </span>
             }
-            description="Refresh provider availability, versions, auth state, and model metadata in the background. Set this to 0 seconds to rely on manual refreshes."
+            description={t(
+              "Refresh provider availability, versions, auth state, and model metadata in the background. Set this to 0 seconds to rely on manual refreshes.",
+            )}
             resetAction={
               providerHealthRefreshIntervalSeconds !==
               defaultProviderHealthRefreshIntervalSeconds ? (
@@ -783,12 +795,16 @@ export function EnvironmentProviderSettings({
                   }
                 >
                   <NumberFieldGroup>
-                    <NumberFieldDecrement aria-label="Decrease provider health check interval" />
-                    <NumberFieldInput aria-label="Provider health check interval in seconds" />
-                    <NumberFieldIncrement aria-label="Increase provider health check interval" />
+                    <NumberFieldDecrement
+                      aria-label={t("Decrease provider health check interval")}
+                    />
+                    <NumberFieldInput aria-label={t("Provider health check interval in seconds")} />
+                    <NumberFieldIncrement
+                      aria-label={t("Increase provider health check interval")}
+                    />
                   </NumberFieldGroup>
                 </NumberField>
-                <span className="text-xs text-muted-foreground">seconds</span>
+                <span className="text-xs text-muted-foreground">{t("seconds")}</span>
               </div>
             }
           />

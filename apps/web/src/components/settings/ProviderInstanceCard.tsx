@@ -13,6 +13,7 @@ import {
 import * as Arr from "effect/Array";
 import * as Result from "effect/Result";
 import { useState, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
   isProviderDriverKind,
   resolveProviderInstanceEnabled,
@@ -137,18 +138,19 @@ function ProviderAuthEmail(props: {
   readonly prefix?: string;
   readonly separator?: boolean;
 }) {
+  const { t } = useTranslation();
   const trimmed = props.email?.trim();
   if (!trimmed) return null;
 
   return (
     <span className="inline-flex min-w-0 items-center gap-1.5">
       {props.separator ? <span aria-hidden>·</span> : null}
-      {props.prefix ? <span className="text-muted-foreground/80">{props.prefix}</span> : null}
+      {props.prefix ? <span className="text-muted-foreground/80">{t(props.prefix)}</span> : null}
       <RedactedSensitiveText
         value={trimmed}
-        ariaLabel="Toggle account email visibility"
-        revealTooltip="Click to reveal email"
-        hideTooltip="Click to hide email"
+        ariaLabel={t("Toggle account email visibility")}
+        revealTooltip={t("Click to reveal email")}
+        hideTooltip={t("Click to hide email")}
       />
     </span>
   );
@@ -158,6 +160,7 @@ function ProviderEnvironmentSection(props: {
   readonly environment: ReadonlyArray<ProviderInstanceEnvironmentVariable>;
   readonly onChange: (environment: ReadonlyArray<ProviderInstanceEnvironmentVariable>) => void;
 }) {
+  const { t } = useTranslation();
   const [rows, setRows] = useState<ReadonlyArray<EnvironmentDraftRow>>(() =>
     props.environment.map(makeEnvironmentDraftRow),
   );
@@ -206,7 +209,7 @@ function ProviderEnvironmentSection(props: {
   return (
     <div className="grid gap-2">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-medium text-foreground">Environment variables</span>
+        <span className="text-xs font-medium text-foreground">{t("Environment variables")}</span>
         <Button
           type="button"
           size="sm"
@@ -225,23 +228,23 @@ function ProviderEnvironmentSection(props: {
           }
         >
           <PlusIcon className="size-3" />
-          Add
+          {t("Add")}
         </Button>
       </div>
       {rows.length === 0 ? (
         <p className="text-xs text-muted-foreground">
-          Add variables to pass API keys, base URLs, or other per-instance CLI settings.
+          {t("Add variables to pass API keys, base URLs, or other per-instance CLI settings.")}
         </p>
       ) : (
         <div className="overflow-hidden rounded-md border border-border/70">
           <Table>
             <TableHeader className="bg-muted/25 text-[11px] text-muted-foreground">
               <TableRow className="hover:bg-transparent">
-                <TableHead>Variable</TableHead>
-                <TableHead>Value</TableHead>
-                <TableHead className="w-20">Sensitive</TableHead>
+                <TableHead>{t("Variable")}</TableHead>
+                <TableHead>{t("Value")}</TableHead>
+                <TableHead className="w-20">{t("Sensitive")}</TableHead>
                 <TableHead className="w-12 text-right">
-                  <span className="sr-only">Options</span>
+                  <span className="sr-only">{t("Options")}</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -408,6 +411,7 @@ export function ProviderInstanceCard({
     ? (liveProvider?.auth.label ?? liveProvider?.auth.type ?? null)
     : null;
   const summary = rawSummary;
+  const { t } = useTranslation();
   const versionLabel = getProviderVersionLabel(liveProvider?.version);
   const versionAdvisory = getProviderVersionAdvisoryPresentation(liveProvider?.versionAdvisory);
   const updateCommand = versionAdvisory?.updateCommand ?? null;
@@ -563,13 +567,13 @@ export function ProviderInstanceCard({
                   variant="ghost"
                   className="text-muted-foreground hover:text-destructive"
                   onClick={onDelete}
-                  aria-label={`Delete provider instance ${instanceId}`}
+                  aria-label={t("Delete provider instance {{id}}", { id: instanceId })}
                 >
                   <Trash2Icon className="size-3" />
                 </Button>
               }
             />
-            <TooltipPopup side="top">Delete instance</TooltipPopup>
+            <TooltipPopup side="top">{t("Delete instance")}</TooltipPopup>
           </Tooltip>
         </span>
       ) : null}
@@ -580,17 +584,17 @@ export function ProviderInstanceCard({
     <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
       {hasAuthenticatedEmail ? (
         <>
-          <span>Authenticated as</span>
+          <span>{t("Authenticated as")}</span>
           <ProviderAuthEmail email={authEmail} />
           {authenticatedDetail ? <span>· {authenticatedDetail}</span> : null}
         </>
       ) : (
         <>
-          <span>{summary.headline}</span>
+          <span>{t(summary.headline)}</span>
           <ProviderAuthEmail email={authEmail} separator prefix="Email" />
         </>
       )}
-      {summary.detail ? <span>- {summary.detail}</span> : null}
+      {summary.detail ? <span>- {t(summary.detail)}</span> : null}
     </p>
   );
 
@@ -687,13 +691,13 @@ export function ProviderInstanceCard({
                                       providerName: displayName,
                                     })
                                   }
-                                  aria-label="Copy update command"
+                                  aria-label={t("Copy update command")}
                                 >
                                   <CopyIcon className="size-3" />
                                 </Button>
                               }
                             />
-                            <TooltipPopup side="top">Copy command</TooltipPopup>
+                            <TooltipPopup side="top">{t("Copy command")}</TooltipPopup>
                           </Tooltip>
                         </div>
                       ) : null}
@@ -730,17 +734,17 @@ export function ProviderInstanceCard({
           <div className="space-y-5 px-3 pb-4 pt-2 sm:px-4">
             <div>
               <label htmlFor={`provider-instance-${instanceId}-display-name`} className="block">
-                <span className="text-xs font-medium text-foreground">Display name</span>
+                <span className="text-xs font-medium text-foreground">{t("Display name")}</span>
                 <DraftInput
                   id={`provider-instance-${instanceId}-display-name`}
                   className="mt-1.5"
                   value={instance.displayName ?? ""}
                   onCommit={updateDisplayName}
-                  placeholder={driverOption?.label ?? "Instance label"}
+                  placeholder={driverOption?.label ?? t("Instance label")}
                   spellCheck={false}
                 />
                 <span className="mt-1 block text-xs text-muted-foreground">
-                  Optional label shown in the provider list.
+                  {t("Optional label shown in the provider list.")}
                 </span>
               </label>
             </div>
