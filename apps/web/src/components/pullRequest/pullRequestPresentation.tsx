@@ -25,6 +25,7 @@ import { cn } from "~/lib/utils";
 import { Badge } from "../ui/badge";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import type { PullRequestReviewOutcome } from "./pullRequestDetail.logic";
+import i18next from "i18next";
 
 interface StatePresentation {
   readonly label: string;
@@ -48,7 +49,7 @@ export function resolvePullRequestState(input: {
 }): StatePresentation {
   if (input.state === "merged") {
     return {
-      label: "Merged",
+      label: i18next.t("Merged"),
       toneClassName: "text-violet-600 dark:text-violet-300/90",
       Icon: GitMergeIcon,
     };
@@ -77,7 +78,7 @@ export function resolvePullRequestState(input: {
     };
   }
   return {
-    label: "Open",
+    label: i18next.t("Open"),
     toneClassName: "text-emerald-600 dark:text-emerald-300/90",
     Icon: GitPullRequestIcon,
   };
@@ -121,14 +122,18 @@ export function PullRequestStateGlyph({
 const CHECK_STATUS_PRESENTATION = {
   pending: { label: "Running", Icon: LoaderIcon, toneClassName: "animate-spin text-amber-500" },
   success: {
-    label: "Passed",
+    label: i18next.t("Passed"),
     Icon: CircleCheckIcon,
     toneClassName: "text-emerald-600 dark:text-emerald-300/90",
   },
   failure: { label: "Failed", Icon: CircleXIcon, toneClassName: "text-destructive" },
   cancelled: { label: "Cancelled", Icon: CircleXIcon, toneClassName: "text-destructive" },
   skipped: { label: "Skipped", Icon: CircleDashedIcon, toneClassName: "text-muted-foreground/70" },
-  neutral: { label: "Neutral", Icon: CircleDashedIcon, toneClassName: "text-muted-foreground/70" },
+  neutral: {
+    label: i18next.t("Neutral"),
+    Icon: CircleDashedIcon,
+    toneClassName: "text-muted-foreground/70",
+  },
 } as const satisfies Record<
   PullRequestCheckStatus,
   { label: string; Icon: typeof CircleCheckIcon; toneClassName: string }
@@ -432,7 +437,7 @@ export function PullRequestMetaLine({
 }
 
 export function summarizePullRequestChecks(checks: ReadonlyArray<PullRequestCheck>): string {
-  if (checks.length === 0) return "No checks reported";
+  if (checks.length === 0) return i18next.t("No checks reported");
   const failed = checks.filter(
     (check) => check.status === "failure" || check.status === "cancelled",
   ).length;

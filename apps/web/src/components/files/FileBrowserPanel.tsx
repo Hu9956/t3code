@@ -21,6 +21,7 @@ import { T3_PIERRE_ICONS } from "~/pierre-icons";
 
 import { createFileTreeDragMentionController } from "./fileTreeDragMention";
 import { useProjectEntriesQuery } from "./projectFilesQueryState";
+import i18next from "i18next";
 
 interface FileBrowserPanelProps {
   environmentId: EnvironmentId;
@@ -163,11 +164,15 @@ export default function FileBrowserPanel({
       if (clicked === "copy-mention") {
         try {
           await writeTextToClipboard(mention);
-          toastManager.add({ type: "success", title: "Mention copied", description: relativePath });
+          toastManager.add({
+            type: "success",
+            title: i18next.t("Mention copied"),
+            description: relativePath,
+          });
         } catch (error) {
           toastManager.add({
             type: "error",
-            title: "Failed to copy mention",
+            title: i18next.t("Failed to copy mention"),
             description: error instanceof Error ? error.message : "An error occurred.",
           });
         }
@@ -179,7 +184,7 @@ export default function FileBrowserPanel({
           toastManager.add({
             type: "error",
             title: "Unable to add to chat",
-            description: "Open a chat for this project and try again.",
+            description: i18next.t("Open a chat for this project and try again."),
           });
           return;
         }

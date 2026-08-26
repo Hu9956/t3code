@@ -50,6 +50,7 @@ import {
   type ThemeMode,
 } from "./ThemePreviewCircles";
 import { ThemeWireframe } from "./ThemeWireframe";
+import i18next from "i18next";
 
 const MAINTAINER_THEMES: ReadonlyArray<ThemeDefinition> = [
   T3_CHAT_THEME,
@@ -928,7 +929,7 @@ export function ThemeLibrary({
             stackedThreadToast({
               type: "success",
               title: `${importedTheme.label} added`,
-              description: "It’s now active.",
+              description: i18next.t("It’s now active."),
             }),
           );
           return true;

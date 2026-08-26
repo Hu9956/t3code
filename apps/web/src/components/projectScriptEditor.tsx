@@ -48,11 +48,12 @@ import { Label } from "./ui/label";
 import { Popover, PopoverPopup, PopoverTrigger } from "./ui/popover";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
+import i18next from "i18next";
 
 export const SCRIPT_ICONS: Array<{ id: ProjectScriptIcon; label: string }> = [
-  { id: "play", label: "Play" },
+  { id: "play", label: i18next.t("Play") },
   { id: "test", label: "Test" },
-  { id: "lint", label: "Lint" },
+  { id: "lint", label: i18next.t("Lint") },
   { id: "configure", label: "Configure" },
   { id: "build", label: "Build" },
   { id: "debug", label: "Debug" },
@@ -315,7 +316,7 @@ export function ProjectScriptEditorDialog({
                 <Label htmlFor="script-keybinding">Keybinding</Label>
                 <Input
                   id="script-keybinding"
-                  placeholder="Press shortcut"
+                  placeholder={i18next.t("Press shortcut")}
                   value={keybinding}
                   readOnly
                   onKeyDown={captureKeybinding}

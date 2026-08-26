@@ -24,6 +24,7 @@ import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { toastManager } from "../ui/toast";
 import { presentSavedCloudEnvironmentConnection } from "./cloudEnvironmentConnectionPresentation";
+import i18next from "i18next";
 
 export interface SavedCloudEnvironmentConnection {
   readonly environmentId: EnvironmentId;
@@ -99,7 +100,7 @@ export function CloudEnvironmentConnectRows({
     if (result._tag === "Success") {
       toastManager.add({
         type: "success",
-        title: "Environment added",
+        title: i18next.t("Environment added"),
         description: `Connecting to ${environment.label} through T3 Connect.`,
       });
       return;

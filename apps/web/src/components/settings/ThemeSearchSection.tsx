@@ -33,6 +33,7 @@ import { Button } from "../ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { Spinner } from "../ui/spinner";
+import i18next from "i18next";
 
 const DOWNLOAD_FORMAT = new Intl.NumberFormat(undefined, {
   notation: "compact",
@@ -40,10 +41,10 @@ const DOWNLOAD_FORMAT = new Intl.NumberFormat(undefined, {
 });
 const SUGGESTED_SEARCHES = ["Dracula", "Catppuccin", "Nord", "Tokyo Night"];
 const SORT_OPTIONS: ReadonlyArray<{ value: OpenVsxThemeSort; label: string }> = [
-  { value: "downloadCount", label: "Most downloaded" },
+  { value: "downloadCount", label: i18next.t("Most downloaded") },
   { value: "rating", label: "Best rated" },
-  { value: "timestamp", label: "Newest" },
-  { value: "relevance", label: "Most relevant" },
+  { value: "timestamp", label: i18next.t("Newest") },
+  { value: "relevance", label: i18next.t("Most relevant") },
 ];
 const SEARCH_DEBOUNCE_MS = 350;
 

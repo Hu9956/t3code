@@ -168,6 +168,7 @@ import {
   buildSidebarProjectSnapshots,
 } from "../sidebarProjectGrouping";
 import type { Project } from "../types";
+import i18next from "i18next";
 
 const EMPTY_BROWSE_ENTRIES: FilesystemBrowseResult["entries"] = [];
 
@@ -241,9 +242,9 @@ const REMOTE_PROJECT_PROVIDER_SOURCES: ReadonlyArray<AddProjectRemoteProviderKin
 function remoteProjectSourceLabel(source: AddProjectRemoteSource): string {
   switch (source) {
     case "github":
-      return "GitHub";
+      return i18next.t("GitHub");
     case "gitlab":
-      return "GitLab";
+      return i18next.t("GitLab");
     case "bitbucket":
       return "Bitbucket";
     case "azure-devops":
@@ -525,7 +526,7 @@ function CommandPaletteDialog(props: {
     <CommandDialogPopup
       aria-label={
         props.mode === "files"
-          ? t("File picker")
+          ? t(i18next.t("File picker"))
           : props.mode === "content"
             ? t("Search project contents")
             : t("Command palette")
@@ -1259,7 +1260,7 @@ function OpenCommandPaletteDialog(props: {
           kind: "action",
           value: `action:add-project:${environmentId}:local`,
           searchTerms: ["local", "folder", "directory", "browse"],
-          title: "Local folder",
+          title: i18next.t("Local folder"),
           description: "Browse a folder on disk",
           icon: <FolderPlusIcon className={ITEM_ICON_CLASS} />,
           keepOpen: true,
@@ -1352,7 +1353,7 @@ function OpenCommandPaletteDialog(props: {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Environment unavailable",
+            title: i18next.t("Environment unavailable"),
             description: `${environment?.label ?? "The selected environment"} is not connected.`,
           }),
         );
@@ -1403,7 +1404,7 @@ function OpenCommandPaletteDialog(props: {
     () => [
       {
         value: "environments",
-        label: "Environments",
+        label: i18next.t("Environments"),
         items: addProjectEnvironmentItems,
       },
     ],
@@ -1425,7 +1426,7 @@ function OpenCommandPaletteDialog(props: {
         stackedThreadToast({
           type: "error",
           title: t("Unable to browse projects"),
-          description: t("No environment is available."),
+          description: t(i18next.t("No environment is available.")),
         }),
       );
       return;
@@ -1521,7 +1522,7 @@ function OpenCommandPaletteDialog(props: {
       kind: "submenu",
       value: "action:new-thread-in",
       searchTerms: ["new thread", "project", "pick", "choose", "select"],
-      title: t("New thread in..."),
+      title: t(i18next.t("New thread in...")),
       icon: <SquarePenIcon className={ITEM_ICON_CLASS} />,
       addonIcon: <SquarePenIcon className={ADDON_ICON_CLASS} />,
       groups: [{ value: "projects", label: t("Projects"), items: projectThreadItems }],
@@ -1532,7 +1533,7 @@ function OpenCommandPaletteDialog(props: {
     kind: "action",
     value: "action:open-file-picker",
     searchTerms: ["go to file", "open file", "file picker", "find file", "quick open"],
-    title: t("Go to file"),
+    title: t(i18next.t("Go to file")),
     icon: <FileSearchIcon className={ITEM_ICON_CLASS} />,
     keepOpen: true,
     shortcutCommand: "filePicker.toggle",
@@ -1589,7 +1590,7 @@ function OpenCommandPaletteDialog(props: {
       kind: "action",
       value: "action:add-project:wsl-folder",
       searchTerms: ["add project", "open", "wsl", "linux", "folder", "directory"],
-      title: t("Open WSL folder"),
+      title: t(i18next.t("Open WSL folder")),
       description: wslAddProjectEnvironmentOption.label,
       icon: <FolderPlusIcon className={ITEM_ICON_CLASS} />,
       keepOpen: true,
@@ -1619,7 +1620,7 @@ function OpenCommandPaletteDialog(props: {
     kind: "action",
     value: "action:settings",
     searchTerms: ["settings", "preferences", "configuration", "keybindings"],
-    title: t("Open settings"),
+    title: t(i18next.t("Open settings")),
     icon: <SettingsIcon className={ITEM_ICON_CLASS} />,
     run: async () => {
       await navigate({ to: "/settings" });
@@ -1688,7 +1689,7 @@ function OpenCommandPaletteDialog(props: {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: t("Environment unavailable"),
+            title: t(i18next.t("Environment unavailable")),
             description: `${environment?.label ?? t("The selected environment")} ${t("is not connected.")}`,
           }),
         );
@@ -1700,7 +1701,7 @@ function OpenCommandPaletteDialog(props: {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to add project",
+            title: i18next.t("Failed to add project"),
             description: "Windows-style paths are only supported on Windows.",
           }),
         );
@@ -1711,7 +1712,7 @@ function OpenCommandPaletteDialog(props: {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to add project",
+            title: i18next.t("Failed to add project"),
             description: "Relative paths require an active project.",
           }),
         );
@@ -1747,7 +1748,7 @@ function OpenCommandPaletteDialog(props: {
             toastManager.add(
               stackedThreadToast({
                 type: "error",
-                title: "Failed to open project",
+                title: i18next.t("Failed to open project"),
                 description: error instanceof Error ? error.message : "An error occurred.",
               }),
             );
@@ -1782,7 +1783,7 @@ function OpenCommandPaletteDialog(props: {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to add project",
+              title: i18next.t("Failed to add project"),
               description: error instanceof Error ? error.message : "An error occurred.",
             }),
           );
@@ -1798,7 +1799,7 @@ function OpenCommandPaletteDialog(props: {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to add project",
+            title: i18next.t("Failed to add project"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -1850,7 +1851,7 @@ function OpenCommandPaletteDialog(props: {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: t("Environment unavailable"),
+          title: t(i18next.t("Environment unavailable")),
           description: `${browseEnvironment?.label ?? t("The selected environment")} ${t("is not connected.")}`,
         }),
       );

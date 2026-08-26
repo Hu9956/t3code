@@ -29,6 +29,7 @@ import { cn } from "~/lib/utils";
 import { orchestrationEnvironment } from "~/state/orchestration";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Button } from "~/components/ui/button";
+import i18next from "i18next";
 
 /**
  * In-flight states all present as Working (one steady state, per the
@@ -42,7 +43,7 @@ const STATUS_VISUALS: Record<RuntimeSubagent["status"], { dotClass: string; labe
   waiting: { dotClass: "bg-info", label: "Working" },
   // Idle reads as settled (muted, not sky): a resting Codex child looks done
   // unless resumed — live-test: sky idle dots read as stuck in-progress.
-  idle: { dotClass: "bg-muted-foreground/50", label: "Idle · resumable" },
+  idle: { dotClass: "bg-muted-foreground/50", label: i18next.t("Idle · resumable") },
   completed: { dotClass: "bg-success", label: "Completed" },
   failed: { dotClass: "bg-destructive", label: "Failed" },
   cancelled: { dotClass: "bg-muted-foreground/60", label: "Stopped" },

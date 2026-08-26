@@ -276,6 +276,7 @@ import {
 import { searchProviderSkills } from "../../providerSkillSearch";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import type { ReviewCommentContext } from "../../reviewCommentContext";
+import i18next from "i18next";
 
 const runtimeModeConfig: Record<
   RuntimeMode,
@@ -297,7 +298,7 @@ const runtimeModeConfig: Record<
     icon: SparklesIcon,
   },
   "full-access": {
-    label: "Full access",
+    label: i18next.t("Full access"),
     description: "Allow commands and edits without prompts.",
     icon: LockOpenIcon,
   },
@@ -384,7 +385,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
             <ComposerControlIcon icon={BotIcon} opticalSize="large" />
           )}
           <span className="sr-only sm:not-sr-only">
-            {props.interactionMode === "plan" ? "Plan" : "Build"}
+            {props.interactionMode === "plan" ? i18next.t("Plan") : "Build"}
           </span>
         </TooltipTrigger>
         <TooltipPopup side="top">{interactionModeTooltip}</TooltipPopup>
@@ -2362,7 +2363,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       if (evicted) {
         toastManager.add({
           type: "warning",
-          title: "Oldest stashed prompt discarded",
+          title: i18next.t("Oldest stashed prompt discarded"),
           description: `The stash holds ${MAX_STASH_ENTRIES} prompts; the oldest was removed to make room.`,
           data: { hideCopyButton: true },
         });
@@ -3149,7 +3150,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                   )}
                   onPointerDown={(event) => event.preventDefault()}
                   onClick={expandMobileComposer}
-                  aria-label="Expand composer"
+                  aria-label={i18next.t("Expand composer")}
                 >
                   {activePendingProgress
                     ? activePendingProgress.customAnswer ||

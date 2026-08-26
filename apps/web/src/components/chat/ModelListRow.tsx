@@ -13,6 +13,7 @@ import { Kbd } from "../ui/kbd";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "~/lib/utils";
 import { modelPickerModelKey } from "./modelPickerKeys";
+import i18next from "i18next";
 
 export const ModelListRow = memo(function ModelListRow(props: {
   index: number;
@@ -70,7 +71,7 @@ export const ModelListRow = memo(function ModelListRow(props: {
           {props.showNewBadge ? (
             <span
               className="shrink-0 rounded border border-update/35 bg-update/15 px-0.5 py-px text-[10px] font-bold uppercase leading-none tracking-wide text-update-foreground"
-              aria-label="New model"
+              aria-label={i18next.t("New model")}
             >
               New
             </span>

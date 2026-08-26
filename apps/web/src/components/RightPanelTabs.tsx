@@ -41,6 +41,7 @@ import { PreviewPanelShell, type PreviewPanelMode } from "./preview/PreviewPanel
 import { FaviconImage } from "./preview/PreviewFaviconIcon";
 import { previewBridge } from "./preview/previewBridge";
 import { PierreEntryIcon } from "./chat/PierreEntryIcon";
+import i18next from "i18next";
 
 interface RightPanelTabsProps {
   mode: PreviewPanelMode;
@@ -157,7 +158,7 @@ export function tabMuteMenuItem(input: {
 }): { label: string; disabled: boolean } {
   const muted = input.overlay?.audioMuted ?? false;
   return {
-    label: muted ? "Unmute tab" : "Mute tab",
+    label: muted ? "Unmute tab" : i18next.t("Mute tab"),
     disabled: input.overlay === null || !input.canResolveRuntimeTabId,
   };
 }
@@ -266,7 +267,7 @@ function RightPanelEmptyState(props: {
   const actions = [
     {
       label: "Browser",
-      description: "Open a local app or URL.",
+      description: i18next.t("Open a local app or URL."),
       icon: Globe2,
       shortcut: "B",
       available: props.browserAvailable,
@@ -316,7 +317,7 @@ function RightPanelEmptyState(props: {
     },
     {
       label: "Agents",
-      description: "Follow subagents and workflows.",
+      description: i18next.t("Follow subagents and workflows."),
       icon: Bot,
       shortcut: "A",
       available: props.agentsAvailable,
@@ -418,7 +419,7 @@ function RightPanelEmptyState(props: {
       ref={focusOnMount}
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      aria-label="Open a surface"
+      aria-label={i18next.t("Open a surface")}
       data-surface-launcher-keys={availableActions.map((action) => action.shortcut).join("")}
       className={cn(
         "flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-6 pt-6 outline-none",
@@ -866,7 +867,9 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                           </button>
                         }
                       />
-                      <TooltipPopup>{audio === "muted" ? "Unmute tab" : "Mute tab"}</TooltipPopup>
+                      <TooltipPopup>
+                        {audio === "muted" ? "Unmute tab" : i18next.t("Mute tab")}
+                      </TooltipPopup>
                     </Tooltip>
                   )}
                   <Tooltip>

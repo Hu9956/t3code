@@ -15,6 +15,7 @@ import {
   PROJECT_FILE_PICKER_RESULT_LIMIT,
 } from "./ProjectFilePicker.logic";
 import { useProjectFilePickerQuery } from "./projectFilesQueryState";
+import i18next from "i18next";
 
 interface ProjectFilePickerProps {
   readonly setOpen: (open: boolean) => void;
@@ -53,7 +54,7 @@ function getEmptyStateMessage(query: string, error: string | null, isPending: bo
 function EmptyProjectFilePicker() {
   return (
     <CommandPaletteContent
-      aria-label="File picker"
+      aria-label={i18next.t("File picker")}
       escapeLabel="Back"
       footerActionLabel="Open file"
       inputProps={{ disabled: true, placeholder: "Search files…" }}
@@ -117,7 +118,7 @@ function OpenProjectFilePicker(props: ProjectFilePickerProps & { target: ActiveP
 
   return (
     <CommandPaletteContent
-      aria-label="File picker"
+      aria-label={i18next.t("File picker")}
       autoHighlight="always"
       escapeLabel="Back"
       footerActionLabel="Open file"

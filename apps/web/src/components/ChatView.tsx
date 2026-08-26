@@ -398,6 +398,7 @@ import {
   serverUpdateGuidance,
 } from "../versionSkew";
 import { useAssetUrls } from "../assets/assetUrls";
+import i18next from "i18next";
 
 const IMAGE_ONLY_BOOTSTRAP_PROMPT =
   "[User attached one or more images without additional text. Respond using the conversation context and the attached image(s).]";
@@ -2182,7 +2183,7 @@ function ChatViewContent(props: ChatViewProps) {
             />
           ),
           title: `${unavailableConnection.phase === "connecting" ? "Connecting" : "Reconnecting"} to ${activeEnvironmentUnavailableState.label}`,
-          description: "It may be finishing an update. One moment.",
+          description: i18next.t("It may be finishing an update. One moment."),
         });
       } else {
         items.push({
@@ -3797,7 +3798,7 @@ function ChatViewContent(props: ChatViewProps) {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy path",
+          title: i18next.t("Failed to copy path"),
           description: "Clipboard API unavailable.",
         }),
       );
@@ -3808,7 +3809,7 @@ function ChatViewContent(props: ChatViewProps) {
       () => {
         toastManager.add({
           type: "success",
-          title: "Path copied",
+          title: i18next.t("Path copied"),
           description: relativePath,
         });
       },
@@ -3816,7 +3817,7 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to copy path",
+            title: i18next.t("Failed to copy path"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -4532,7 +4533,7 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to un-settle thread",
+            title: i18next.t("Failed to un-settle thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -4560,7 +4561,7 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to wake thread",
+            title: i18next.t("Failed to wake thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           }),
         );
@@ -4621,7 +4622,7 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to switch checkout",
+            title: i18next.t("Failed to switch checkout"),
             description: chatActionErrorMessage(squashAtomCommandFailure(checkoutResult)),
           }),
         );
@@ -4724,7 +4725,7 @@ function ChatViewContent(props: ChatViewProps) {
         ? liveCount > 0
           ? `${liveCount} ${liveCount === 1 ? "agent" : "agents"} working`
           : "Background work"
-        : "Monitoring",
+        : i18next.t("Monitoring"),
       actions: (
         <Button
           size="xs"
@@ -4891,7 +4892,7 @@ function ChatViewContent(props: ChatViewProps) {
       ) : (
         compactAction
       ),
-      dismissLabel: "Keep full history",
+      dismissLabel: i18next.t("Keep full history"),
       onDismiss: dismiss,
     };
   }, [
@@ -5132,7 +5133,7 @@ function ChatViewContent(props: ChatViewProps) {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to settle thread",
+              title: i18next.t("Failed to settle thread"),
               description: error instanceof Error ? error.message : "An error occurred.",
             }),
           );
@@ -5361,7 +5362,7 @@ function ChatViewContent(props: ChatViewProps) {
       toastManager.add(
         stackedThreadToast({
           type: "warning",
-          title: "Not connected: message not sent",
+          title: i18next.t("Not connected: message not sent"),
           description: "Reconnecting to the environment. Try again once it is connected.",
         }),
       );
@@ -5499,7 +5500,7 @@ function ChatViewContent(props: ChatViewProps) {
       toastManager.add(
         stackedThreadToast({
           type: "success",
-          title: "Feedback sent to OpenAI",
+          title: i18next.t("Feedback sent to OpenAI"),
           description: `Thread ID: ${feedbackId}`,
           timeout: 0,
           actionProps: {
@@ -5770,7 +5771,7 @@ function ChatViewContent(props: ChatViewProps) {
       } else if (composerElementContextsSnapshot.length > 0) {
         titleSeed = formatElementContextLabel(composerElementContextsSnapshot[0]!);
       } else {
-        titleSeed = "New thread";
+        titleSeed = i18next.t("New thread");
       }
     }
     const title = truncate(titleSeed);
@@ -5904,7 +5905,7 @@ function ChatViewContent(props: ChatViewProps) {
                   title: "Started in background",
                   timeout: 5_000,
                   actionProps: {
-                    children: "Open",
+                    children: i18next.t("Open"),
                     onClick: () => {
                       void navigate({
                         to: "/$environmentId/$threadId",

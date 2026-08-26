@@ -37,6 +37,7 @@ import {
   MenuTrigger,
 } from "../ui/menu";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import i18next from "i18next";
 
 export interface PullRequestFilterOption<Value extends string> {
   readonly value: Value;
@@ -56,10 +57,10 @@ export interface PullRequestExpectedHost {
 }
 
 /**
- * What to call a host in the row. The provider's own name reads best — "GitHub" over
+ * What to call a host in the row. The provider's own name reads best — i18next.t("GitHub") over
  * "github.com" — but it stops naming anything once a workspace has two hosts of one kind, so
  * those wear the host itself instead. Only the ambiguous ones: a lone GitLab beside two GitHub
- * installs is still "GitLab".
+ * installs is still i18next.t("GitLab").
  */
 export function pullRequestHostLabel(
   entries: ReadonlyArray<{ readonly host: string; readonly kind: SourceControlProviderKind }>,
@@ -122,7 +123,7 @@ export const pullRequestProjectKey = (project: {
 const DRAFT_OPTIONS = [
   { value: UNFILTERED_VALUE, label: "All", Icon: LayersIcon },
   { value: "only", label: "Drafts only", Icon: GitPullRequestDraftIcon },
-  { value: "hide", label: "Hide drafts", Icon: EyeOffIcon },
+  { value: "hide", label: i18next.t("Hide drafts"), Icon: EyeOffIcon },
 ] as const satisfies ReadonlyArray<PullRequestFilterOption<string>>;
 
 const REVIEW_OPTIONS = [
@@ -130,13 +131,13 @@ const REVIEW_OPTIONS = [
   { value: "approved", label: "Approved", Icon: CircleCheckIcon },
   { value: "changes-requested", label: "Changes requested", Icon: CircleXIcon },
   { value: "review-required", label: "Review required", Icon: CircleDashedIcon },
-  { value: "none", label: "No reviews", Icon: CircleSlashIcon },
+  { value: "none", label: i18next.t("No reviews"), Icon: CircleSlashIcon },
 ] as const satisfies ReadonlyArray<PullRequestFilterOption<string>>;
 
 const CHECKS_OPTIONS = [
   { value: UNFILTERED_VALUE, label: "All", Icon: LayersIcon },
-  { value: "passing", label: "Passing", Icon: CircleCheckIcon },
-  { value: "failing", label: "Failing", Icon: CircleXIcon },
+  { value: "passing", label: i18next.t("Passing"), Icon: CircleCheckIcon },
+  { value: "failing", label: i18next.t("Failing"), Icon: CircleXIcon },
 ] as const satisfies ReadonlyArray<PullRequestFilterOption<string>>;
 
 function PullRequestFilterRadioGroup<Value extends string>({
@@ -279,7 +280,7 @@ export function PullRequestFiltersMenu({
             className={cn("relative", filtered && "[--control-icon-color:currentColor]")}
             size="icon"
             variant="outline"
-            aria-label="Filter pull requests"
+            aria-label={i18next.t("Filter pull requests")}
           />
         }
       >
@@ -300,7 +301,7 @@ export function PullRequestFiltersMenu({
         />
         <MenuSeparator />
         <PullRequestFilterRadioGroup
-          label="Involvement"
+          label={i18next.t("Involvement")}
           value={involvement}
           options={involvementOptions}
           onChange={onInvolvement}

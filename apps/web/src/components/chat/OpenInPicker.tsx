@@ -47,6 +47,7 @@ import {
 import { cn } from "~/lib/utils";
 import { shellEnvironment } from "~/state/shell";
 import { useAtomCommand } from "~/state/use-atom-command";
+import i18next from "i18next";
 
 type OpenInOption = {
   label: string;
@@ -266,7 +267,7 @@ export const OpenInPicker = memo(function OpenInPicker({
   }, [enableShortcut, keybindings, openInCwd, openInEditor, preferredEditor]);
 
   return (
-    <Group aria-label="Open in editor">
+    <Group aria-label={i18next.t("Open in editor")}>
       <Button
         aria-label={compact ? "Open file in preferred editor" : undefined}
         className="ps-[8.5px]"

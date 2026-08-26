@@ -5,6 +5,7 @@ import { getThemeDefinition, type ThemeAppearance, type ThemeDefinition } from "
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { ThemeEditorPanel } from "./ThemeEditorPanel";
 import { useThemeEditorStore } from "./themeEditorStore";
+import i18next from "i18next";
 
 /**
  * Renders the theme editor above the router. The editor paints its draft on
@@ -79,7 +80,7 @@ export function ThemeEditorHost() {
         stackedThreadToast({
           type: "success",
           title: `${savedTheme.label} created`,
-          description: "It’s now active.",
+          description: i18next.t("It’s now active."),
         }),
       );
       return true;

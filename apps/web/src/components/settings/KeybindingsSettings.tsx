@@ -73,6 +73,7 @@ import { SettingsPageContainer, SettingsSection } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { useAtomCommand } from "../../state/use-atom-command";
+import i18next from "i18next";
 
 function KeybindingPill({ value }: { value: string }) {
   const parts = value.split("+");
@@ -824,7 +825,7 @@ function KeybindingTableRow({
             autoFocus={isRecording}
             aria-label={`Keybinding for ${commandLabel(row.command)}`}
             value={isRecording ? "" : keyDraft}
-            placeholder={isRecording ? "Press shortcut" : "Unassigned"}
+            placeholder={isRecording ? i18next.t("Press shortcut") : "Unassigned"}
             className={cn(
               "h-7 w-44 rounded-md font-mono text-[12px] sm:h-7",
               isRecording && "border-primary/70 bg-primary/5",
@@ -985,7 +986,7 @@ function NewKeybindingTableRow({
           data-keybinding-capture=""
           aria-label={`Keybinding for ${commandLabelText}`}
           value={isRecording ? "" : keyDraft}
-          placeholder={isRecording ? "Press shortcut" : "Unassigned"}
+          placeholder={isRecording ? i18next.t("Press shortcut") : "Unassigned"}
           size="compact"
           className={cn("w-44 font-mono", isRecording && "border-primary/70 bg-primary/5")}
           onFocus={() => setDraft({ isRecording: true })}

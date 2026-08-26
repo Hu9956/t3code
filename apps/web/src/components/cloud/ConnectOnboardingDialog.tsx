@@ -28,6 +28,7 @@ import {
 } from "../ui/dialog";
 import { Switch } from "../ui/switch";
 import { toastManager } from "../ui/toast";
+import i18next from "i18next";
 
 /**
  * Post-sign-in onboarding wizard for T3 Connect. Opens on every in-session
@@ -361,7 +362,9 @@ function PublishStep({
       <div className="rounded-lg border">
         <OnboardingToggleRow
           title="Publish this environment"
-          description="Make this environment available to your other devices through T3 Connect."
+          description={i18next.t(
+            "Make this environment available to your other devices through T3 Connect.",
+          )}
           checked={exposeEnvironment}
           disabled={disabled}
           onCheckedChange={onExposeEnvironmentChange}

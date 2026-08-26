@@ -114,6 +114,7 @@ import {
   ProjectFaviconPickerDialog,
 } from "./ProjectFaviconPickerDialog";
 import { projectGroupTitleNeedsUpdate } from "./ProjectSettingsPanel.logic";
+import i18next from "i18next";
 
 export const PROJECT_GROUPING_MODE_LABELS: Record<SidebarProjectGroupingMode, string> = {
   repository: "Group by repository",
@@ -308,13 +309,13 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
   const projectNameEditedRef = useRef(false);
   const { copyToClipboard: copyPathToClipboard } = useCopyToClipboard<{ path: string }>({
     onCopy: ({ path }) => {
-      toastManager.add({ type: "success", title: "Path copied", description: path });
+      toastManager.add({ type: "success", title: i18next.t("Path copied"), description: path });
     },
     onError: (error) => {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy path",
+          title: i18next.t("Failed to copy path"),
           description: error instanceof Error ? error.message : "An error occurred.",
         }),
       );
@@ -409,7 +410,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
       ) {
         return;
       }
-      await updateAllMembers({ title }, "Failed to rename project");
+      await updateAllMembers({ title }, i18next.t("Failed to rename project"));
     },
     [group.memberProjects, updateAllMembers],
   );

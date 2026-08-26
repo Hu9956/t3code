@@ -21,12 +21,15 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { SettingResetButton, SettingsRow, SettingsSection } from "./settingsLayout";
+import i18next from "i18next";
 
 const MODE_OPTIONS: Record<SourceControlWritingStyleMode, { label: string; description: string }> =
   {
     repo_conventions: {
       label: "Repository conventions",
-      description: "In each project, matches recent change descriptions and change request titles.",
+      description: i18next.t(
+        "In each project, matches recent change descriptions and change request titles.",
+      ),
     },
     conventional_commits: {
       label: "Conventional Commits",

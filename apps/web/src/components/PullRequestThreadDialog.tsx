@@ -25,6 +25,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Spinner } from "./ui/spinner";
+import i18next from "i18next";
 
 interface PullRequestThreadDialogProps {
   open: boolean;
@@ -295,7 +296,7 @@ export function PullRequestThreadDialog({
               preparePullRequestThreadAction.isPending
             }
           >
-            {preparingMode === "worktree" ? "Preparing worktree..." : "Worktree"}
+            {preparingMode === "worktree" ? i18next.t("Preparing worktree...") : "Worktree"}
           </Button>
         </DialogFooter>
       </DialogPopup>

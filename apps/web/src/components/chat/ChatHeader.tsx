@@ -45,6 +45,7 @@ import {
   WorkspaceBreadcrumbSeparator,
 } from "../WorkspaceBreadcrumb";
 import { cn } from "~/lib/utils";
+import i18next from "i18next";
 
 interface ChatHeaderProps {
   activeThreadEnvironmentId: EnvironmentId;
@@ -190,7 +191,7 @@ export const ChatHeader = memo(function ChatHeader({
           const error = squashAtomCommandFailure(result);
           toastManager.add({
             type: "error",
-            title: "Failed to rename thread",
+            title: i18next.t("Failed to rename thread"),
             description: error instanceof Error ? error.message : "An error occurred.",
           });
         }

@@ -32,6 +32,7 @@ import { stackedThreadToast, toastManager } from "../ui/toast";
 import { projectEnvironment } from "~/state/projects";
 import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
 import { useAtomCommand } from "~/state/use-atom-command";
+import i18next from "i18next";
 
 export const ProposedPlanCard = memo(function ProposedPlanCard({
   planMarkdown,
@@ -127,7 +128,7 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
         setIsSaveDialogOpen(false);
         toastManager.add({
           type: "success",
-          title: "Plan saved to workspace",
+          title: i18next.t("Plan saved to workspace"),
           description: result.value.relativePath,
         });
         return;
@@ -154,7 +155,9 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
         </div>
         <Menu>
           <MenuTrigger
-            render={<Button aria-label="Plan actions" size="icon-xs" variant="outline" />}
+            render={
+              <Button aria-label={i18next.t("Plan actions")} size="icon-xs" variant="outline" />
+            }
           >
             <EllipsisIcon aria-hidden="true" className="size-4" />
           </MenuTrigger>

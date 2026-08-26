@@ -15,6 +15,7 @@ import type {
 } from "@t3tools/contracts";
 
 import { inferReviewCommentFenceLanguage, type ReviewCommentContext } from "~/reviewCommentContext";
+import i18next from "i18next";
 
 /** Activity changes only when the same host resource reports a newer revision. */
 export function shouldRefreshPullRequestActivity(
@@ -116,7 +117,7 @@ export function isStackedPullRequestBase(
 
 /** Plain-language state, shown beside the author. Conflicts are a merge signal, not a state. */
 export function describePullRequestState(state: PullRequestState, isDraft: boolean): string {
-  if (state === "merged") return "Merged";
+  if (state === "merged") return i18next.t("Merged");
   if (state === "closed") return "Closed";
   return isDraft ? "Draft" : "Ready for review";
 }

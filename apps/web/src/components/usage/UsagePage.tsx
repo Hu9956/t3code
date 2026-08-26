@@ -33,9 +33,10 @@ import { WorkspacePageContainer } from "../WorkspacePageContainer";
 import { WorkspacePageHeader } from "../WorkspacePageHeader";
 import { UsageProviderChart, type UsageChartMetric } from "./UsageProviderChart";
 import { PROVIDER_ORDER, PROVIDER_PRESENTATION, providersWithUsage } from "./usageProviders";
+import i18next from "i18next";
 
 const WINDOW_OPTIONS = [
-  { days: 1, label: "Past 24h" },
+  { days: 1, label: i18next.t("Past 24h") },
   { days: 7, label: "7 days" },
   { days: 30, label: "30 days" },
   { days: 90, label: "90 days" },
@@ -303,13 +304,16 @@ export function UsagePage() {
                 <section className="flex flex-col gap-2">
                   <h2 className="text-sm font-medium text-foreground">Totals</h2>
                   <div className="grid grid-cols-2 gap-x-6 gap-y-4 py-1 md:grid-cols-5">
-                    <Metric label="Processed tokens" value={formatTokens(merged.totalTokens)} />
+                    <Metric
+                      label={i18next.t("Processed tokens")}
+                      value={formatTokens(merged.totalTokens)}
+                    />
                     <Metric label="Cached input" value={formatTokens(merged.cachedInputTokens)} />
                     <Metric
                       label="Uncached input"
                       value={formatTokens(merged.uncachedInputTokens)}
                     />
-                    <Metric label="Output" value={formatTokens(merged.outputTokens)} />
+                    <Metric label={i18next.t("Output")} value={formatTokens(merged.outputTokens)} />
                     <Metric
                       label="Cache savings"
                       value={formatUsd(merged.costQuality.cacheSavingsUsd)}

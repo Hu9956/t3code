@@ -20,6 +20,7 @@ import { Button } from "~/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "~/components/ui/input-group";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
+import i18next from "i18next";
 
 interface Props {
   url: string;
@@ -112,7 +113,11 @@ export function PreviewChromeRow({
         className="flex h-10 min-h-10 shrink-0 items-center gap-1 border-b border-border/60 bg-background px-2 in-data-[preview-panel-mode=inline]:mb-3 in-data-[preview-panel-mode=inline]:h-7 in-data-[preview-panel-mode=inline]:min-h-7 in-data-[preview-panel-mode=inline]:border-b-transparent"
         data-surface-subheader
       >
-        <div className="flex items-center gap-0.5" role="group" aria-label="Navigation">
+        <div
+          className="flex items-center gap-0.5"
+          role="group"
+          aria-label={i18next.t("Navigation")}
+        >
           <Tooltip>
             <TooltipTrigger
               render={
@@ -138,7 +143,7 @@ export function PreviewChromeRow({
                   size="icon-xs"
                   onClick={canGoForward ? onForward : NOOP}
                   disabled={!canGoForward}
-                  aria-label="Forward"
+                  aria-label={i18next.t("Forward")}
                   type="button"
                 />
               }
@@ -162,7 +167,7 @@ export function PreviewChromeRow({
             >
               <RotateCw className={cn(loading && "animate-spin")} />
             </TooltipTrigger>
-            <TooltipPopup>{loading ? "Loading…" : "Refresh"}</TooltipPopup>
+            <TooltipPopup>{loading ? i18next.t("Loading…") : "Refresh"}</TooltipPopup>
           </Tooltip>
         </div>
 

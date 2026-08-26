@@ -41,6 +41,7 @@ import { toastManager } from "../ui/toast";
 import { ResourceTelemetryDiagnostics } from "./ResourceTelemetryDiagnostics";
 import { SettingsPageContainer, SettingsSection, useRelativeTimeTick } from "./settingsLayout";
 import { useAtomCommand } from "../../state/use-atom-command";
+import i18next from "i18next";
 
 const NUMBER_FORMAT = new Intl.NumberFormat();
 
@@ -962,7 +963,7 @@ export function DiagnosticsSettingsPanel() {
           if (isStaleProcessSignalMessage(message)) {
             toastManager.add({
               type: "info",
-              title: "Process already exited",
+              title: i18next.t("Process already exited"),
               description:
                 "The process is not a child of the T3 Server. It might already have exited.",
             });
@@ -1085,7 +1086,7 @@ export function DiagnosticsSettingsPanel() {
             tooltip="In-memory process samples retained by the server. This resets when the server restarts."
           />
           <StatBlock
-            label="Interval"
+            label={i18next.t("Interval")}
             value={resourceData ? formatDuration(resourceData.sampleIntervalMs) : "..."}
           />
           <StatBlock
@@ -1152,7 +1153,7 @@ export function DiagnosticsSettingsPanel() {
         <StatsGrid>
           <StatBlock label="Spans" value={data ? formatCount(data.recordCount) : "..."} />
           <StatBlock
-            label="Failures"
+            label={i18next.t("Failures")}
             value={data ? formatCount(data.failureCount) : "..."}
             tone={data && data.failureCount > 0 ? "danger" : "default"}
           />
@@ -1167,7 +1168,7 @@ export function DiagnosticsSettingsPanel() {
             tone={data && data.slowSpanCount > 0 ? "warning" : "default"}
           />
           <StatBlock
-            label="Parse Errors"
+            label={i18next.t("Parse Errors")}
             value={data ? formatCount(data.parseErrorCount) : "..."}
             tone={data && data.parseErrorCount > 0 ? "warning" : "default"}
           />

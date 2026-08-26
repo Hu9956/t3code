@@ -75,6 +75,7 @@ import { reviewEnvironment } from "../state/review";
 import { vcsEnvironment } from "../state/vcs";
 import { buildBaseRefChoices, filterBaseRefChoices } from "../lib/baseRefChoices";
 import { createGitDiffFileContentsLoader } from "../lib/diffFileContents";
+import i18next from "i18next";
 
 type DiffThemeType = "light" | "dark";
 const AUTOMATIC_BASE_REF = "__automatic_base_ref__";
@@ -207,7 +208,7 @@ export default function DiffPanel({
         ? "Working tree"
         : "Branch changes"
       : selectedTurn?.turnId === latestTurn?.turnId
-        ? "Latest turn"
+        ? i18next.t("Latest turn")
         : `Turn ${selectedCheckpointTurnCount ?? "?"}`;
   const reviewSectionId = selectedTurn ? `turn:${selectedTurn.turnId}` : selectedGitScope;
   const collapseScopeKey = routeThreadRef

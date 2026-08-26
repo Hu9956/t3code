@@ -130,6 +130,7 @@ import { ConnectionStatusDot } from "../ConnectionStatusDot";
 import { ServerUpdateAction, ServerUpdateProgress } from "../ServerUpdateAction";
 import { CloudEnvironmentConnectRows } from "../cloud/CloudEnvironmentConnectList";
 import { ITEM_ROW_CLASSNAME, ITEM_ROW_INNER_CLASSNAME } from "./itemRows";
+import i18next from "i18next";
 
 const DEFAULT_TAILSCALE_SERVE_PORT = 443;
 const EMPTY_ADVERTISED_ENDPOINTS: ReadonlyArray<AdvertisedEndpoint> = [];
@@ -166,7 +167,7 @@ const PAIRING_SCOPE_OPTIONS: ReadonlyArray<{
   },
   {
     scope: AuthOrchestrationOperateScope,
-    title: "Operate tasks",
+    title: i18next.t("Operate tasks"),
     description: "Start tasks and perform changes in the environment.",
   },
   {
@@ -182,21 +183,21 @@ const PAIRING_SCOPE_OPTIONS: ReadonlyArray<{
   {
     scope: AuthAccessReadScope,
     title: "View access",
-    description: "Inspect pairing links and authorized clients.",
+    description: i18next.t("Inspect pairing links and authorized clients."),
   },
   {
     scope: AuthAccessWriteScope,
-    title: "Manage access",
-    description: "Issue and revoke credentials for other clients.",
+    title: i18next.t("Manage access"),
+    description: i18next.t("Issue and revoke credentials for other clients."),
   },
   {
     scope: AuthRelayReadScope,
     title: "View relay",
-    description: "Inspect managed relay connectivity.",
+    description: i18next.t("Inspect managed relay connectivity."),
   },
   {
     scope: AuthRelayWriteScope,
-    title: "Manage relay",
+    title: i18next.t("Manage relay"),
     description: "Change managed tunnel connectivity.",
   },
 ];
@@ -1673,7 +1674,9 @@ function ConfiguredCloudLinkRow({ canManageRelay }: { readonly canManageRelay: b
           description={
             managedTunnelActive
               ? "This environment is available to your other devices through T3 Connect."
-              : "Make this environment available to your other devices through T3 Connect."
+              : i18next.t(
+                  "Make this environment available to your other devices through T3 Connect.",
+                )
           }
           status={operationError ?? primaryCloudLinkState.error}
           control={
@@ -2124,7 +2127,9 @@ export function ConnectionsSettings() {
       toastManager.add({
         type: "success",
         title: revokedCount === 1 ? "Revoked 1 other client" : `Revoked ${revokedCount} clients`,
-        description: "Other paired clients will need a new pairing link before reconnecting.",
+        description: i18next.t(
+          "Other paired clients will need a new pairing link before reconnecting.",
+        ),
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to revoke other clients.";
@@ -2175,7 +2180,7 @@ export function ConnectionsSettings() {
       setAddBackendDialogOpen(false);
       toastManager.add({
         type: "success",
-        title: "Environment connected",
+        title: i18next.t("Environment connected"),
         description: `${target.alias} is ready over an SSH-managed tunnel.`,
       });
       setIsAddingSavedBackend(false);
@@ -2309,7 +2314,7 @@ export function ConnectionsSettings() {
           type: "success",
           title: savedDesktopSshEnvironmentsByAlias[target.alias]
             ? "Environment reconnected"
-            : "Environment connected",
+            : i18next.t("Environment connected"),
           description: `${label?.trim() || target.alias} is ready over an SSH-managed tunnel.`,
         });
         return;
@@ -2441,7 +2446,7 @@ export function ConnectionsSettings() {
           <Input
             value={savedBackendPairingCode}
             onChange={(event) => setSavedBackendPairingCode(event.target.value)}
-            placeholder="PAIRCODE"
+            placeholder={i18next.t("PAIRCODE")}
             disabled={isAddingSavedBackend}
             spellCheck={false}
           />
@@ -2971,7 +2976,7 @@ export function ConnectionsSettings() {
         ) : desktopServerExposureState ? (
           "Limited to this machine."
         ) : (
-          "Loading…"
+          i18next.t("Loading…")
         )
       }
       status={

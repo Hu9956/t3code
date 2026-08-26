@@ -24,6 +24,7 @@ import { MAX_CUSTOM_MODEL_LENGTH } from "../../modelSelection";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import i18next from "i18next";
 
 /**
  * Placeholder text for the "add a custom model" input, keyed by driver
@@ -74,7 +75,7 @@ interface ProviderModelsSectionProps {
 }
 
 /**
- * Shared "Models" section rendered on both the built-in default and custom
+ * Shared i18next.t("Models") section rendered on both the built-in default and custom
  * provider-instance cards. Owns its own input + error local state so two
  * cards on screen don't fight over the input value.
  *

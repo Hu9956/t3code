@@ -13,6 +13,7 @@ import { readHostedPairingRequest } from "../../hostedPairing";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useAtomCommand } from "../../state/use-atom-command";
+import i18next from "i18next";
 
 export function PairingPendingSurface() {
   return (
@@ -128,7 +129,7 @@ export function PairingRouteSurface({
               disabled={isSubmitting}
               nativeInput
               onChange={(event) => setCredential(event.currentTarget.value)}
-              placeholder="Paste a one-time token or pairing secret"
+              placeholder={i18next.t("Paste a one-time token or pairing secret")}
               spellCheck={false}
               value={credential}
             />

@@ -34,6 +34,7 @@ import {
   MenuTrigger,
 } from "./ui/menu";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
+import i18next from "i18next";
 
 export type { NewProjectScriptInput, ProjectScriptActionResult };
 
@@ -144,7 +145,7 @@ export default function ProjectScriptsControl({
             <ScriptIcon icon={fileScript.icon ?? "play"} className="size-4" />
             <span className="truncate">{fileScript.name}</span>
             <MenuShortcut className="ms-auto">
-              <DownloadIcon className="size-3.5" aria-label="Import" />
+              <DownloadIcon className="size-3.5" aria-label={i18next.t("Import")} />
             </MenuShortcut>
           </MenuItem>
         ))}

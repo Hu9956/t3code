@@ -5,6 +5,7 @@ import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
 import { cn } from "~/lib/utils";
 import { anchoredToastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import i18next from "i18next";
 
 const ANCHORED_TOAST_TIMEOUT_MS = 1000;
 const onCopy = (ref: React.RefObject<HTMLButtonElement | null>) => {
@@ -32,7 +33,7 @@ const onCopyError = (ref: React.RefObject<HTMLButtonElement | null>, error: Erro
         anchor: ref.current,
       },
       timeout: ANCHORED_TOAST_TIMEOUT_MS,
-      title: "Failed to copy",
+      title: i18next.t("Failed to copy"),
       description: error.message,
     });
   }

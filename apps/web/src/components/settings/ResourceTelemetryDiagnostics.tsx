@@ -54,6 +54,7 @@ import {
   visibleResourceTelemetryProcesses,
 } from "./ResourceTelemetryDiagnostics.logic";
 import { SettingsSection, useRelativeTimeTick } from "./settingsLayout";
+import i18next from "i18next";
 
 const HISTORY_WINDOWS = [
   { label: "5m", windowMs: 5 * 60_000, bucketMs: 15_000 },
@@ -968,7 +969,10 @@ export function ResourceTelemetryDiagnostics() {
         headerAction={
           <div className="flex items-center gap-2">
             {snapshot ? (
-              <SourceStatusBadge label="Native" status={snapshot.health.native.status} />
+              <SourceStatusBadge
+                label={i18next.t("Native")}
+                status={snapshot.health.native.status}
+              />
             ) : null}
             <LastSampleLabel sampledAt={snapshot?.readAt ?? null} />
             <Tooltip>
@@ -1025,7 +1029,7 @@ export function ResourceTelemetryDiagnostics() {
             />
             <IconStat
               icon={<ActivityIcon className="size-3.5" />}
-              label="Process count"
+              label={i18next.t("Process count")}
               value={allT3 ? String(allT3.processCount) : "..."}
               detail={
                 allT3 ? `${allT3.processStarts} starts · ${allT3.processExits} exits` : undefined
@@ -1079,7 +1083,7 @@ export function ResourceTelemetryDiagnostics() {
                 aggregate={snapshot.groups.electron}
               />
               <AggregateCard
-                label="Monitor overhead"
+                label={i18next.t("Monitor overhead")}
                 accentClass="bg-amber-500/80"
                 aggregate={snapshot.groups.monitor}
               />
@@ -1111,14 +1115,14 @@ export function ResourceTelemetryDiagnostics() {
             {hasHostPowerSignal && snapshot ? (
               <>
                 <DetailRow
-                  label="Power source"
+                  label={i18next.t("Power source")}
                   value={booleanStateLabel(snapshot.power.onBattery, {
                     true: "Battery",
                     false: "External power",
                   })}
                 />
                 <DetailRow
-                  label="Low power mode"
+                  label={i18next.t("Low power mode")}
                   value={booleanStateLabel(snapshot.power.lowPowerMode, {
                     true: "Enabled",
                     false: "Disabled",
@@ -1178,18 +1182,21 @@ export function ResourceTelemetryDiagnostics() {
             </div>
             {snapshot ? (
               <>
-                <HealthSource label="Native process monitor" health={snapshot.health.native} />
+                <HealthSource
+                  label={i18next.t("Native process monitor")}
+                  health={snapshot.health.native}
+                />
                 <HealthSource label="Electron main process" health={snapshot.health.desktop} />
                 <DetailRow
                   label="Collection time"
                   value={formatDurationMicros(snapshot.health.collectionDurationMicros)}
                 />
                 <DetailRow
-                  label="Process scan"
+                  label={i18next.t("Process scan")}
                   value={`${snapshot.health.retainedProcessCount}/${snapshot.health.scannedProcessCount} retained`}
                 />
                 <DetailRow
-                  label="Inaccessible"
+                  label={i18next.t("Inaccessible")}
                   value={String(snapshot.health.inaccessibleProcessCount)}
                   valueClassName={
                     snapshot.health.inaccessibleProcessCount > 0

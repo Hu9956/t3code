@@ -148,6 +148,7 @@ import {
 } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
 import { ProjectFavicon } from "../ProjectFavicon";
+import i18next from "i18next";
 
 const ENVIRONMENT_IDENTIFICATION_LABELS: Record<EnvironmentIdentificationMode, string> = {
   artwork: "Artwork",
@@ -195,10 +196,10 @@ const BACKGROUND_ACTIVITY_BOOLEAN_OVERRIDES: ReadonlyArray<{
     | "pauseWhenOnBattery";
   readonly label: string;
 }> = [
-  { key: "pauseWhenHostLocked", label: "Pause when host is locked" },
-  { key: "pauseWhenHostLowPower", label: "Pause on host low power" },
-  { key: "pauseWhenClientLowPower", label: "Pause on client low power" },
-  { key: "pauseWhenOnBattery", label: "Pause on battery" },
+  { key: "pauseWhenHostLocked", label: i18next.t("Pause when host is locked") },
+  { key: "pauseWhenHostLowPower", label: i18next.t("Pause on host low power") },
+  { key: "pauseWhenClientLowPower", label: i18next.t("Pause on client low power") },
+  { key: "pauseWhenOnBattery", label: i18next.t("Pause on battery") },
 ];
 
 function resetBackgroundActivitySettings() {
@@ -2597,7 +2598,7 @@ export function ArchivedThreadsPanel() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to unarchive thread",
+              title: i18next.t("Failed to unarchive thread"),
               description: error instanceof Error ? error.message : "An error occurred.",
             }),
           );
@@ -2614,7 +2615,7 @@ export function ArchivedThreadsPanel() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Failed to delete thread",
+              title: i18next.t("Failed to delete thread"),
               description: error instanceof Error ? error.message : "An error occurred.",
             }),
           );
@@ -2723,7 +2724,7 @@ export function ArchivedThreadsPanel() {
                           toastManager.add(
                             stackedThreadToast({
                               type: "error",
-                              title: "Failed to unarchive thread",
+                              title: i18next.t("Failed to unarchive thread"),
                               description:
                                 error instanceof Error ? error.message : "An error occurred.",
                             }),

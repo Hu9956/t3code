@@ -36,6 +36,7 @@ import {
   type WizardNavigation,
 } from "./AddProviderInstanceDialog.logic";
 import { AddProviderInstanceWizardSteps } from "./AddProviderInstanceWizardSteps";
+import i18next from "i18next";
 
 const PROVIDER_ACCENT_SWATCHES = [
   "#2563eb",
@@ -80,12 +81,12 @@ interface ComingSoonDriverOption {
 const COMING_SOON_DRIVER_OPTIONS: readonly ComingSoonDriverOption[] = [
   {
     value: ProviderDriverKind.make("githubCopilot"),
-    label: "Github Copilot",
+    label: i18next.t("Github Copilot"),
     icon: GithubCopilotIcon,
   },
   {
     value: ProviderDriverKind.make("gemini"),
-    label: "Gemini",
+    label: i18next.t("Gemini"),
     icon: Gemini,
   },
   {
@@ -95,7 +96,7 @@ const COMING_SOON_DRIVER_OPTIONS: readonly ComingSoonDriverOption[] = [
   },
   {
     value: ProviderDriverKind.make("piAgent"),
-    label: "Pi Agent",
+    label: i18next.t("Pi Agent"),
     icon: PiAgentIcon,
   },
 ];

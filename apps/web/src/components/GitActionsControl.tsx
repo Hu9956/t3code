@@ -92,6 +92,7 @@ import { type DraftId, useComposerDraftStore } from "~/composerDraftStore";
 import { readLocalApi } from "~/localApi";
 import { getSourceControlPresentation } from "~/sourceControlPresentation";
 import { openPullRequestLink } from "~/lib/openPullRequestLink";
+import i18next from "i18next";
 
 interface GitActionsControlProps {
   gitCwd: string | null;
@@ -165,7 +166,7 @@ const RUNNING_SOURCE_CONTROL_ACTIONS = ["runStackedAction", "pull", "publishRepo
 const PUBLISH_PROVIDER_OPTIONS = [
   {
     value: "github",
-    label: "GitHub",
+    label: i18next.t("GitHub"),
     description: "github.com",
     host: "github.com",
     pathPlaceholder: "owner/repo",
@@ -173,7 +174,7 @@ const PUBLISH_PROVIDER_OPTIONS = [
   },
   {
     value: "gitlab",
-    label: "GitLab",
+    label: i18next.t("GitLab"),
     description: "gitlab.com",
     host: "gitlab.com",
     pathPlaceholder: "group/project",
@@ -744,8 +745,8 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     {[
                       {
                         value: "private" as const,
-                        label: "Private",
-                        description: "Only invited people",
+                        label: i18next.t("Private"),
+                        description: i18next.t("Only invited people"),
                         Icon: LockIcon,
                       },
                       {
@@ -1233,7 +1234,7 @@ export default function GitActionsControl({
     if (!api) {
       toastManager.add({
         type: "error",
-        title: "Link opening is unavailable.",
+        title: i18next.t("Link opening is unavailable."),
         data: threadToastData,
       });
       return;
@@ -1242,7 +1243,7 @@ export default function GitActionsControl({
     if (!prUrl) {
       toastManager.add({
         type: "error",
-        title: "No open pull request found.",
+        title: i18next.t("No open pull request found."),
         data: threadToastData,
       });
       return;
@@ -1687,7 +1688,7 @@ export default function GitActionsControl({
               toastManager.add(
                 stackedThreadToast({
                   type: "error",
-                  title: "Git initialization failed",
+                  title: i18next.t("Git initialization failed"),
                   description: error instanceof Error ? error.message : "An error occurred.",
                   ...(threadToastData !== undefined ? { data: threadToastData } : {}),
                 }),
@@ -1701,7 +1702,7 @@ export default function GitActionsControl({
           </span>
         </Button>
       ) : (
-        <Group aria-label="Git actions" className="shrink-0">
+        <Group aria-label={i18next.t("Git actions")} className="shrink-0">
           {quickActionDisabledReason ? (
             <Popover>
               <PopoverTrigger
@@ -1750,7 +1751,13 @@ export default function GitActionsControl({
             }}
           >
             <MenuTrigger
-              render={<Button aria-label="Git action options" size="icon-xs" variant="outline" />}
+              render={
+                <Button
+                  aria-label={i18next.t("Git action options")}
+                  size="icon-xs"
+                  variant="outline"
+                />
+              }
               disabled={isGitActionRunning}
             >
               <ChevronDownIcon aria-hidden="true" className="size-4" />
@@ -1966,7 +1973,7 @@ export default function GitActionsControl({
               <Textarea
                 value={dialogCommitMessage}
                 onChange={(event) => setDialogCommitMessage(event.target.value)}
-                placeholder="Leave empty to auto-generate"
+                placeholder={i18next.t("Leave empty to auto-generate")}
                 size="sm"
               />
             </div>

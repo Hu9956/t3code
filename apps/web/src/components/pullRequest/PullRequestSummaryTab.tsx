@@ -58,6 +58,7 @@ import { PullRequestMarkdownEditor } from "./PullRequestMarkdownEditor";
 import { PullRequestReactionBar } from "./PullRequestReactions";
 import { PullRequestConversationGhost } from "./PullRequestGhosts";
 import { sectionCollapseAnchorScrollTop } from "./pullRequestSummaryScroll.logic";
+import i18next from "i18next";
 
 /** One reviewer, however a host happens to have cased their login this time. */
 function reviewerKey(login: string): string {
@@ -353,7 +354,7 @@ function CommentComposer({
         disabled={posting}
         value={body}
         rows={3}
-        placeholder="Leave a comment"
+        placeholder={i18next.t("Leave a comment")}
         aria-label="Comment on this pull request"
         onChange={(event) => setBody(event.target.value)}
       />
@@ -616,7 +617,7 @@ export function PullRequestSummaryTab({
             </span>
           </MetaRow>
           {detail.labels.length > 0 ? (
-            <MetaRow icon={<TagIcon className="size-3.5" />} label="Labels">
+            <MetaRow icon={<TagIcon className="size-3.5" />} label={i18next.t("Labels")}>
               <span className="flex min-w-0 flex-wrap items-center gap-1">
                 {detail.labels.map((label) => {
                   const dot = labelDotColor(label.color);

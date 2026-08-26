@@ -1,5 +1,6 @@
 import type { ContextMenuItem } from "@t3tools/contracts";
 import type { SnoozePreset } from "@t3tools/client-runtime/state/thread-settled";
+import i18next from "i18next";
 
 /**
  * Ids for the per-thread action menu. Snooze presets are dispatched as
@@ -105,7 +106,7 @@ export function buildThreadActionMenuItems(
           },
         ]
       : []),
-    { id: "mark-unread", label: "Mark unread", icon: "mail-open" },
+    { id: "mark-unread", label: i18next.t("Mark unread"), icon: "mail-open" },
     {
       id: "copy",
       label: "Copy",

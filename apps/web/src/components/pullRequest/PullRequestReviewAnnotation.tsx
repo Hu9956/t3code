@@ -34,6 +34,7 @@ import { PullRequestMarkdown } from "./PullRequestMarkdown";
 import { PullRequestMarkdownEditor } from "./PullRequestMarkdownEditor";
 import { PullRequestReactionBar } from "./PullRequestReactions";
 import type { PendingReviewComment } from "./pullRequestReviewStore";
+import i18next from "i18next";
 
 const CARD_CLASS =
   "mx-3 my-2 rounded-xl border border-border/70 bg-background p-3 text-sm shadow-sm";
@@ -230,7 +231,7 @@ export function ReviewThreadCard({
           aria-expanded={expanded}
           onClick={() => setExpanded((current) => !current)}
         >
-          {thread.isResolved ? "Resolved" : "Open"} · {commentCount}{" "}
+          {thread.isResolved ? "Resolved" : i18next.t("Open")} · {commentCount}{" "}
           {commentCount === 1 ? "comment" : "comments"}
         </button>
         {thread.isOutdated ? <span>outdated</span> : null}
