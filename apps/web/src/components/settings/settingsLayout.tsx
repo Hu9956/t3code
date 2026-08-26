@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { cn } from "../../lib/utils";
+import { useTranslation } from "react-i18next";
 import { WorkspacePageContainer, type WorkspacePageWidth } from "../WorkspacePageContainer";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
@@ -126,6 +127,8 @@ export function SettingsSection({
   headerAction?: ReactNode;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
+  const translatedTitle = typeof title === "string" ? t(title) : title;
   const targetRef = useSettingsSearchTarget<HTMLElement>(sectionProps.id);
 
   return (
@@ -138,7 +141,7 @@ export function SettingsSection({
       <div className="flex min-h-8 items-center justify-between gap-4 px-3 sm:px-4">
         <h2 className="flex items-center gap-2 text-lg font-semibold tracking-[-0.025em] text-foreground">
           {icon}
-          {title}
+          {translatedTitle}
         </h2>
         <div className="flex min-h-7 min-w-7 items-center justify-end">{headerAction}</div>
       </div>
@@ -164,6 +167,9 @@ export function SettingsRow({
   control?: ReactNode;
   children?: ReactNode;
 }) {
+  const { t } = useTranslation();
+  const translatedTitle = typeof title === "string" ? t(title) : title;
+  const translatedDescription = typeof description === "string" ? t(description) : description;
   const targetRef = useSettingsSearchTarget<HTMLDivElement>(rowProps.id);
 
   return (
@@ -176,14 +182,16 @@ export function SettingsRow({
       <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(10rem,auto)] sm:items-center sm:gap-8">
         <div className="min-w-0 flex-1 space-y-1">
           <div className="flex min-h-5 items-center gap-1.5">
-            <h3 className="text-sm font-medium tracking-[-0.005em] text-foreground">{title}</h3>
+            <h3 className="text-sm font-medium tracking-[-0.005em] text-foreground">
+              {translatedTitle}
+            </h3>
             <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center">
               {resetAction}
             </span>
           </div>
-          {description ? (
+          {translatedDescription ? (
             <p className="max-w-xl text-[13px] leading-[1.45] text-muted-foreground/80">
-              {description}
+              {translatedDescription}
             </p>
           ) : null}
           {status ? <div className="pt-0.5 text-xs text-muted-foreground">{status}</div> : null}
