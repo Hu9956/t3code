@@ -1014,9 +1014,9 @@ export function AppearanceSettingsPanel() {
   return (
     <SettingsPageContainer>
       <SettingsSection id="appearance" title="Appearance">
-        <LanguageSettingsRow />
         <div id={searchableSetting("theme").id}>
           <ThemeLibrary
+            headerSlot={<LanguageSettingsRow />}
             appearanceMode={appearanceMode}
             customThemes={customThemes}
             initialAppearance={resolvedTheme}

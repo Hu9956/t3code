@@ -9,7 +9,7 @@ import {
   Trash2Icon,
   UploadIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useState, type ReactElement } from "react";
+import { useCallback, useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { cn } from "../../lib/utils";
 import {
   getThemeDefinition,
@@ -510,6 +510,7 @@ export function ThemeLibrary({
   onImportOpenChange,
   themeHalves,
   setThemeHalf,
+  headerSlot,
 }: {
   theme: string;
   setTheme: (theme: string) => boolean;
@@ -522,6 +523,7 @@ export function ThemeLibrary({
   onImportOpenChange: (open: boolean) => void;
   themeHalves: ThemeHalves | null;
   setThemeHalf: (appearance: ThemeAppearance, themeId: string | null) => boolean;
+  headerSlot?: ReactNode;
 }) {
   const { t } = useTranslation();
   const openThemeEditor = useThemeEditorStore((store) => store.openThemeEditor);
@@ -859,6 +861,7 @@ export function ThemeLibrary({
       <p className="px-3 text-[13px] leading-[1.45] text-muted-foreground/80 sm:px-4">
         {t("Choose how T3 Code looks. Use a built-in theme or make your own.")}
       </p>
+      {headerSlot}
       <h3 className="px-3 text-sm font-medium tracking-[-0.005em] text-foreground sm:px-4">
         {t("Color scheme")}
       </h3>
