@@ -1014,6 +1014,7 @@ export function AppearanceSettingsPanel() {
   return (
     <SettingsPageContainer>
       <SettingsSection id="appearance" title="Appearance">
+        <LanguageSettingsRow />
         <div id={searchableSetting("theme").id}>
           <ThemeLibrary
             appearanceMode={appearanceMode}
@@ -1168,7 +1169,6 @@ export function AppearanceSettingsPanel() {
             }
           />
         ) : null}
-        <LanguageSettingsRow />
       </SettingsSection>
 
       <TypographySection />
