@@ -5,6 +5,7 @@ import { passkeys } from "@clerk/electron/passkeys";
 import { ClerkProvider as ElectronClerkProvider } from "@clerk/electron/react";
 import { createHashHistory, createBrowserHistory } from "@tanstack/react-router";
 
+import "./i18n";
 import "./index.css";
 
 import { isElectron } from "./env";

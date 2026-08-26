@@ -38,3 +38,9 @@ node_modules/
 *.log
 .env*
 !.env.example
+
+# local dev runtime
+t3-dev/
+.t3-dev/
+.t3-dev-token
+.i18n-work/

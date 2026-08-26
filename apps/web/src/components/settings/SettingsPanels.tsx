@@ -57,6 +57,7 @@ import {
 import { isElectron } from "../../env";
 import { buildHostedChannelSelectionUrl, type HostedAppChannel } from "../../hostedPairing";
 import { useCustomThemes } from "../../hooks/useCustomThemes";
+import { LanguageSettingsRow } from "./LanguageSettings";
 import {
   readAppearanceModePreference,
   readThemeHalves,
@@ -1009,6 +1010,7 @@ export function AppearanceSettingsPanel() {
   return (
     <SettingsPageContainer>
       <SettingsSection id="appearance" title="Appearance">
+        <LanguageSettingsRow />
         <div id={searchableSetting("theme").id}>
           <ThemeLibrary
             appearanceMode={appearanceMode}
