@@ -2716,16 +2716,16 @@ export function ArchivedThreadsPanel() {
                   <ArchiveIcon className="size-3.5 text-muted-foreground" />
                 )}
                 {isLoadingArchive
-                  ? "Loading archived threads"
+                  ? i18next.t("Loading archived threads")
                   : archiveError
-                    ? "Could not load archived threads"
-                    : "No archived threads"}
+                    ? i18next.t("Could not load archived threads")
+                    : i18next.t("No archived threads")}
               </span>
             }
             description={
               isLoadingArchive
-                ? "Checking connected environments."
-                : (archiveError ?? "Archived threads will appear here.")
+                ? i18next.t("Checking connected environments.")
+                : (archiveError ?? i18next.t("Archived threads will appear here."))
             }
           />
         </SettingsSection>

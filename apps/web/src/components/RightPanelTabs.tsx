@@ -96,12 +96,12 @@ export interface PullRequestTabStatus {
 }
 
 const SURFACE_DISABLED_REASONS = {
-  browser: "Browser previews are only available in the T3 Code desktop app.",
-  terminal: "Terminal surfaces are only available from a project thread.",
-  files: "Files are only available when a project is open.",
-  diff: "Diff is only available for server threads in Git repositories.",
-  pullRequest: "This thread's branch has no pull request yet.",
-  agents: "Agents are only available from a thread.",
+  browser: i18next.t("Browser previews are only available in the T3 Code desktop app."),
+  terminal: i18next.t("Terminal surfaces are only available from a project thread."),
+  files: i18next.t("Files are only available when a project is open."),
+  diff: i18next.t("Diff is only available for server threads in Git repositories."),
+  pullRequest: i18next.t("This thread's branch has no pull request yet."),
+  agents: i18next.t("Agents are only available from a thread."),
 } as const;
 
 /** Overlays that must win over the launcher's letter shortcuts. */
@@ -118,12 +118,12 @@ const LAUNCHER_SHORTCUT_BLOCKING_LAYERS = [
 
 /** One-line unavailability hints for the empty-state cards. */
 const SURFACE_UNAVAILABLE_HINTS = {
-  browser: "Only available in the desktop app.",
-  terminal: "Available when a project is open.",
-  files: "Available when a project is open.",
-  diff: "Available for Git repositories.",
-  pullRequest: "No pull request on this branch yet.",
-  agents: "Available from a thread.",
+  browser: i18next.t("Only available in the desktop app."),
+  terminal: i18next.t("Available when a project is open."),
+  files: i18next.t("Available when a project is open."),
+  diff: i18next.t("Available for Git repositories."),
+  pullRequest: i18next.t("No pull request on this branch yet."),
+  agents: i18next.t("Available from a thread."),
 } as const;
 
 type TabContextMenuAction =

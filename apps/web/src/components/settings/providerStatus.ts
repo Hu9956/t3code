@@ -41,42 +41,48 @@ export function getProviderSummary(provider: ServerProvider | undefined) {
   if (!provider.enabled) {
     return {
       headline: i18next.t("Disabled"),
-      detail:
-        provider.message ??
-        i18next.t("This provider is installed but disabled for new sessions in T3 Code."),
+      detail: provider.message
+        ? i18next.t(provider.message)
+        : i18next.t("This provider is installed but disabled for new sessions in T3 Code."),
     };
   }
   if (!provider.installed) {
     return {
       headline: i18next.t("Not found"),
-      detail: provider.message ?? i18next.t("CLI not detected on PATH."),
+      detail: provider.message
+        ? i18next.t(provider.message)
+        : i18next.t("CLI not detected on PATH."),
     };
   }
   if (provider.auth.status === "authenticated") {
     const authLabel = provider.auth.label ?? provider.auth.type;
     return {
-      headline: authLabel ? `Authenticated · ${authLabel}` : i18next.t("Authenticated"),
-      detail: provider.message ?? null,
+      headline: authLabel
+        ? i18next.t("Authenticated · {{label}}", { label: authLabel })
+        : i18next.t("Authenticated"),
+      detail: provider.message ? i18next.t(provider.message) : null,
     };
   }
   if (provider.auth.status === "unauthenticated") {
     return {
       headline: i18next.t("Not authenticated"),
-      detail: provider.message ?? null,
+      detail: provider.message ? i18next.t(provider.message) : null,
     };
   }
   if (provider.status === "warning") {
     return {
       headline: i18next.t("Needs attention"),
-      detail:
-        provider.message ??
-        i18next.t("The provider is installed, but the server could not fully verify it."),
+      detail: provider.message
+        ? i18next.t(provider.message)
+        : i18next.t("The provider is installed, but the server could not fully verify it."),
     };
   }
   if (provider.status === "error") {
     return {
       headline: i18next.t("Unavailable"),
-      detail: provider.message ?? i18next.t("The provider failed its startup checks."),
+      detail: provider.message
+        ? i18next.t(provider.message)
+        : i18next.t("The provider failed its startup checks."),
     };
   }
   return {
