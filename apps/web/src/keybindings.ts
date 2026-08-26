@@ -9,6 +9,7 @@ import {
   type ThreadJumpKeybindingCommand,
 } from "@t3tools/contracts";
 import { isMacPlatform } from "./lib/utils";
+import i18next from "i18next";
 
 export interface ShortcutEventLike {
   type?: string;
@@ -225,7 +226,7 @@ export function resolveShortcutCommand(
 function formatShortcutKeyLabel(key: string): string {
   if (key === " ") return "Space";
   if (key.length === 1) return key.toUpperCase();
-  if (key === "escape") return "Esc";
+  if (key === "escape") return i18next.t("Esc");
   if (key === "arrowup") return "Up";
   if (key === "arrowdown") return "Down";
   if (key === "arrowleft") return "Left";

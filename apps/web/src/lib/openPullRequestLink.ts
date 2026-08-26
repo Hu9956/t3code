@@ -17,6 +17,7 @@ import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
 
 import { useProjects, useServerConfigs } from "../state/entities";
 import { usePrimaryEnvironmentId } from "../state/environments";
+import i18next from "i18next";
 
 export class PullRequestLinkOpenError extends Schema.TaggedErrorClass<PullRequestLinkOpenError>()(
   "PullRequestLinkOpenError",
@@ -309,7 +310,7 @@ export function useOpenPrLink(threadRef?: ScopedThreadRef) {
       if (!api) {
         toastManager.add({
           type: "error",
-          title: "Link opening is unavailable.",
+          title: i18next.t("Link opening is unavailable."),
         });
         return false;
       }

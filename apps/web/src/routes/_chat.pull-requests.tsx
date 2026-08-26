@@ -103,6 +103,7 @@ import {
 import { useAtomCommand } from "../state/use-atom-command";
 import { cn } from "~/lib/utils";
 import { getSourceControlPresentationForKind } from "~/sourceControlPresentation";
+import i18next from "i18next";
 
 export interface PullRequestsSearch {
   readonly involvement: PullRequestInvolvement;
@@ -147,9 +148,9 @@ const INVOLVEMENT_TABS = [
 
 const STATE_TABS = [
   { value: "all", label: "All", Icon: LayersIcon },
-  { value: "open", label: "Open", Icon: GitPullRequestIcon },
+  { value: "open", label: i18next.t("Open"), Icon: GitPullRequestIcon },
   { value: "closed", label: "Closed", Icon: GitPullRequestClosedIcon },
-  { value: "merged", label: "Merged", Icon: GitMergeIcon },
+  { value: "merged", label: i18next.t("Merged"), Icon: GitMergeIcon },
 ] as const satisfies ReadonlyArray<PullRequestFilterOption<PullRequestListState>>;
 
 /** Long enough that a keystroke does not become a request, short enough to feel answered. */
@@ -1420,7 +1421,7 @@ function PullRequestsRouteView() {
     </>
   );
   // The same names and glyphs the host pills wear, so the compact menu and the pills read as
-  // one control: "GitHub" with its mark, never the bare hostname — unless two installs of one
+  // one control: i18next.t("GitHub") with its mark, never the bare hostname — unless two installs of one
   // kind force the hostname to tell them apart.
   const hostEntries = hosts.length > 0 ? hosts : expectedHosts;
   const hostMenuOptions: ReadonlyArray<PullRequestFilterOption<string>> = [
@@ -1870,20 +1871,20 @@ function PullRequestsColumn({
             <WorkspaceBreadcrumbSeparator />
             <WorkspaceBreadcrumbItem className="gap-1.5 overflow-hidden">
               <CompactFilterMenu
-                label="Filter by state"
+                label={i18next.t("Filter by state")}
                 value={state}
                 options={STATE_TABS}
                 onChange={onState}
               />
               <CompactFilterMenu
-                label="Filter by involvement"
+                label={i18next.t("Filter by involvement")}
                 value={involvement}
                 options={INVOLVEMENT_TABS}
                 onChange={onInvolvement}
               />
               {hostMenuOptions.length > 2 ? (
                 <CompactFilterMenu
-                  label="Filter by host"
+                  label={i18next.t("Filter by host")}
                   value={host ?? ""}
                   options={hostMenuOptions}
                   onChange={(next) => onHost(next === "" ? undefined : next)}

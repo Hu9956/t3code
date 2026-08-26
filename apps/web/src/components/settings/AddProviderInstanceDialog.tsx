@@ -427,7 +427,7 @@ export function AddProviderInstanceDialog({
                 setWizardStep((step) => Math.max(0, step - 1));
               }}
             >
-              {wizardStep === 0 ? "Cancel" : "Back"}
+              {wizardStep === 0 ? i18next.t("Cancel") : i18next.t("Back")}
             </Button>
             {wizardStep < ADD_PROVIDER_WIZARD_STEPS.length - 1 ? (
               <Button size="sm" onClick={() => navigateToStep(wizardStep + 1)}>

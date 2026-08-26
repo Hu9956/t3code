@@ -941,7 +941,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                     setPublishWizardStep((step) => Math.max(0, step - 1));
                   }}
                 >
-                  {publishWizardStep === 0 ? "Cancel" : "Back"}
+                  {publishWizardStep === 0 ? i18next.t("Cancel") : i18next.t("Back")}
                 </Button>
                 {publishWizardStep < 1 ? (
                   <Button

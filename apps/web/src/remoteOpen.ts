@@ -1,6 +1,6 @@
 /**
  * Remote open-in-editor: when this client is not on the environment's
- * machine, "Open" must hand the OS a `vscode://vscode-remote/ssh-remote+…`
+ * machine, i18next.t("Open") must hand the OS a `vscode://vscode-remote/ssh-remote+…`
  * deep link (local editor connects over SSH) instead of exec'ing an editor
  * on the environment host.
  *
@@ -23,6 +23,7 @@ import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";
 import { isLoopbackHostname } from "~/environments/primary/target";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 import { useEnvironmentPresentation } from "~/state/presentation";
+import i18next from "i18next";
 
 export interface RemoteOpenHost {
   readonly kind: "ssh-alias" | RemoteOpenTarget["kind"];

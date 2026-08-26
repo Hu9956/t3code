@@ -1,6 +1,7 @@
 import { EDITORS, type EditorId } from "@t3tools/contracts";
 
 import { getLocalFileManagerName } from "~/lib/utils";
+import i18next from "i18next";
 
 const editorLabels = new Map<EditorId, string>(EDITORS.map((editor) => [editor.id, editor.label]));
 
@@ -14,6 +15,6 @@ export function editorLabelForPlatform(editorId: EditorId, platform: string): st
 
 export function openInEditorMenuLabel(editorId: EditorId | null): string {
   return editorId === null || editorId === "file-manager"
-    ? "Open in editor"
+    ? i18next.t("Open in editor")
     : `Open in ${editorLabels.get(editorId) ?? "Editor"}`;
 }
