@@ -15,8 +15,10 @@ import { Button } from "../components/ui/button";
 import { SidebarInset } from "../components/ui/sidebar";
 import { WorkspacePageHeader } from "../components/WorkspacePageHeader";
 import { isElectron } from "../env";
+import { useTranslation } from "react-i18next";
 
 function RestoreDefaultsButton({ onRestored }: { onRestored: () => void }) {
+  const { t } = useTranslation();
   const { changedSettingLabels, restoreDefaults } = useSettingsRestore(onRestored);
 
   return (
@@ -27,7 +29,7 @@ function RestoreDefaultsButton({ onRestored }: { onRestored: () => void }) {
       onClick={() => void restoreDefaults()}
     >
       <RotateCcwIcon className="mx-1 size-3.5" />
-      Restore defaults
+      {t("Restore defaults")}
     </Button>
   );
 }
