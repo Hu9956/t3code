@@ -365,5 +365,6 @@
   "New worktrees start from origin": "新建 worktree 基于 origin",
   "Agent browser access": "Agent 浏览器访问",
   "This shared policy gates background work such as Git refreshes and provider health probes after their individual intervals elapse.": "该共享策略控制后台工作的门限：Git 刷新与引擎健康探测需等各自间隔到期后才会执行。",
-  "System default": "系统默认"
+  "System default": "系统默认",
+  "Interface display language.": "界面显示语言。"
 }
