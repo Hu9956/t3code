@@ -65,10 +65,34 @@ interface AgySessionContext {
   readonly model: string | undefined;
 }
 
+interface AgyStepUpdate {
+  readonly conversation_id?: string;
+  readonly step_index?: number;
+  readonly state?: string;
+  readonly step_type?: string;
+  readonly tool_name?: string;
+  readonly text_delta?: string;
+  readonly thinking?: string;
+  readonly tool_info?: {
+    readonly name?: string;
+    readonly parameters?: unknown;
+    readonly output?: string;
+    readonly error?: { readonly message?: string; readonly type?: string };
+  };
+  readonly usage?: {
+    readonly input_tokens?: number;
+    readonly output_tokens?: number;
+    readonly thinking_tokens?: number;
+    readonly total_tokens?: number;
+  };
+}
+
 interface AgyNativeFrameLike {
   readonly event?: string;
   readonly conversation_id?: string;
   readonly result?: AgyResultFrame;
+  readonly step_update?: AgyStepUpdate;
+  readonly init?: unknown;
 }
 
 function buildAgySpawnArgs(model: string | undefined): ReadonlyArray<string> {
@@ -78,13 +102,12 @@ function buildAgySpawnArgs(model: string | undefined): ReadonlyArray<string> {
     "--output-format",
     "stream-json",
     ...(model ? ["--model", model] : []),
-    "--mode",
-    "accept-edits",
+    "--dangerously-skip-permissions",
   ];
 }
 
 function buildUserMessageFrame(prompt: string): string {
-  return `${JSON.stringify({
+  return `${globalThis.JSON.stringify({
     event: "user",
     message: {
       content: [{ type: "text", text: prompt }],
@@ -95,11 +118,14 @@ function buildUserMessageFrame(prompt: string): string {
 /** Parse one NDJSON line; malformed lines are dropped (diagnostics may interleave). */
 function parseFrame(line: string): Option.Option<AgyNativeFrameLike> {
   try {
-    return Option.some(JSON.parse(line) as AgyNativeFrameLike);
+    // oxlint-disable-next-line no-restricted-syntax -- NDJSON is genuinely unknown
+    return Option.some(globalThis.JSON.parse(line) as AgyNativeFrameLike);
   } catch {
     return Option.none();
   }
 }
+
+const jsonStringify = (value: unknown): string => globalThis.JSON.stringify(value);
 
 export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(function* (
   antigravitySettings: AntigravitySettings,
@@ -147,12 +173,13 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
 
   /**
    * Write the prompt frame, then consume stdout until the turn's `result`
-   * frame. The final response is emitted as one `content.delta`; the caller
-   * closes the turn with `turn.completed`.
+   * frame. Emits incremental `content.delta` / `item.started` / `item.completed`
+   * as `step_update` arrives (B1).
    */
   const runTurnToResult = (
     context: AgySessionContext,
     prompt: string,
+    turnId: TurnId,
   ): Effect.Effect<AgyResultFrame, ProviderAdapterProcessError | ProviderAdapterRequestError> =>
     Effect.gen(function* () {
       yield* Stream.run(
@@ -171,6 +198,7 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
       );
 
       let resultFrame: AgyResultFrame | undefined;
+      let hasEmittedDelta = false;
       yield* context.child.stdout.pipe(
         Stream.decodeText(),
         Stream.splitLines,
@@ -179,17 +207,109 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
         Stream.map(parseFrame),
         Stream.filter(Option.isSome),
         Stream.map((frameOption) => frameOption.value),
-        Stream.tap((frame) => {
-          if (frame.event === "init" && frame.conversation_id) {
-            context.conversationId = frame.conversation_id;
-          }
-          return Effect.void;
-        }),
-        Stream.filter((frame) => frame.event === "result" && frame.result !== undefined),
-        Stream.map((frame) => frame.result!),
-        Stream.runForEach((result) =>
-          Effect.sync(() => {
-            resultFrame = result;
+        Stream.runForEach((frame) =>
+          Effect.gen(function* () {
+            if (frame.event === "init" && frame.conversation_id) {
+              context.conversationId = frame.conversation_id;
+              return;
+            }
+            if (frame.event === "step_update" && frame.step_update) {
+              const su = frame.step_update;
+              // agent_response incremental text
+              if (su.step_type === "agent_response" && su.text_delta) {
+                hasEmittedDelta = true;
+                yield* offerRuntimeEvent({
+                  eventId: yield* nextEventId,
+                  createdAt: yield* nowIso,
+                  provider: PROVIDER,
+                  threadId: context.threadId,
+                  turnId,
+                  itemId: RuntimeItemId.make(`agy-text-${turnId}-${su.step_index ?? 0}`),
+                  type: "content.delta",
+                  payload: {
+                    streamKind: "assistant_text",
+                    delta: su.text_delta,
+                  },
+                });
+              }
+              if (su.thinking && su.thinking.trim().length > 0) {
+                hasEmittedDelta = true;
+                yield* offerRuntimeEvent({
+                  eventId: yield* nextEventId,
+                  createdAt: yield* nowIso,
+                  provider: PROVIDER,
+                  threadId: context.threadId,
+                  turnId,
+                  itemId: RuntimeItemId.make(`agy-think-${turnId}-${su.step_index ?? 0}`),
+                  type: "content.delta",
+                  payload: {
+                    streamKind: "reasoning_text",
+                    delta: su.thinking,
+                  },
+                });
+              }
+              // tool lifecycle
+              if (su.step_type === "tool" && su.tool_name) {
+                const toolItemId = RuntimeItemId.make(`agy-tool-${turnId}-${su.step_index ?? 0}`);
+                const isCommand =
+                  su.tool_name.toLowerCase().includes("command") || su.tool_name === "run_command";
+                const itemType = isCommand ? "command_execution" : "dynamic_tool_call";
+                if (su.state === "ACTIVE") {
+                  yield* offerRuntimeEvent({
+                    eventId: yield* nextEventId,
+                    createdAt: yield* nowIso,
+                    provider: PROVIDER,
+                    threadId: context.threadId,
+                    turnId,
+                    itemId: toolItemId,
+                    type: "item.started",
+                    payload: {
+                      itemType,
+                      title: su.tool_name,
+                      detail: jsonStringify(su.tool_info?.parameters ?? {}),
+                    },
+                  });
+                } else if (su.state === "DONE") {
+                  yield* offerRuntimeEvent({
+                    eventId: yield* nextEventId,
+                    createdAt: yield* nowIso,
+                    provider: PROVIDER,
+                    threadId: context.threadId,
+                    turnId,
+                    itemId: toolItemId,
+                    type: "item.completed",
+                    payload: {
+                      itemType,
+                      status: "completed",
+                      detail: su.tool_info?.output ?? jsonStringify(su.tool_info ?? {}),
+                    },
+                  });
+                } else if (su.state === "ERROR") {
+                  const errMsg = su.tool_info?.error?.message ?? "tool failed";
+                  yield* offerRuntimeEvent({
+                    eventId: yield* nextEventId,
+                    createdAt: yield* nowIso,
+                    provider: PROVIDER,
+                    threadId: context.threadId,
+                    turnId,
+                    itemId: toolItemId,
+                    type: "item.completed",
+                    payload: {
+                      itemType,
+                      status: "failed",
+                      detail: errMsg,
+                    },
+                  });
+                }
+              }
+              return;
+            }
+            if (frame.event === "result" && frame.result !== undefined) {
+              resultFrame = frame.result;
+              if (frame.result.conversation_id && !context.conversationId) {
+                context.conversationId = frame.result.conversation_id;
+              }
+            }
           }),
         ),
         Effect.mapError(
@@ -210,17 +330,72 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
           detail: "Antigravity CLI closed stdout before emitting a result.",
         });
       }
+      // token usage (B5)
+      const usage = (
+        resultFrame as unknown as {
+          usage?: {
+            input_tokens?: number;
+            output_tokens?: number;
+            thinking_tokens?: number;
+            total_tokens?: number;
+          };
+        }
+      ).usage;
+      if (usage) {
+        const usedTokens =
+          usage.total_tokens ?? (usage.input_tokens ?? 0) + (usage.output_tokens ?? 0);
+        yield* offerRuntimeEvent({
+          eventId: yield* nextEventId,
+          createdAt: yield* nowIso,
+          provider: PROVIDER,
+          threadId: context.threadId,
+          turnId,
+          type: "thread.token-usage.updated",
+          payload: {
+            usage: {
+              usedTokens,
+              totalProcessedTokens: usedTokens,
+              ...(usage.input_tokens !== undefined
+                ? { inputTokens: usage.input_tokens, lastInputTokens: usage.input_tokens }
+                : {}),
+              ...(usage.output_tokens !== undefined
+                ? { outputTokens: usage.output_tokens, lastOutputTokens: usage.output_tokens }
+                : {}),
+              ...(usage.thinking_tokens !== undefined
+                ? {
+                    reasoningOutputTokens: usage.thinking_tokens,
+                    lastReasoningOutputTokens: usage.thinking_tokens,
+                  }
+                : {}),
+            },
+          },
+        }).pipe(Effect.orElseSucceed(() => undefined));
+      }
+      // fallback for providers that don't emit text_delta (should not happen after B1)
+      if (!hasEmittedDelta && resultFrame.response && resultFrame.response.trim().length > 0) {
+        yield* offerRuntimeEvent({
+          eventId: yield* nextEventId,
+          createdAt: yield* nowIso,
+          provider: PROVIDER,
+          threadId: context.threadId,
+          turnId,
+          itemId: RuntimeItemId.make(`agy-item-${turnId}`),
+          type: "content.delta",
+          payload: {
+            streamKind: "assistant_text",
+            delta: resultFrame.response,
+          },
+        });
+      }
       return resultFrame;
     });
 
   const startSession: AntigravityAdapterShape["startSession"] = (input) =>
     Effect.gen(function* () {
-      if (sessions.has(input.threadId)) {
-        return yield* new ProviderAdapterValidationError({
-          provider: PROVIDER,
-          operation: "startSession",
-          issue: `Session ${input.threadId} already exists.`,
-        });
+      const existing = sessions.get(input.threadId);
+      if (existing) {
+        yield* killContext(existing).pipe(Effect.orElseSucceed(() => undefined));
+        sessions.delete(input.threadId);
       }
       const modelSelection =
         input.modelSelection?.instanceId === options?.instanceId ? input.modelSelection : undefined;
@@ -284,25 +459,12 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
         payload: {},
       });
 
-      const result = yield* runTurnToResult(context, prompt);
+      const result = yield* runTurnToResult(context, prompt, turnId);
 
       if (result.conversation_id && !context.conversationId) {
         context.conversationId = result.conversation_id;
       }
 
-      yield* offerRuntimeEvent({
-        eventId: yield* nextEventId,
-        createdAt: yield* nowIso,
-        provider: PROVIDER,
-        threadId: input.threadId,
-        turnId,
-        itemId: RuntimeItemId.make(`agy-item-${turnId}`),
-        type: "content.delta",
-        payload: {
-          streamKind: "assistant_text",
-          delta: result.response ?? "",
-        },
-      });
       yield* offerRuntimeEvent({
         eventId: yield* nextEventId,
         createdAt: yield* nowIso,

@@ -91,6 +91,7 @@ import {
 import { isCommandPaletteOpen } from "../../commandPaletteBus";
 import { getTerminalFocusOwner } from "../../lib/terminalFocus";
 import { resolveShortcutCommand } from "../../keybindings";
+import { useTranslation } from "react-i18next";
 import {
   type TerminalContextDraft,
   type TerminalContextSelection,
@@ -670,6 +671,7 @@ export interface ChatComposerProps {
 // --------------------------------------------------------------------------
 
 export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps) {
+  const { t } = useTranslation();
   const {
     composerDraftTarget,
     environmentId,
@@ -1141,8 +1143,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
           id: "slash:model",
           type: "slash-command",
           command: "model",
-          label: "/model",
-          description: "Switch response model for this thread",
+          label: t("/model"),
+          description: t("Switch response model for this thread"),
         },
         ...(planModeUiEnabled
           ? ([
@@ -1150,15 +1152,15 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                 id: "slash:plan",
                 type: "slash-command",
                 command: "plan",
-                label: "/plan",
-                description: "Switch this thread into plan mode",
+                label: t("/plan"),
+                description: t("Switch this thread into plan mode"),
               },
               {
                 id: "slash:default",
                 type: "slash-command",
                 command: "default",
-                label: "/default",
-                description: "Switch this thread back to normal build mode",
+                label: t("/default"),
+                description: t("Switch this thread back to normal build mode"),
               },
             ] as const)
           : []),
@@ -1176,7 +1178,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
         provider: selectedProvider,
         command,
         label: `/${command.name}`,
-        description: command.description ?? command.input?.hint ?? "Run provider command",
+        description: command.description ?? command.input?.hint ?? t("Run provider command"),
       }));
       const query = composerTrigger.query.trim().toLowerCase();
       const skillItems = slashMenuSkills.map((skill) => ({
@@ -1208,7 +1210,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
           description:
             skill.shortDescription ??
             skill.description ??
-            (skill.scope ? `${skill.scope} skill` : "Run provider skill"),
+            (skill.scope ? `${skill.scope} skill` : t("Run provider skill")),
         }),
       );
     }
@@ -1219,6 +1221,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     selectedProvider,
     selectedProviderStatus,
     settings.showSkillsInSlashMenu,
+    t,
     workspaceEntries.entries,
   ]);
 
