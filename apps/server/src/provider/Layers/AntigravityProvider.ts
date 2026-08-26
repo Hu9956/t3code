@@ -45,7 +45,9 @@ const EMPTY_CAPABILITIES: ModelCapabilities = createModelCapabilities({
 });
 
 const VERSION_PROBE_TIMEOUT_MS = 4_000;
-const MODELS_PROBE_TIMEOUT_MS = 15_000;
+// `agy models` is a live network call (measured ~7s without a warm cache on a
+// proxied connection); allow generous headroom before giving up on discovery.
+const MODELS_PROBE_TIMEOUT_MS = 30_000;
 
 /**
  * Models advertised before the first successful `agy models` probe. The
@@ -145,6 +147,8 @@ const runAgyVersionCommand = (
       ChildProcess.make(spawnCommand.command, spawnCommand.args, {
         env: environment,
         shell: spawnCommand.shell,
+        // `agy` waits on a live stdin pipe; close stdin so probes return.
+        stdin: "ignore",
       }),
     );
   });
@@ -163,6 +167,8 @@ const runAgyModelsCommand = (
       ChildProcess.make(spawnCommand.command, spawnCommand.args, {
         env: environment,
         shell: spawnCommand.shell,
+        // `agy models` hangs until stdin reaches EOF ("ignore" maps to that).
+        stdin: "ignore",
       }),
     );
   });
