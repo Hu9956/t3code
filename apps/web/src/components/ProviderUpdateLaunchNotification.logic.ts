@@ -126,8 +126,11 @@ function getProviderFailedUpdateTitle(
   const providerName = PROVIDER_DISPLAY_NAMES[provider.driver] ?? provider.driver;
   const attemptedVersion = provider.versionAdvisory?.latestVersion;
   return attemptedVersion
-    ? `${providerName} ${formatVersion(attemptedVersion)} update failed`
-    : `${providerName} update failed`;
+    ? i18next.t("{{providerName}} {{version}} update failed", {
+        providerName,
+        version: formatVersion(attemptedVersion),
+      })
+    : i18next.t("{{providerName}} update failed", { providerName });
 }
 
 export function isProviderUpdateCandidate(
@@ -252,7 +255,10 @@ export function getProviderUpdateRejectedToastView(
   return {
     phase: "failed",
     type: "error",
-    title: providerCount === 1 ? "Provider update failed" : "Provider updates failed",
+    title:
+      providerCount === 1
+        ? i18next.t("Provider update failed")
+        : i18next.t("Provider updates failed"),
     description: message,
   };
 }
@@ -267,7 +273,10 @@ export function getProviderUpdateProgressToastView(input: {
     return {
       phase: "failed",
       type: "error",
-      title: failedProviders.length === 1 ? "Provider update failed" : "Provider updates failed",
+      title:
+        failedProviders.length === 1
+          ? i18next.t("Provider update failed")
+          : i18next.t("Provider updates failed"),
       description: getFailedProviderUpdateDescription(failedProviders),
     };
   }
@@ -378,7 +387,7 @@ export function firstFailedProviderUpdateMessage(
     return null;
   }
   const error = squashAtomCommandFailure(failed);
-  return error instanceof Error ? error.message : "Provider update failed.";
+  return error instanceof Error ? error.message : i18next.t("Provider update failed.");
 }
 
 function getUpdateFinishedAt(provider: ServerProvider): string | null {
@@ -605,7 +614,9 @@ export function firstRejectedProviderUpdateMessage(
   if (!rejected) {
     return null;
   }
-  return rejected.reason instanceof Error ? rejected.reason.message : "Provider update failed.";
+  return rejected.reason instanceof Error
+    ? rejected.reason.message
+    : i18next.t("Provider update failed.");
 }
 
 /**

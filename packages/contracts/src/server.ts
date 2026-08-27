@@ -1,5 +1,6 @@
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
+import i18next from "i18next";
 import { ExecutionEnvironmentDescriptor, ServerSelfUpdateMethod } from "./environment.ts";
 import { ServerAuthDescriptor } from "./auth.ts";
 import {
@@ -612,7 +613,10 @@ export class ServerProviderUpdateError extends Schema.TaggedErrorClass<ServerPro
   },
 ) {
   override get message(): string {
-    return `Provider update failed for ${this.provider}: ${this.reason}`;
+    return i18next.t("Provider update failed for {{provider}}: {{reason}}", {
+      provider: this.provider,
+      reason: this.reason,
+    });
   }
 }
 
@@ -656,6 +660,6 @@ export class ServerSelfUpdateError extends Schema.TaggedErrorClass<ServerSelfUpd
   },
 ) {
   override get message(): string {
-    return `Server update failed: ${this.reason}`;
+    return i18next.t("Server update failed: {{reason}}", { reason: this.reason });
   }
 }

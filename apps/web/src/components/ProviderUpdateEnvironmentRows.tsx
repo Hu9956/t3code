@@ -66,7 +66,7 @@ function toProviderUpdateOutcome(input: {
     const error = squashAtomCommandFailure(input.result);
     return {
       status: "rejected",
-      reason: error instanceof Error ? error : new Error("Provider update failed."),
+      reason: error instanceof Error ? error : new Error(i18next.t("Provider update failed.")),
     };
   }
 
@@ -284,7 +284,8 @@ export function ProviderUpdateEnvironmentRows({
             } catch (error) {
               return {
                 status: "rejected",
-                reason: error instanceof Error ? error : new Error("Provider update failed."),
+                reason:
+                  error instanceof Error ? error : new Error(i18next.t("Provider update failed.")),
               };
             }
           }),
@@ -342,7 +343,7 @@ export function ProviderUpdateEnvironmentRows({
           setErrorByEnvironment((previous) =>
             new Map(previous).set(
               environmentId,
-              error instanceof Error ? error.message : "Provider update failed.",
+              error instanceof Error ? error.message : i18next.t("Provider update failed."),
             ),
           );
         }

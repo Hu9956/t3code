@@ -18,6 +18,7 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Ref from "effect/Ref";
 import * as Schema from "effect/Schema";
+import i18next from "i18next";
 import { HttpClient } from "effect/unstable/http";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 
@@ -169,12 +170,14 @@ function commandOutput(result: ProviderMaintenanceCommandResult): string | null 
 
 function failureMessage(result: ProviderMaintenanceCommandResult): string {
   if (result.timedOut) {
-    return "Update timed out.";
+    return i18next.t("Update timed out.");
   }
   if (result.exitCode !== null && result.exitCode !== 0) {
-    return `Update command exited with code ${result.exitCode}.`;
+    return i18next.t("Update command exited with code {{code}}.", {
+      code: result.exitCode,
+    });
   }
-  return "Update command failed.";
+  return i18next.t("Update command failed.");
 }
 
 function isOutdatedProvider(provider: ServerProvider | undefined): boolean {

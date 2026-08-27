@@ -1931,5 +1931,15 @@
   "Checking connected environments.": "正在检查已连接环境。",
   "Authenticated · {{label}}": "已认证 · {{label}}",
   "7 upstream providers connected through OpenCode.": "通过 OpenCode 连接了 7 个上游提供方。",
-  "opencode - 7 upstream providers connected through OpenCode.": "opencode - 通过 OpenCode 连接了 7 个上游提供方。"
+  "opencode - 7 upstream providers connected through OpenCode.": "opencode - 通过 OpenCode 连接了 7 个上游提供方。",
+  "Provider update failed": "引擎更新失败",
+  "Provider updates failed": "引擎更新失败",
+  "Provider update failed.": "引擎更新失败。",
+  "{{providerName}} {{version}} update failed": "{{providerName}} {{version}} 更新失败",
+  "{{providerName}} update failed": "{{providerName}} 更新失败",
+  "Update command exited with code {{code}}.": "更新命令退出，代码 {{code}}。",
+  "Update command failed.": "更新命令失败。",
+  "Update timed out.": "更新超时。",
+  "Provider update failed for {{provider}}: {{reason}}": "提供方 {{provider}} 更新失败：{{reason}}",
+  "Server update failed: {{reason}}": "服务器更新失败：{{reason}}"
 }
