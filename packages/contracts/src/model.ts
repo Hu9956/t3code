@@ -154,6 +154,7 @@ export const DEFAULT_MODEL_BY_PROVIDER: Partial<Record<ProviderDriverKind, strin
   [GROK_DRIVER_KIND]: "grok-build",
   [OPENCODE_DRIVER_KIND]: "openai/gpt-5",
   [ProviderDriverKind.make("antigravity")]: "gemini-3.7-flash-medium",
+  [ProviderDriverKind.make("dsh")]: "deepseek-chat",
 };
 
 /** Per-provider text generation model defaults. */
