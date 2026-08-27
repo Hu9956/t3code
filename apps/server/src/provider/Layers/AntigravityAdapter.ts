@@ -643,9 +643,9 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                     type: "item.started",
                     payload: {
                       itemType: "reasoning",
-                      status: "running",
+                      status: "inProgress",
                       title: "Thinking",
-                    } as unknown as any,
+                    },
                   });
                 }
                 yield* offerRuntimeEvent({
@@ -662,25 +662,50 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                   },
                 });
               }
-              // Complete reasoning item when its step finishes (state DONE/ERROR)
+              // Complete reasoning items — batch close for this turn to avoid leak when thinking spans multiple steps
               if ((su.state === "DONE" || su.state === "ERROR") && reasoningItemStarted.size > 0) {
-                const rid = RuntimeItemId.make(`agy-think-${turnId}-${su.step_index ?? 0}`);
-                const rkey = rid as unknown as string;
-                if (reasoningItemStarted.has(rkey)) {
-                  reasoningItemStarted.delete(rkey);
-                  yield* offerRuntimeEvent({
-                    eventId: yield* nextEventId,
-                    createdAt: yield* nowIso,
-                    provider: PROVIDER,
-                    threadId: context.threadId,
-                    turnId,
-                    itemId: rid,
-                    type: "item.completed",
-                    payload: {
-                      itemType: "reasoning",
-                      status: su.state === "DONE" ? "completed" : "failed",
-                    } as unknown as any,
-                  });
+                const prefix = `agy-think-${turnId}-`;
+                const toClose = Array.from(reasoningItemStarted).filter((k) =>
+                  k.startsWith(prefix),
+                );
+                if (toClose.length > 0) {
+                  for (const rkey of toClose) {
+                    reasoningItemStarted.delete(rkey);
+                    const rid = RuntimeItemId.make(rkey as unknown as string);
+                    yield* offerRuntimeEvent({
+                      eventId: yield* nextEventId,
+                      createdAt: yield* nowIso,
+                      provider: PROVIDER,
+                      threadId: context.threadId,
+                      turnId,
+                      itemId: rid,
+                      type: "item.completed",
+                      payload: {
+                        itemType: "reasoning",
+                        status: su.state === "DONE" ? "completed" : "failed",
+                      },
+                    });
+                  }
+                } else {
+                  // fallback exact match (covers legacy key shape)
+                  const rid = RuntimeItemId.make(`agy-think-${turnId}-${su.step_index ?? 0}`);
+                  const rkey = rid as unknown as string;
+                  if (reasoningItemStarted.has(rkey)) {
+                    reasoningItemStarted.delete(rkey);
+                    yield* offerRuntimeEvent({
+                      eventId: yield* nextEventId,
+                      createdAt: yield* nowIso,
+                      provider: PROVIDER,
+                      threadId: context.threadId,
+                      turnId,
+                      itemId: rid,
+                      type: "item.completed",
+                      payload: {
+                        itemType: "reasoning",
+                        status: su.state === "DONE" ? "completed" : "failed",
+                      },
+                    });
+                  }
                 }
               }
               // tool lifecycle
