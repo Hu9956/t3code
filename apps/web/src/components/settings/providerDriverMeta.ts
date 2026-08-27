@@ -3,6 +3,7 @@ import {
   ClaudeSettings,
   CodexSettings,
   CursorSettings,
+  DshSettings,
   GrokSettings,
   OpenCodeSettings,
   ProviderDriverKind,
@@ -12,6 +13,7 @@ import {
   AntigravityIcon,
   ClaudeAI,
   CursorIcon,
+  DshIcon,
   GrokIcon,
   type Icon,
   OpenAI,
@@ -83,6 +85,13 @@ export const PROVIDER_CLIENT_DEFINITIONS: readonly ProviderClientDefinition[] = 
     icon: AntigravityIcon,
     badgeLabel: i18next.t("Early Access"),
     settingsSchema: AntigravitySettings,
+  },
+  {
+    value: ProviderDriverKind.make("dsh"),
+    label: i18next.t("DSH"),
+    icon: DshIcon,
+    badgeLabel: i18next.t("Early Access"),
+    settingsSchema: DshSettings,
   },
 ];
 
