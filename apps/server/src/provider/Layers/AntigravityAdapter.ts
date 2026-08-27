@@ -29,6 +29,7 @@
  */
 import {
   ApprovalRequestId,
+  type CanonicalItemType,
   type AntigravitySettings,
   type ChatAttachment,
   EventId,
@@ -169,14 +170,140 @@ function canonicalRequestTypeForTool(
     lower.includes("write") ||
     lower.includes("edit") ||
     lower.includes("patch") ||
-    lower.includes("apply")
+    lower.includes("apply") ||
+    lower.includes("replace") ||
+    lower.includes("create") ||
+    lower.includes("sed") ||
+    lower.includes("notebook") ||
+    lower.includes("delete")
   ) {
     return "file_change_approval";
   }
-  if (lower.includes("read") || lower.includes("view") || lower.includes("cat")) {
+  if (
+    lower.includes("read") ||
+    lower.includes("view") ||
+    lower.includes("cat") ||
+    lower.includes("grep") ||
+    lower.includes("search") ||
+    lower.includes("browser") ||
+    lower.includes("list")
+  ) {
     return "file_read_approval";
   }
   return "dynamic_tool_call";
+}
+
+function getAgyToolItemType(toolName: string): CanonicalItemType {
+  const lower = toolName.toLowerCase();
+  if (
+    lower.includes("command") ||
+    lower.includes("bash") ||
+    lower.includes("shell") ||
+    lower.includes("exec") ||
+    toolName === "run_command" ||
+    toolName === "send_command_input" ||
+    toolName === "command_status"
+  ) {
+    return "command_execution";
+  }
+  if (
+    lower.includes("write") ||
+    lower.includes("edit") ||
+    lower.includes("patch") ||
+    lower.includes("apply") ||
+    lower.includes("create") ||
+    lower.includes("replace") ||
+    lower.includes("sed") ||
+    lower.includes("notebook") ||
+    lower.includes("delete_knowledge")
+  ) {
+    return "file_change";
+  }
+  if (
+    lower.includes("read") ||
+    lower.includes("view") ||
+    lower.includes("cat") ||
+    lower.includes("grep") ||
+    lower.includes("search") ||
+    lower.includes("list_dir") ||
+    lower.includes("list_resources") ||
+    lower.includes("read_resource") ||
+    lower.includes("browser") ||
+    lower.includes("mcp") ||
+    lower === "view_file" ||
+    lower === "grep_search" ||
+    lower === "search_web" ||
+    lower === "list_dir"
+  ) {
+    return "mcp_tool_call";
+  }
+  if (lower.includes("agent")) {
+    return "collab_agent_tool_call";
+  }
+  if (lower.includes("websearch") || lower.includes("web_search")) {
+    return "web_search";
+  }
+  if (lower.includes("image") || toolName === "generate_image") {
+    return "image_view";
+  }
+  return "dynamic_tool_call";
+}
+
+function summarizeAgyToolRequest(toolName: string, params: unknown): string {
+  if (!isRecord(params)) {
+    const raw = jsonStringify(params);
+    return raw.length <= 400 ? `${toolName}: ${raw}` : `${toolName}: ${raw.slice(0, 397)}...`;
+  }
+  const rec = params as Record<string, unknown>;
+  const commandValue = rec.CommandLine ?? rec.cmd ?? rec.command ?? rec.Command;
+  if (typeof commandValue === "string" && commandValue.trim().length > 0) {
+    return `${toolName}: ${commandValue.trim().slice(0, 400)}`;
+  }
+  const fileValue =
+    rec.TargetFile ?? rec.AbsolutePath ?? rec.FilePath ?? rec.path ?? rec.file ?? rec.File;
+  if (typeof fileValue === "string" && fileValue.trim().length > 0) {
+    const base = fileValue.trim().split("/").pop() ?? fileValue.trim();
+    const full = fileValue.trim();
+    if (full.length <= 300) {
+      return `${toolName}: ${base}`;
+    }
+    return `${toolName}: ${base} — ${full.slice(0, 300)}`;
+  }
+  const query = rec.Query ?? rec.query ?? rec.SearchQuery ?? rec.searchQuery;
+  const searchPath = rec.SearchPath ?? rec.searchPath ?? rec.path;
+  if (typeof query === "string" && query.trim().length > 0) {
+    const qp =
+      typeof searchPath === "string" && searchPath.trim().length > 0
+        ? `${query} in ${searchPath}`
+        : query;
+    return `${toolName}: ${qp.slice(0, 400)}`;
+  }
+  const serialized = jsonStringify(params);
+  if (serialized.length <= 400) {
+    return `${toolName}: ${serialized}`;
+  }
+  return `${toolName}: ${serialized.slice(0, 397)}...`;
+}
+
+function extractAgyCommand(params: unknown): string | undefined {
+  if (!isRecord(params)) return undefined;
+  const rec = params as Record<string, unknown>;
+  const v = rec.CommandLine ?? rec.cmd ?? rec.command ?? rec.Command;
+  return typeof v === "string" && v.trim().length > 0 ? v.trim().slice(0, 4000) : undefined;
+}
+
+function extractAgyChangedFiles(params: unknown): string[] | undefined {
+  if (!isRecord(params)) return undefined;
+  const rec = params as Record<string, unknown>;
+  const v = rec.TargetFile ?? rec.AbsolutePath ?? rec.FilePath ?? rec.path ?? rec.file;
+  if (typeof v === "string" && v.trim().length > 0) {
+    return [v.trim()];
+  }
+  return undefined;
+}
+
+function truncateDetail(value: string, maxLen: number): string {
+  return value.length <= maxLen ? value : `${value.slice(0, maxLen - 3)}...`;
 }
 
 interface AgyResultFrame {
@@ -556,9 +683,7 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
               // tool lifecycle
               if (su.step_type === "tool" && su.tool_name) {
                 const toolItemId = RuntimeItemId.make(`agy-tool-${turnId}-${su.step_index ?? 0}`);
-                const isCommand =
-                  su.tool_name.toLowerCase().includes("command") || su.tool_name === "run_command";
-                const itemType = isCommand ? "command_execution" : "dynamic_tool_call";
+                const itemType = getAgyToolItemType(su.tool_name);
                 // Approval gate for privileged tools when not bypassed
                 const needsApproval =
                   isPrivilegedTool(su.tool_name) && context.runtimeMode !== "full-access";
@@ -570,7 +695,10 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                     );
                     const runtimeRequestId = RuntimeRequestId.make(requestId);
                     const requestType = canonicalRequestTypeForTool(su.tool_name);
-                    const detail = `${su.tool_name}${su.tool_info?.parameters ? `: ${jsonStringify(su.tool_info.parameters)}` : ""}`;
+                    const detail = summarizeAgyToolRequest(
+                      su.tool_name,
+                      su.tool_info?.parameters ?? {},
+                    );
                     const decisionDeferred = yield* Deferred.make<ProviderApprovalDecision>();
                     const pending: PendingApproval = {
                       requestType,
@@ -638,6 +766,19 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                   }
                   if (!toolItemStarted.has(toolItemId as unknown as string)) {
                     toolItemStarted.add(toolItemId as unknown as string);
+                    const startedParams = su.tool_info?.parameters ?? {};
+                    const startedDetail = truncateDetail(
+                      summarizeAgyToolRequest(su.tool_name, startedParams),
+                      400,
+                    );
+                    const startedCommand = extractAgyCommand(startedParams);
+                    const startedChangedFiles = extractAgyChangedFiles(startedParams);
+                    const startedData: Record<string, unknown> = {
+                      toolName: su.tool_name,
+                      input: startedParams,
+                    };
+                    if (startedCommand) startedData.command = startedCommand;
+                    if (startedChangedFiles) startedData.changedFiles = startedChangedFiles;
                     yield* offerRuntimeEvent({
                       eventId: yield* nextEventId,
                       createdAt: yield* nowIso,
@@ -649,11 +790,28 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                       payload: {
                         itemType,
                         title: su.tool_name,
-                        detail: jsonStringify(su.tool_info?.parameters ?? {}),
+                        detail: startedDetail,
+                        data: startedData,
                       },
                     });
                   }
                 } else if (su.state === "DONE") {
+                  const doneRawDetail = su.tool_info?.output ?? jsonStringify(su.tool_info ?? {});
+                  const doneDetail = truncateDetail(doneRawDetail, 3000);
+                  const doneCommand = extractAgyCommand(su.tool_info?.parameters);
+                  const doneData: Record<string, unknown> =
+                    su.tool_info?.output !== undefined
+                      ? {
+                          toolName: su.tool_name,
+                          input: su.tool_info?.parameters,
+                          output: su.tool_info?.output,
+                        }
+                      : {
+                          toolName: su.tool_name,
+                          input: su.tool_info?.parameters,
+                          result: su.tool_info,
+                        };
+                  if (doneCommand) doneData.command = doneCommand;
                   yield* offerRuntimeEvent({
                     eventId: yield* nextEventId,
                     createdAt: yield* nowIso,
@@ -665,7 +823,8 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                     payload: {
                       itemType,
                       status: "completed",
-                      detail: su.tool_info?.output ?? jsonStringify(su.tool_info ?? {}),
+                      detail: doneDetail,
+                      data: doneData,
                     },
                   });
                 } else if (su.state === "ERROR") {
@@ -694,7 +853,12 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                     payload: {
                       itemType,
                       status: "failed",
-                      detail: errMsg,
+                      detail: truncateDetail(errMsg, 3000),
+                      data: {
+                        toolName: su.tool_name,
+                        input: su.tool_info?.parameters,
+                        error: errMsg,
+                      },
                     },
                   });
                 }
