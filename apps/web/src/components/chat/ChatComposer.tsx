@@ -236,7 +236,7 @@ function ComposerCommandMenuLayer(props: { anchor: HTMLElement | null; children:
   );
 }
 import { Button } from "../ui/button";
-import { Select, SelectItem, SelectPopup, SelectValue } from "../ui/select";
+import { Select, SelectItem, SelectPopup } from "../ui/select";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { toastManager } from "../ui/toast";
 import {
@@ -404,14 +404,10 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
         >
           <TooltipTrigger
             render={
-              <ComposerSelectControl
-                className="font-medium"
-                aria-label={i18next.t("Runtime mode")}
-              />
+              <ComposerSelectControl className="font-medium" aria-label={runtimeModeOption.label} />
             }
           >
             <ComposerControlIcon icon={RuntimeModeIcon} />
-            <SelectValue>{runtimeModeOption.label}</SelectValue>
           </TooltipTrigger>
           <SelectPopup alignItemWithTrigger={false}>
             {runtimeModeOptions.map((mode) => {
