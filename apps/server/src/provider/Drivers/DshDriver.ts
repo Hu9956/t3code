@@ -39,6 +39,7 @@ import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 
 import * as BackgroundPolicy from "../../background/BackgroundPolicy.ts";
+import { ServerConfig } from "../../config.ts";
 import { ServerSettingsService } from "../../serverSettings.ts";
 import {
   ProviderAdapterRequestError,
@@ -67,6 +68,7 @@ import {
 } from "../providerUpdateSettings.ts";
 import type { ProviderAdapterShape } from "../Services/ProviderAdapter.ts";
 import type * as TextGeneration from "../../textGeneration/TextGeneration.ts";
+import { makeDshAdapter } from "../Layers/DshAdapter.ts";
 
 const decodeDshSettings = Schema.decodeSync(DshSettings);
 
@@ -83,6 +85,7 @@ export type DshDriverEnv =
   | BackgroundPolicy.BackgroundPolicy
   | FileSystem.FileSystem
   | Path.Path
+  | ServerConfig
   | ServerSettingsService;
 
 const DSH_PRESENTATION = {
@@ -458,57 +461,12 @@ export const checkDshProviderStatus = (
     });
   });
 
-// ── Placeholder adapter & textGeneration ─────────────────────────────────────
+// ── Real adapter wiring ────────────────────────────────────────────────
 
 export interface DshAdapterShape extends ProviderAdapterShape<ProviderAdapterError> {}
 
-const makeDshAdapter = (baseUrl: string): Effect.Effect<DshAdapterShape> =>
-  Effect.succeed({
-    provider: DRIVER_KIND,
-    capabilities: {
-      sessionModelSwitch: "unsupported",
-    },
-    startSession: () =>
-      Effect.fail(
-        new ProviderAdapterValidationError({
-          provider: DRIVER_KIND,
-          operation: "startSession",
-          issue: `DSH adapter not yet implemented (baseUrl=${baseUrl}).`,
-        }),
-      ),
-    sendTurn: () =>
-      Effect.fail(
-        new ProviderAdapterRequestError({
-          provider: DRIVER_KIND,
-          method: "sendTurn",
-          detail: "DSH adapter not yet implemented.",
-        }),
-      ),
-    interruptTurn: () => Effect.void,
-    respondToRequest: () => Effect.void,
-    respondToUserInput: () => Effect.void,
-    stopSession: () => Effect.void,
-    listSessions: () => Effect.succeed([]),
-    hasSession: () => Effect.succeed(false),
-    readThread: () =>
-      Effect.fail(
-        new ProviderAdapterRequestError({
-          provider: DRIVER_KIND,
-          method: "readThread",
-          detail: "DSH adapter not yet implemented.",
-        }),
-      ),
-    rollbackThread: () =>
-      Effect.fail(
-        new ProviderAdapterRequestError({
-          provider: DRIVER_KIND,
-          method: "rollbackThread",
-          detail: "DSH adapter not yet implemented.",
-        }),
-      ),
-    stopAll: () => Effect.void,
-    streamEvents: Stream.empty,
-  } as DshAdapterShape);
+const makeDshAdapterPlaceholder = (baseUrl: string): Effect.Effect<DshAdapterShape> =>
+  makeDshAdapter(baseUrl) as unknown as Effect.Effect<DshAdapterShape>;
 
 const makeDshTextGeneration = (): Effect.Effect<TextGeneration.TextGeneration["Service"]> =>
   Effect.succeed({
