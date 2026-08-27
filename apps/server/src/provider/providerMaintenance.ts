@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import {
   ProviderDriverKind,
   type ServerProvider,
@@ -16,7 +17,9 @@ import { HttpClient, HttpClientRequest } from "effect/unstable/http";
 
 const LATEST_VERSION_CACHE_TTL_MS = 60 * 60 * 1_000;
 const LATEST_VERSION_TIMEOUT_MS = 4_000;
-const PROVIDER_UPDATE_ACTION_TOAST_MESSAGE = "Install the update now or review provider settings.";
+const PROVIDER_UPDATE_ACTION_TOAST_MESSAGE = i18next.t(
+  "Install the update now or review provider settings.",
+);
 
 const compactEnv = (input: Record<string, Option.Option<string>>): NodeJS.ProcessEnv =>
   Object.fromEntries(

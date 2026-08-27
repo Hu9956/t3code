@@ -1941,5 +1941,16 @@
   "Update command failed.": "更新命令失败。",
   "Update timed out.": "更新超时。",
   "Provider update failed for {{provider}}: {{reason}}": "提供方 {{provider}} 更新失败：{{reason}}",
-  "Server update failed: {{reason}}": "服务器更新失败：{{reason}}"
+  "Server update failed: {{reason}}": "服务器更新失败：{{reason}}",
+  "DSH service is not installed or not running on {{baseUrl}}.": "DSH 服务未安装或未在 {{baseUrl}} 上运行。",
+  "DSH service timed out after 5s.": "DSH 服务 5 秒后超时。",
+  "DSH service requires authentication (403).": "DSH 服务需要认证（403）。",
+  "DSH is disabled in T3 Code settings.": "DSH 已在 T3 Code 设置中禁用。",
+  "Checking DSH service availability...": "正在检查 DSH 服务可用性…",
+  "DSH service returned an invalid response.": "DSH 服务返回了无效响应。",
+  "DSH service returned an error.": "DSH 服务返回错误。",
+  "Failed to reach DSH service: {{message}}": "无法连接到 DSH 服务：{{message}}",
+  "DSH service returned HTTP {{status}}.": "DSH 服务返回 HTTP {{status}}。",
+  "Update Available: {{providerName}} {{version}}": "有可用更新：{{providerName}} {{version}}",
+  "Install the update now or review provider settings.": "立即安装更新或查看引擎设置。"
 }

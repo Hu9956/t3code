@@ -29,6 +29,7 @@
  * @module provider/Drivers/DshDriver
  */
 import { DshSettings, ProviderDriverKind, type ServerProvider } from "@t3tools/contracts";
+import i18next from "i18next";
 import { TextGenerationError } from "@t3tools/contracts";
 import { createModelCapabilities } from "@t3tools/shared/model";
 import * as DateTime from "effect/DateTime";
@@ -211,7 +212,7 @@ export function buildInitialDshProviderSnapshot(
           version: null,
           status: "warning",
           auth: { status: "unknown" },
-          message: "DSH is disabled in T3 Code settings.",
+          message: i18next.t("DSH is disabled in T3 Code settings."),
         },
       });
     }
@@ -226,7 +227,7 @@ export function buildInitialDshProviderSnapshot(
         version: null,
         status: "warning",
         auth: { status: "unknown" },
-        message: "Checking DSH service availability...",
+        message: i18next.t("Checking DSH service availability..."),
       },
     });
   });
@@ -250,7 +251,7 @@ export const checkDshProviderStatus = (
           version: null,
           status: "warning",
           auth: { status: "unknown" },
-          message: "DSH is disabled in T3 Code settings.",
+          message: i18next.t("DSH is disabled in T3 Code settings."),
         },
       });
     }
@@ -291,7 +292,7 @@ export const checkDshProviderStatus = (
             version: null,
             status: "error",
             auth: { status: "unknown" },
-            message: "DSH service timed out after 5s.",
+            message: i18next.t("DSH service timed out after 5s."),
           },
         });
       }
@@ -306,7 +307,9 @@ export const checkDshProviderStatus = (
             version: null,
             status: "error",
             auth: { status: "unknown" },
-            message: `DSH service is not installed or not running on ${baseUrl}.`,
+            message: i18next.t("DSH service is not installed or not running on {{baseUrl}}.", {
+              baseUrl,
+            }),
           },
         });
       }
@@ -320,7 +323,9 @@ export const checkDshProviderStatus = (
           version: null,
           status: "error",
           auth: { status: "unknown" },
-          message: `Failed to reach DSH service: ${cause.message}`,
+          message: i18next.t("Failed to reach DSH service: {{message}}", {
+            message: cause.message,
+          }),
         },
       });
     }
@@ -338,7 +343,7 @@ export const checkDshProviderStatus = (
           version: null,
           status: "warning",
           auth: { status: "unauthenticated" },
-          message: "DSH service requires authentication (403).",
+          message: i18next.t("DSH service requires authentication (403)."),
         },
       });
     }
@@ -379,7 +384,7 @@ export const checkDshProviderStatus = (
           version: null,
           status: "error",
           auth: { status: "unknown" },
-          message: "DSH service returned an invalid response.",
+          message: i18next.t("DSH service returned an invalid response."),
         },
       });
     }
@@ -396,7 +401,7 @@ export const checkDshProviderStatus = (
           version: null,
           status: "error",
           auth: { status: "unknown" },
-          message: "DSH service returned an invalid response.",
+          message: i18next.t("DSH service returned an invalid response."),
         },
       });
     }

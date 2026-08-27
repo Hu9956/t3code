@@ -230,7 +230,7 @@ export function getProviderUpdateInitialToastView(input: {
     title: getProviderUpdateInitialToastTitle(input.updateProviders),
     description:
       input.oneClickProviders.length > 0
-        ? "Install the update now or review provider settings."
+        ? i18next.t("Install the update now or review provider settings.")
         : `${formatProviderList(input.updateProviders)} can be updated from provider settings.`,
   };
 }
@@ -553,7 +553,10 @@ function getProviderUpdateInitialToastTitle(
   if (providers.length === 1) {
     const provider = providers[0]!;
     const providerName = PROVIDER_DISPLAY_NAMES[provider.driver] ?? provider.driver;
-    return `Update Available: ${providerName} ${formatVersion(provider.versionAdvisory.latestVersion)}`;
+    return i18next.t("Update Available: {{providerName}} {{version}}", {
+      providerName,
+      version: formatVersion(provider.versionAdvisory.latestVersion),
+    });
   }
   return `Updates Available: ${providers.length} providers`;
 }
