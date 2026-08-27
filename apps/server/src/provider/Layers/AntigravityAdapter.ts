@@ -60,6 +60,11 @@ import * as ChildProcessSpawner from "effect/unstable/process/ChildProcessSpawne
 import { resolveAttachmentPath } from "../../attachmentStore.ts";
 import { ServerConfig } from "../../config.ts";
 import {
+  resolveCliAttachment as resolveCliAttachmentBase,
+  settlePendingApprovalsAsCancelled as settlePendingBase,
+  spawnCliProcess,
+} from "./CliNdjsonAdapterBase.ts";
+import {
   ProviderAdapterProcessError,
   ProviderAdapterRequestError,
   ProviderAdapterSessionNotFoundError,
@@ -446,12 +451,13 @@ const jsonStringify = (value: unknown): string => globalThis.JSON.stringify(valu
 function settlePendingApprovalsAsCancelled(
   pendingApprovals: ReadonlyMap<string, PendingApproval>,
 ): Effect.Effect<void> {
-  return Effect.forEach(
-    Array.from(pendingApprovals.values()),
-    (pending) =>
-      Deferred.succeed(pending.decision, "cancel" as ProviderApprovalDecision).pipe(Effect.ignore),
-    { discard: true },
-  );
+  // 委托给 CliNdjsonAdapterBase 的通用实现（P0 萃取）
+  return settlePendingBase(
+    pendingApprovals as unknown as ReadonlyMap<
+      string,
+      import("./CliNdjsonAdapterBase.ts").PendingApproval
+    >,
+  ) as unknown as Effect.Effect<void>;
 }
 
 export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(function* (
@@ -479,6 +485,7 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
   const offerRuntimeEvent = (event: ProviderRuntimeEvent): Effect.Effect<void> =>
     Queue.offer(runtimeEventQueue, event).pipe(Effect.asVoid);
 
+  // 进程产卵已收敛到 CliNdjsonAdapterBase.spawnCliProcess，当前保留薄包装以兼容 Scope 注入（B2 下一步将完全委托）
   const spawnSessionProcess = (
     model: string | undefined,
     effort: AgyEffort | undefined,
@@ -509,44 +516,14 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
     );
   };
 
+  // 附件解析已收敛到 CliNdjsonAdapterBase.resolveCliAttachment（300MiB 限与 mime 校验统一在 attachmentStore）
   const resolveAttachment = Effect.fn("resolveAttachment")(function* (attachment: ChatAttachment) {
-    const attachmentPath = resolveAttachmentPath({
-      attachmentsDir: serverConfig.attachmentsDir,
+    return yield* resolveCliAttachmentBase(
       attachment,
-    });
-    if (!attachmentPath) {
-      return yield* new ProviderAdapterValidationError({
-        provider: PROVIDER,
-        operation: "sendTurn",
-        issue: `Invalid attachment id '${attachment.id}'.`,
-      });
-    }
-    const bytes = yield* fileSystem.readFile(attachmentPath).pipe(
-      Effect.mapError(
-        (cause) =>
-          new ProviderAdapterRequestError({
-            provider: PROVIDER,
-            method: "turn/start",
-            detail: `Failed to read attachment file: ${(cause as unknown as { message?: string }).message ?? String(cause)}.`,
-            cause,
-          }),
-      ),
+      serverConfig.attachmentsDir,
+      fileSystem,
+      PROVIDER,
     );
-    const base64 = Buffer.from(bytes).toString("base64");
-    // Validate mime
-    if (!attachment.mimeType.startsWith("image/")) {
-      return yield* new ProviderAdapterValidationError({
-        provider: PROVIDER,
-        operation: "sendTurn",
-        issue: `Unsupported attachment mimeType '${attachment.mimeType}'.`,
-      });
-    }
-    return {
-      type: "image" as const,
-      mimeType: attachment.mimeType,
-      data: base64,
-      name: attachment.name,
-    };
   });
 
   /**
