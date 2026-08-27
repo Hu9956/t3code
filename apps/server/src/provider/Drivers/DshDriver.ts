@@ -100,8 +100,8 @@ const EMPTY_CAPABILITIES = createModelCapabilities({
 
 const DSH_BUILT_IN_MODELS = [
   {
-    slug: "deepseek-chat",
-    name: "DeepSeek Chat",
+    slug: "deepseek-v4-flash",
+    name: "DeepSeek V4 Flash",
     isCustom: false,
     capabilities: EMPTY_CAPABILITIES,
   },
