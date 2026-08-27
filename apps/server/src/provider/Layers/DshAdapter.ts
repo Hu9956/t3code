@@ -43,19 +43,24 @@
  * @module provider/Layers/DshAdapter
  */
 import {
+  ApprovalRequestId,
   type ChatAttachment,
   EventId,
+  type ProviderApprovalDecision,
   type ProviderSession,
   type ProviderSessionStartInput,
   type ProviderSendTurnInput,
   type ProviderTurnStartResult,
+  type ProviderUserInputAnswers,
   ProviderDriverKind,
   type ProviderInstanceId,
   RuntimeItemId,
+  RuntimeRequestId,
   type ThreadId,
   TurnId,
 } from "@t3tools/contracts";
 import * as DateTime from "effect/DateTime";
+import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Option from "effect/Option";
@@ -72,6 +77,7 @@ import {
   type ProviderAdapterError,
 } from "../Errors.ts";
 import type { DshAdapterShape } from "../Services/DshAdapter.ts";
+import { type EventNdjsonLogger, makeEventNdjsonLogger } from "./EventNdjsonLogger.ts";
 
 const PROVIDER = ProviderDriverKind.make("dsh");
 
@@ -678,6 +684,8 @@ interface DshSessionContext {
 export interface DshAdapterOptions {
   readonly instanceId?: ProviderInstanceId;
   readonly environment?: NodeJS.ProcessEnv;
+  readonly nativeEventLogPath?: string;
+  readonly nativeEventLogger?: EventNdjsonLogger;
 }
 
 export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
@@ -687,6 +695,16 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
   const serverConfig = yield* ServerConfig;
   const fileSystem = yield* FileSystem.FileSystem;
   const baseUrl = normalizeBaseUrl(baseUrlInput);
+  // 3d EventNdjsonLogger 旁路（仿 OpenCodeAdapter/CursorAdapter）— native 帧落盘
+  const nativeEventLogger =
+    options?.nativeEventLogger ??
+    (options?.nativeEventLogPath !== undefined
+      ? yield* makeEventNdjsonLogger(options.nativeEventLogPath, {
+          stream: "native",
+        })
+      : undefined);
+  const managedNativeEventLogger =
+    options?.nativeEventLogger === undefined ? nativeEventLogger : undefined;
 
   const sessions = new Map<ThreadId, DshSessionContext>();
   const runtimeEventQueue =
@@ -715,24 +733,86 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
     return sessionId as unknown as ThreadId;
   };
 
+  const writeNativeEvent = (
+    threadId: ThreadId,
+    event: Record<string, unknown>,
+  ): Effect.Effect<void> =>
+    nativeEventLogger
+      ? nativeEventLogger.write(
+          {
+            observedAt: new Date().toISOString(),
+            event,
+          },
+          threadId,
+        )
+      : Effect.void;
+  const writeNativeEventBestEffort = (threadId: ThreadId, event: Record<string, unknown>): void => {
+    if (!nativeEventLogger) return;
+    void Effect.runPromise(
+      writeNativeEvent(threadId, event).pipe(Effect.catchCause(() => Effect.void)),
+    ).catch(() => {});
+  };
+
   // -------------------------------------------------------------------------
-  // 3c 常驻映射状态 — 复刻 Antigravity 1468 fix (hasEmittedDelta / reasoningItemStarted / pendingApprovals)
+  // 3c+3d 常驻映射 + 审批队列 — 复刻 Antigravity 1468 fix (hasEmittedDelta / reasoningItemStarted / pendingApprovals Deferred)
   // -------------------------------------------------------------------------
   // reasoningItemStarted Set 常驻，不闪没；tool 去重；projection 高 seq 胜；hasEmittedDelta 防丢 fallback
   const reasoningItemStarted = new Set<string>();
   const toolItemStarted = new Set<string>();
   const hasEmittedDeltaByTurn = new Map<string, boolean>();
   const projectionHighWatermark = new Map<string, Map<string, number>>();
-  const pendingApprovals = new Map<
-    string,
-    {
-      approvalId: string;
-      toolName: string;
-      callId: string | undefined;
-      rpcId: string;
-      sessionId: string;
+  // 3d 审批/提问队列 — pendingApprovals + Deferred + request.opened/resolved + POST /api/respond
+  interface PendingApprovalEntry {
+    readonly approvalId: string;
+    readonly toolName: string;
+    readonly callId: string | undefined;
+    readonly rpcId: string;
+    readonly sessionId: string;
+    readonly requestId: ApprovalRequestId;
+    readonly decision: Deferred.Deferred<ProviderApprovalDecision>;
+  }
+  interface PendingQuestionEntry {
+    readonly rpcId: string;
+    readonly sessionId: string;
+    readonly questions: unknown[];
+    readonly requestId: ApprovalRequestId;
+    readonly resolution: Deferred.Deferred<ProviderUserInputAnswers>;
+  }
+  const pendingApprovals = new Map<string, PendingApprovalEntry>();
+  const pendingQuestions = new Map<string, PendingQuestionEntry>();
+
+  const settlePendingApprovalsAsCancelled = (
+    map: ReadonlyMap<string, PendingApprovalEntry>,
+  ): Effect.Effect<void> =>
+    Effect.forEach(
+      Array.from(map.values()),
+      (pending) =>
+        Deferred.succeed(pending.decision, "cancel" as ProviderApprovalDecision).pipe(
+          Effect.ignore,
+        ),
+      { discard: true },
+    );
+  const settlePendingQuestionsAsCancelled = (
+    map: ReadonlyMap<string, PendingQuestionEntry>,
+  ): Effect.Effect<void> =>
+    Effect.forEach(
+      Array.from(map.values()),
+      (pending) =>
+        Deferred.succeed(pending.resolution, {
+          answers: [],
+          cancelled: true,
+        } as unknown as ProviderUserInputAnswers).pipe(Effect.ignore),
+      { discard: true },
+    );
+
+  const mapDecisionToApprovalOutcome = (
+    decision: ProviderApprovalDecision,
+  ): "allowed-once" | "rejected" => {
+    if (decision === "accept" || decision === "acceptForSession" || decision === "acceptAlways") {
+      return "allowed-once";
     }
-  >();
+    return "rejected";
+  };
 
   const getProjectionMap = (sessionId: string): Map<string, number> => {
     let m = projectionHighWatermark.get(sessionId);
@@ -878,6 +958,16 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
       ) as unknown as import("@t3tools/contracts").EventId;
     const emit = (evt: import("@t3tools/contracts").ProviderRuntimeEvent): void =>
       unsafeOfferRuntimeEvent(evt);
+    // 3d EventNdjsonLogger 旁路 — 每帧落 native（仿 OpenCodeAdapter）
+    try {
+      const sid = (frame as { sessionId?: string }).sessionId;
+      const tidForLog = sid ? threadIdForSessionId(sid) : ("unknown" as unknown as ThreadId);
+      writeNativeEventBestEffort(tidForLog, {
+        type: frame.type as string,
+        rpcId: envelope.rpcId,
+        payload: frame as unknown as Record<string, unknown>,
+      });
+    } catch {}
     try {
       switch (frame.type) {
         case "session/event": {
@@ -1370,18 +1460,42 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
         case "approval/requested": {
           const f = frame as Extract<MuxFrame, { type: "approval/requested" }>;
           const tid = threadIdForSessionId(f.sessionId);
-          pendingApprovals.set(f.approvalId, {
+          const runtimeRequestId = RuntimeRequestId.make(envelope.rpcId);
+          const requestId = ApprovalRequestId.make(envelope.rpcId);
+          // Deferred 队列 — true 时等 UI 审批（仿 Antigravity pendingApprovals + Deferred）
+          const decisionDeferred = Effect.runSync(Deferred.make<ProviderApprovalDecision>());
+          const entry: PendingApprovalEntry = {
             approvalId: f.approvalId,
             toolName: f.toolName,
             callId: f.callId,
             rpcId: envelope.rpcId,
             sessionId: f.sessionId,
+            requestId,
+            decision: decisionDeferred,
+          };
+          pendingApprovals.set(envelope.rpcId, entry);
+          // 兼容旧 key（approvalId）——部分历史帧仍可能按 approvalId 查询
+          // 同时写入 approvalId 索引，删除时双 key 清理
+          pendingApprovals.set(f.approvalId, entry);
+          writeNativeEventBestEffort(tid, {
+            type: "approval/requested",
+            sessionId: f.sessionId,
+            approvalId: f.approvalId,
+            toolName: f.toolName,
+            callId: f.callId,
+            rpcId: envelope.rpcId,
+            reason: f.reason,
           });
+          const toolItemId = RuntimeItemId.make(
+            `dsh-tool-${f.sessionId}-${f.callId ?? f.approvalId}` as unknown as string,
+          );
           emit({
             eventId: makeEventId(),
             createdAt: nowIsoStr,
             provider: PROVIDER,
             threadId: tid,
+            itemId: toolItemId,
+            requestId: runtimeRequestId,
             type: "request.opened",
             payload: {
               requestType: "command_execution_approval" as const,
@@ -1399,17 +1513,53 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
         case "approval/resolved": {
           const f = frame as Extract<MuxFrame, { type: "approval/resolved" }>;
           const tid = threadIdForSessionId(f.sessionId);
-          pendingApprovals.delete(f.approvalId);
+          // 批准队列清理 — 遍历 pendingApprovals Map（键可能是 rpcId 或 approvalId）以确保双索引一致性
+          let matchedRpcId: string | undefined;
+          let matchedEntry: PendingApprovalEntry | undefined;
+          for (const [key, entry] of pendingApprovals.entries()) {
+            if (entry.approvalId === f.approvalId || key === f.approvalId) {
+              matchedRpcId = entry.rpcId;
+              matchedEntry = entry;
+              break;
+            }
+          }
+          if (matchedEntry && matchedRpcId) {
+            pendingApprovals.delete(matchedRpcId);
+            pendingApprovals.delete(matchedEntry.approvalId);
+            pendingApprovals.delete(
+              matchedRpcId === matchedEntry.approvalId ? "" : matchedEntry.approvalId,
+            );
+            // 若仍在等待 UI（Deferred 未完成），以 cancel 结束，防止 respondToRequest 后悬挂
+            void Effect.runPromise(
+              Deferred.succeed(matchedEntry.decision, "cancel" as ProviderApprovalDecision).pipe(
+                Effect.ignore,
+              ),
+            ).catch(() => {});
+          } else {
+            pendingApprovals.delete(f.approvalId);
+          }
+          writeNativeEventBestEffort(tid, {
+            type: "approval/resolved",
+            sessionId: f.sessionId,
+            approvalId: f.approvalId,
+            outcome: f.outcome,
+          });
+          const runtimeRequestId = matchedEntry
+            ? RuntimeRequestId.make(matchedEntry.rpcId)
+            : RuntimeRequestId.make(f.approvalId);
+          const decision =
+            f.outcome === "allowed-once" || f.outcome === "allowed" ? "accept" : "decline";
           emit({
             eventId: makeEventId(),
             createdAt: nowIsoStr,
             provider: PROVIDER,
             threadId: tid,
+            requestId: runtimeRequestId,
             type: "request.resolved",
             payload: {
               requestType: "command_execution_approval" as const,
-              decision: f.outcome,
-              resolution: { approvalId: f.approvalId },
+              decision,
+              resolution: { approvalId: f.approvalId, outcome: f.outcome },
             },
           } as unknown as import("@t3tools/contracts").ProviderRuntimeEvent);
           break;
@@ -1418,11 +1568,35 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
           const f = frame as Extract<MuxFrame, { type: "question/requested" }>;
           const tid = threadIdForSessionId(f.sessionId);
           const questions = (f.questions as unknown[]) ?? [];
+          const runtimeRequestId = RuntimeRequestId.make(envelope.rpcId);
+          const requestId = ApprovalRequestId.make(envelope.rpcId);
+          let resolutionDeferred: Deferred.Deferred<ProviderUserInputAnswers>;
+          try {
+            resolutionDeferred = Effect.runSync(Deferred.make<ProviderUserInputAnswers>());
+          } catch {
+            // 同 approval 失败分支：兜底同步创建
+            resolutionDeferred = Effect.runSync(Deferred.make<ProviderUserInputAnswers>());
+          }
+          const qEntry: PendingQuestionEntry = {
+            rpcId: envelope.rpcId,
+            sessionId: f.sessionId,
+            questions,
+            requestId,
+            resolution: resolutionDeferred,
+          };
+          pendingQuestions.set(envelope.rpcId, qEntry);
+          writeNativeEventBestEffort(tid, {
+            type: "question/requested",
+            sessionId: f.sessionId,
+            rpcId: envelope.rpcId,
+            questions,
+          });
           emit({
             eventId: makeEventId(),
             createdAt: nowIsoStr,
             provider: PROVIDER,
             threadId: tid,
+            requestId: runtimeRequestId,
             type: "user-input.requested",
             payload: { questions },
           } as unknown as import("@t3tools/contracts").ProviderRuntimeEvent);
@@ -1431,11 +1605,32 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
         case "question/resolved": {
           const f = frame as Extract<MuxFrame, { type: "question/resolved" }>;
           const tid = threadIdForSessionId(f.sessionId);
+          let qRpcId = f.questionRpcId as string;
+          const pending = pendingQuestions.get(qRpcId);
+          if (pending) {
+            pendingQuestions.delete(qRpcId);
+            void Effect.runPromise(
+              Deferred.succeed(pending.resolution, {
+                outcome: f.outcome,
+                questionRpcId: qRpcId,
+              } as unknown as ProviderUserInputAnswers).pipe(Effect.ignore),
+            ).catch(() => {});
+          }
+          writeNativeEventBestEffort(tid, {
+            type: "question/resolved",
+            sessionId: f.sessionId,
+            questionRpcId: f.questionRpcId,
+            outcome: f.outcome,
+          });
+          const runtimeRequestId = pending
+            ? RuntimeRequestId.make(pending.rpcId)
+            : RuntimeRequestId.make(qRpcId);
           emit({
             eventId: makeEventId(),
             createdAt: nowIsoStr,
             provider: PROVIDER,
             threadId: tid,
+            requestId: runtimeRequestId,
             type: "user-input.resolved",
             payload: { answers: { outcome: f.outcome, questionRpcId: f.questionRpcId } },
           } as unknown as import("@t3tools/contracts").ProviderRuntimeEvent);
@@ -1537,6 +1732,16 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
     const eventId = EventId.make(
       `dsh-host-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     );
+    // 3d 旁路：host 帧亦落 native
+    try {
+      const sid = (frame as { sessionId?: string }).sessionId;
+      const tidForLog = sid ? threadIdForSessionId(sid) : ("unknown" as unknown as ThreadId);
+      writeNativeEventBestEffort(tidForLog, {
+        type: frame.type as string,
+        rpcId: envelope.rpcId,
+        payload: frame as unknown as Record<string, unknown>,
+      });
+    } catch {}
     let evt: import("@t3tools/contracts").ProviderRuntimeEvent | undefined;
     try {
       switch (frame.type) {
@@ -2032,6 +2237,25 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
     Effect.gen(function* () {
       const existing = sessions.get(input.threadId);
       if (existing) {
+        // 3d 断线恢复前清理旧会话的等待队列，防止旧 Deferred 泄露
+        yield* settlePendingApprovalsAsCancelled(pendingApprovals).pipe(
+          Effect.orElseSucceed(() => undefined),
+        );
+        {
+          const keys = Array.from(pendingApprovals.entries())
+            .filter(([, v]) => v.sessionId === existing.sessionId)
+            .map(([k]) => k);
+          for (const k of keys) pendingApprovals.delete(k);
+        }
+        yield* settlePendingQuestionsAsCancelled(pendingQuestions).pipe(
+          Effect.orElseSucceed(() => undefined),
+        );
+        {
+          const keys = Array.from(pendingQuestions.entries())
+            .filter(([, v]) => v.sessionId === existing.sessionId)
+            .map(([k]) => k);
+          for (const k of keys) pendingQuestions.delete(k);
+        }
         sessions.delete(input.threadId);
       }
 
@@ -2054,6 +2278,30 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
         );
         if (check._tag === "ok") {
           sessionId = resume.sessionId;
+          // 3d 断线恢复：会话存在则复用 session.history 重建（支持漫游后重连与线程漂移）
+          // 额外拉取全量历史以预热 projectionHighWatermark 与 questions/approvals 的重放基线
+          const rehydrate = yield* callDsh<{
+            events: HistoryEntry[];
+            hasMore: boolean;
+            projections?: SessionProjectionsBlock;
+          }>(
+            "session.history",
+            { sessionId: resume.sessionId, maxMessages: 200 },
+            undefined,
+            DEFAULT_RPC_TIMEOUT_MS,
+          ).pipe(
+            Effect.map((v) => ({ _tag: "ok" as const, v })),
+            Effect.catch(() => Effect.succeed({ _tag: "err" as const, v: undefined })),
+          );
+          if (rehydrate._tag === "ok" && rehydrate.v.projections) {
+            const pm = getProjectionMap(resume.sessionId);
+            for (const [k, v] of Object.entries(rehydrate.v.projections.values)) {
+              // 以较高 seq 作为水位（asOfSeq 语义），防止旧帧覆盖新标题
+              const seq = (rehydrate.v.projections.asOfSeq ?? 0) as number;
+              const cur = pm.get(k);
+              if (cur === undefined || seq > cur) pm.set(k, seq);
+            }
+          }
         } else {
           const causeMsg = (check.cause as { message?: string }).message ?? String(check.cause);
           const isNotFound =
@@ -2472,15 +2720,41 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
           threadId: threadId as string,
         });
       }
+      // 3d: 先发 cancel — POST /api/session.cancel，失败仅在 session-not-found 时忽略
+      // 其余 transport 失败走 orElseSucceed 视为可恢复的软失败，随后仍进入 kill fallback + respawn
       yield* callDsh<{ accepted: true }>("session.cancel", { sessionId: ctx.sessionId }).pipe(
         Effect.catch((cause) => {
           const msg = (cause as { message?: string }).message ?? String(cause);
           if (msg.toLowerCase().includes("session-not-found")) {
             return Effect.succeed({ accepted: true as const });
           }
-          return Effect.fail(cause as ProviderAdapterError);
+          console.warn(
+            `[dsh-adapter] session.cancel failed for ${ctx.sessionId}, forcing WS respawn fallback:`,
+            cause,
+          );
+          try {
+            wsCurrentAbort?.abort();
+          } catch {}
+          return Effect.succeed({ accepted: true as const });
         }),
       );
+
+      // 结算所有等待中的审批/提问（仿 Antigravity settlePendingApprovalsAsCancelled）
+      yield* settlePendingApprovalsAsCancelled(pendingApprovals).pipe(
+        Effect.orElseSucceed(() => undefined),
+      );
+      // 清理双索引（rpcId + approvalId）——遍历快照后批量删除避免迭代期间突变
+      {
+        const keys = Array.from(pendingApprovals.keys());
+        for (const k of keys) pendingApprovals.delete(k);
+      }
+      yield* settlePendingQuestionsAsCancelled(pendingQuestions).pipe(
+        Effect.orElseSucceed(() => undefined),
+      );
+      {
+        const keys = Array.from(pendingQuestions.keys());
+        for (const k of keys) pendingQuestions.delete(k);
+      }
 
       // Use Clock instead of Date.now
       const now = yield* DateTime.now;
@@ -2521,35 +2795,292 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
       } as unknown as import("@t3tools/contracts").ProviderRuntimeEvent).pipe(
         Effect.orElseSucceed(() => undefined),
       );
+      if (nativeEventLogger) {
+        const isoNow = yield* nowIso;
+        yield* writeNativeEvent(threadId, {
+          observedAt: isoNow,
+          event: {
+            type: "session/cancel",
+            sessionId: ctx.sessionId,
+            turnId: activeTurnId,
+            via: "interruptTurn",
+          },
+        }).pipe(Effect.catchCause(() => Effect.void));
+      }
     });
 
-  const respondToRequest: DshAdapterShape["respondToRequest"] = (
-    _threadId,
-    _requestId,
-    _decision,
-  ) =>
-    Effect.fail(
-      new ProviderAdapterRequestError({
+  const respondToRequest: DshAdapterShape["respondToRequest"] = (threadId, requestId, decision) =>
+    Effect.gen(function* () {
+      const key = String(requestId);
+      let pending = pendingApprovals.get(key);
+      if (!pending) {
+        const alt = Array.from(pendingApprovals.entries()).find(
+          ([, v]) => String(v.requestId) === key || v.approvalId === key || v.rpcId === key,
+        );
+        if (alt) {
+          pending = alt[1];
+        }
+      }
+      if (!pending) {
+        return yield* new ProviderAdapterRequestError({
+          provider: PROVIDER,
+          method: "respondToRequest",
+          detail: `Unknown pending approval request: ${String(requestId)}`,
+        });
+      }
+      const outcome = mapDecisionToApprovalOutcome(decision as ProviderApprovalDecision);
+      const clientResponse: {
+        readonly type: "client-response";
+        readonly rpcId: string;
+        readonly result: {
+          readonly ok: true;
+          readonly value: {
+            readonly sessionId: string;
+            readonly approvalId: string;
+            readonly outcome: string;
+          };
+        };
+      } = {
+        type: "client-response",
+        rpcId: pending.rpcId,
+        result: {
+          ok: true as const,
+          value: { sessionId: pending.sessionId, approvalId: pending.approvalId, outcome },
+        },
+      };
+      const url = `${baseUrl}/api/respond`;
+      const receipt = yield* Effect.tryPromise({
+        try: async () => {
+          const resp = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(clientResponse),
+          });
+          if (!resp.ok) throw new Error(`transport failure for /api/respond: HTTP ${resp.status}`);
+          const json = (await resp.json()) as { accepted: boolean; reason?: string };
+          return json;
+        },
+        catch: (cause) =>
+          new ProviderAdapterRequestError({
+            provider: PROVIDER,
+            method: "respond",
+            detail: cause instanceof Error ? cause.message : String(cause),
+            cause,
+          }),
+      });
+      if (!receipt.accepted) {
+        return yield* new ProviderAdapterRequestError({
+          provider: PROVIDER,
+          method: "respond",
+          detail: `Host rejected approval response: ${receipt.reason ?? "unknown"}`,
+        });
+      }
+      yield* Deferred.succeed(pending.decision, decision as ProviderApprovalDecision).pipe(
+        Effect.ignore,
+      );
+      pendingApprovals.delete(pending.rpcId);
+      pendingApprovals.delete(pending.approvalId);
+      if (key !== pending.rpcId && key !== pending.approvalId) pendingApprovals.delete(key);
+      const nowStr = yield* nowIso;
+      yield* offerRuntimeEvent({
+        eventId: yield* nextEventId,
+        createdAt: nowStr,
         provider: PROVIDER,
-        method: "respondToRequest",
-        detail: "DSH approvals are handled over the WS mux; HTTP adapter has no pending approval.",
-      }),
-    );
+        threadId,
+        requestId: RuntimeRequestId.make(pending.rpcId),
+        type: "request.resolved",
+        payload: {
+          requestType: "command_execution_approval" as const,
+          decision,
+          resolution: { approvalId: pending.approvalId, outcome },
+        },
+      } as unknown as import("@t3tools/contracts").ProviderRuntimeEvent).pipe(
+        Effect.orElseSucceed(() => undefined),
+      );
+      if (nativeEventLogger) {
+        yield* writeNativeEvent(threadId, {
+          observedAt: nowStr,
+          event: {
+            type: "approval/respond",
+            sessionId: pending.sessionId,
+            approvalId: pending.approvalId,
+            rpcId: pending.rpcId,
+            decision,
+            outcome,
+          },
+        }).pipe(Effect.catchCause(() => Effect.void));
+      }
+    });
 
-  const respondToUserInput: DshAdapterShape["respondToUserInput"] = () =>
-    Effect.fail(
-      new ProviderAdapterRequestError({
+  const respondToUserInput: DshAdapterShape["respondToUserInput"] = (
+    threadId,
+    requestId,
+    answers,
+  ) =>
+    Effect.gen(function* () {
+      const key = String(requestId);
+      let pending = pendingQuestions.get(key);
+      if (!pending) {
+        const alt = Array.from(pendingQuestions.entries()).find(
+          ([, v]) => String(v.requestId) === key || v.rpcId === key,
+        );
+        if (alt) pending = alt[1];
+      }
+      if (!pending) {
+        return yield* new ProviderAdapterRequestError({
+          provider: PROVIDER,
+          method: "respondToUserInput",
+          detail: `Unknown pending user-input request: ${String(requestId)}`,
+        });
+      }
+      // Normalize ProviderUserInputAnswers → AskUserQuestionAnswer
+      const isCancelled =
+        !answers ||
+        (isRecord(answers) && (answers as Record<string, unknown>).cancelled === true) ||
+        (isRecord(answers) && Object.keys(answers).length === 0);
+      let clientResponse: {
+        readonly type: "client-response";
+        readonly rpcId: string;
+        readonly result: unknown;
+      };
+      if (isCancelled) {
+        clientResponse = {
+          type: "client-response",
+          rpcId: pending.rpcId,
+          result: {
+            ok: false as const,
+            error: {
+              code: "cancelled" as const,
+              message: "user cancelled ask_user_question",
+              details: {} as Record<string, never>,
+            },
+          },
+        };
+      } else {
+        let answerValue: unknown;
+        if (isRecord(answers) && Array.isArray((answers as { answers?: unknown }).answers)) {
+          answerValue = (answers as { answers: unknown }).answers;
+          // wrap into expected shape { answers: [...] }
+          answerValue = { answers: answerValue };
+        } else if (
+          isRecord(answers) &&
+          Array.isArray((answers as Record<string, unknown>)["answers"])
+        ) {
+          answerValue = answers;
+        } else {
+          // Record<string, unknown> → convert each entry to { id, selected, custom }
+          const ansRecord = answers as Record<string, unknown>;
+          const mapped: Array<{ id: string; selected: string[]; custom?: string }> = [];
+          for (const [id, val] of Object.entries(ansRecord)) {
+            if (id === "cancelled") continue;
+            if (Array.isArray(val)) {
+              mapped.push({ id, selected: val.map(String) });
+            } else if (typeof val === "string") {
+              mapped.push({ id, selected: [val] });
+            } else if (isRecord(val) && Array.isArray((val as { selected?: unknown }).selected)) {
+              const sel = (val as { selected: unknown[] }).selected.map(String);
+              const rec = val as { custom?: string };
+              mapped.push({ id, selected: sel, ...(rec.custom ? { custom: rec.custom } : {}) });
+            } else if (val === null || val === undefined) {
+              mapped.push({ id, selected: [] });
+            }
+          }
+          answerValue = { answers: mapped };
+        }
+        // Ensure answerValue has answers array for validation
+        const av = answerValue as { answers?: unknown[] };
+        if (!av.answers) answerValue = { answers: [] };
+        clientResponse = {
+          type: "client-response",
+          rpcId: pending.rpcId,
+          result: {
+            ok: true as const,
+            value: { sessionId: pending.sessionId, answer: answerValue },
+          },
+        };
+      }
+      const url = `${baseUrl}/api/respond`;
+      const receipt = yield* Effect.tryPromise({
+        try: async () => {
+          const resp = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(clientResponse),
+          });
+          if (!resp.ok) throw new Error(`transport failure for /api/respond: HTTP ${resp.status}`);
+          const json = (await resp.json()) as { accepted: boolean; reason?: string };
+          return json;
+        },
+        catch: (cause) =>
+          new ProviderAdapterRequestError({
+            provider: PROVIDER,
+            method: "respond",
+            detail: cause instanceof Error ? cause.message : String(cause),
+            cause,
+          }),
+      });
+      if (!receipt.accepted) {
+        return yield* new ProviderAdapterRequestError({
+          provider: PROVIDER,
+          method: "respond",
+          detail: `Host rejected question response: ${receipt.reason ?? "unknown"}`,
+        });
+      }
+      yield* Deferred.succeed(pending.resolution, answers as ProviderUserInputAnswers).pipe(
+        Effect.ignore,
+      );
+      pendingQuestions.delete(pending.rpcId);
+      if (key !== pending.rpcId) pendingQuestions.delete(key);
+      const nowStr = yield* nowIso;
+      yield* offerRuntimeEvent({
+        eventId: yield* nextEventId,
+        createdAt: nowStr,
         provider: PROVIDER,
-        method: "respondToUserInput",
-        detail:
-          "DSH does not surface structured user-input requests; use respondToRequest for approvals.",
-      }),
-    );
+        threadId,
+        requestId: RuntimeRequestId.make(pending.rpcId),
+        type: "user-input.resolved",
+        payload: { answers },
+      } as unknown as import("@t3tools/contracts").ProviderRuntimeEvent).pipe(
+        Effect.orElseSucceed(() => undefined),
+      );
+      if (nativeEventLogger) {
+        yield* writeNativeEvent(threadId, {
+          observedAt: nowStr,
+          event: {
+            type: "question/respond",
+            sessionId: pending.sessionId,
+            rpcId: pending.rpcId,
+            answers,
+          },
+        }).pipe(Effect.catchCause(() => Effect.void));
+      }
+    });
 
   const stopSession: DshAdapterShape["stopSession"] = (threadId) =>
     Effect.gen(function* () {
       const ctx = sessions.get(threadId);
       if (!ctx) return;
+      // 3d: 结算该 session 关联的所有等待中审批/提问（防止泄露）
+      yield* settlePendingApprovalsAsCancelled(pendingApprovals).pipe(
+        Effect.orElseSucceed(() => undefined),
+      );
+      {
+        const toDelete: string[] = [];
+        for (const [k, v] of pendingApprovals.entries()) {
+          if (v.sessionId === ctx.sessionId) toDelete.push(k);
+        }
+        for (const k of toDelete) pendingApprovals.delete(k);
+      }
+      yield* settlePendingQuestionsAsCancelled(pendingQuestions).pipe(
+        Effect.orElseSucceed(() => undefined),
+      );
+      {
+        const toDelete: string[] = [];
+        for (const [k, v] of pendingQuestions.entries()) {
+          if (v.sessionId === ctx.sessionId) toDelete.push(k);
+        }
+        for (const k of toDelete) pendingQuestions.delete(k);
+      }
       sessions.delete(threadId);
       yield* offerRuntimeEvent({
         eventId: yield* nextEventId,
@@ -2561,6 +3092,9 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
       } as unknown as import("@t3tools/contracts").ProviderRuntimeEvent).pipe(
         Effect.orElseSucceed(() => undefined),
       );
+      if (managedNativeEventLogger) {
+        // best-effort per-session native log flush 会在 stopAll 统一 close，此处仅记账
+      }
     });
 
   const stopAll: Effect.Effect<void, ProviderAdapterError> = Effect.gen(function* () {
@@ -2568,6 +3102,14 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
     try {
       stopWsPump();
     } catch {}
+    yield* settlePendingApprovalsAsCancelled(pendingApprovals).pipe(
+      Effect.orElseSucceed(() => undefined),
+    );
+    pendingApprovals.clear();
+    yield* settlePendingQuestionsAsCancelled(pendingQuestions).pipe(
+      Effect.orElseSucceed(() => undefined),
+    );
+    pendingQuestions.clear();
     const toStop = Array.from(sessions.values());
     sessions.clear();
     for (const ctx of toStop) {
@@ -2584,6 +3126,10 @@ export const makeDshAdapter = Effect.fn("makeDshAdapter")(function* (
     }
     // Ensure WS generation does not spuriously retry after explicit stopAll
     wsAttempt = 0;
+    if (managedNativeEventLogger) {
+      yield* managedNativeEventLogger.close().pipe(Effect.orElseSucceed(() => undefined));
+    }
+    yield* Queue.shutdown(runtimeEventQueue).pipe(Effect.orElseSucceed(() => undefined));
   });
 
   // WS is now primary; HTTP unary + history remain as fallback when WS down
