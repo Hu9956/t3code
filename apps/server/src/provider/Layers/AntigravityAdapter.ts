@@ -322,6 +322,7 @@ interface AgyStepUpdate {
   readonly tool_name?: string;
   readonly text_delta?: string;
   readonly thinking?: string;
+  readonly duration_seconds?: number;
   readonly tool_info?: {
     readonly name?: string;
     readonly parameters?: unknown;
@@ -333,6 +334,8 @@ interface AgyStepUpdate {
     readonly output_tokens?: number;
     readonly thinking_tokens?: number;
     readonly total_tokens?: number;
+    readonly cache_read_tokens?: number;
+    readonly cachedInputTokens?: number;
   };
 }
 
@@ -799,6 +802,12 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                   const doneRawDetail = su.tool_info?.output ?? jsonStringify(su.tool_info ?? {});
                   const doneDetail = truncateDetail(doneRawDetail, 3000);
                   const doneCommand = extractAgyCommand(su.tool_info?.parameters);
+                  const durationMs =
+                    typeof su.duration_seconds === "number" &&
+                    Number.isFinite(su.duration_seconds) &&
+                    su.duration_seconds >= 0
+                      ? Math.round(su.duration_seconds * 1000)
+                      : undefined;
                   const doneData: Record<string, unknown> =
                     su.tool_info?.output !== undefined
                       ? {
@@ -812,6 +821,7 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                           result: su.tool_info,
                         };
                   if (doneCommand) doneData.command = doneCommand;
+                  if (durationMs !== undefined) doneData.durationMs = durationMs;
                   yield* offerRuntimeEvent({
                     eventId: yield* nextEventId,
                     createdAt: yield* nowIso,
@@ -827,6 +837,52 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                       data: doneData,
                     },
                   });
+                  if (su.usage) {
+                    const u = su.usage as Record<string, unknown>;
+                    const it = u.input_tokens as number | undefined;
+                    const ot = u.output_tokens as number | undefined;
+                    const tt = u.thinking_tokens as number | undefined;
+                    const tot = u.total_tokens as number | undefined;
+                    const crt = (u.cache_read_tokens ?? u.cachedInputTokens) as number | undefined;
+                    const used =
+                      tot ??
+                      (it !== undefined && ot !== undefined
+                        ? it + ot + (tt ?? 0)
+                        : (it ?? ot ?? tt));
+                    if (used !== undefined && Number.isFinite(used as number)) {
+                      const normalized: Record<string, unknown> = {
+                        usedTokens: Math.floor(used as number),
+                      };
+                      if (it !== undefined) {
+                        normalized.inputTokens = Math.floor(it);
+                        normalized.lastInputTokens = Math.floor(it);
+                      }
+                      if (crt !== undefined) {
+                        normalized.cachedInputTokens = Math.floor(crt as number);
+                        normalized.lastCachedInputTokens = Math.floor(crt as number);
+                      }
+                      if (ot !== undefined) {
+                        normalized.outputTokens = Math.floor(ot);
+                        normalized.lastOutputTokens = Math.floor(ot);
+                      }
+                      if (tt !== undefined) {
+                        normalized.reasoningOutputTokens = Math.floor(tt);
+                        normalized.lastReasoningOutputTokens = Math.floor(tt);
+                      }
+                      if (durationMs !== undefined) normalized.durationMs = durationMs;
+                      yield* offerRuntimeEvent({
+                        eventId: yield* nextEventId,
+                        createdAt: yield* nowIso,
+                        provider: PROVIDER,
+                        threadId: context.threadId,
+                        turnId,
+                        type: "thread.token-usage.updated",
+                        payload: { usage: normalized } as unknown as {
+                          usage: import("@t3tools/contracts").ThreadTokenUsageSnapshot;
+                        },
+                      }).pipe(Effect.orElseSucceed(() => undefined));
+                    }
+                  }
                 } else if (su.state === "ERROR") {
                   const errMsg = su.tool_info?.error?.message ?? "tool failed";
                   const errorClass = classifyAgyErrorMessage(errMsg);
@@ -861,6 +917,55 @@ export const makeAntigravityAdapter = Effect.fn("makeAntigravityAdapter")(functi
                       },
                     },
                   });
+                }
+              }
+              // 通用单步 usage（非工具路径，如 agent_response 带 usage）
+              if (su.usage && su.step_type !== "tool") {
+                const u = su.usage as Record<string, unknown>;
+                const it = u.input_tokens as number | undefined;
+                const ot = u.output_tokens as number | undefined;
+                const tt = u.thinking_tokens as number | undefined;
+                const tot = u.total_tokens as number | undefined;
+                const crt = (u.cache_read_tokens ?? u.cachedInputTokens) as number | undefined;
+                const used =
+                  tot ??
+                  (it !== undefined && ot !== undefined ? it + ot + (tt ?? 0) : (it ?? ot ?? tt));
+                if (used !== undefined && Number.isFinite(used)) {
+                  const normalized: Record<string, unknown> = {
+                    usedTokens: Math.floor(used as number),
+                  };
+                  if (it !== undefined) {
+                    normalized.inputTokens = Math.floor(it);
+                    normalized.lastInputTokens = Math.floor(it);
+                  }
+                  if (crt !== undefined) {
+                    normalized.cachedInputTokens = Math.floor(crt as number);
+                    normalized.lastCachedInputTokens = Math.floor(crt as number);
+                  }
+                  if (ot !== undefined) {
+                    normalized.outputTokens = Math.floor(ot);
+                    normalized.lastOutputTokens = Math.floor(ot);
+                  }
+                  if (tt !== undefined) {
+                    normalized.reasoningOutputTokens = Math.floor(tt);
+                    normalized.lastReasoningOutputTokens = Math.floor(tt);
+                  }
+                  const dur =
+                    typeof su.duration_seconds === "number" && Number.isFinite(su.duration_seconds)
+                      ? Math.round(su.duration_seconds * 1000)
+                      : undefined;
+                  if (dur !== undefined) normalized.durationMs = dur;
+                  yield* offerRuntimeEvent({
+                    eventId: yield* nextEventId,
+                    createdAt: yield* nowIso,
+                    provider: PROVIDER,
+                    threadId: context.threadId,
+                    turnId,
+                    type: "thread.token-usage.updated",
+                    payload: { usage: normalized } as unknown as {
+                      usage: import("@t3tools/contracts").ThreadTokenUsageSnapshot;
+                    },
+                  }).pipe(Effect.orElseSucceed(() => undefined));
                 }
               }
               return;
