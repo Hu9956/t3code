@@ -89,6 +89,7 @@ import {
 import * as ProviderRegistry from "./provider/Services/ProviderRegistry.ts";
 import * as ProviderService from "./provider/Services/ProviderService.ts";
 import * as ProviderMaintenanceRunner from "./provider/providerMaintenanceRunner.ts";
+import * as DshRuntime from "./provider/DshRuntime.ts";
 import * as ServerSelfUpdate from "./cloud/selfUpdate.ts";
 import * as ServerLifecycleEvents from "./serverLifecycleEvents.ts";
 import * as ServerRuntimeStartup from "./serverRuntimeStartup.ts";
@@ -474,6 +475,7 @@ const makeWsRpcLayer = (
       const providerRegistry = yield* ProviderRegistry.ProviderRegistry;
       const providerService = yield* ProviderService.ProviderService;
       const providerMaintenanceRunner = yield* ProviderMaintenanceRunner.ProviderMaintenanceRunner;
+      const dshRuntime = yield* DshRuntime.DshRuntime;
       const serverSelfUpdate = yield* ServerSelfUpdate.ServerSelfUpdate;
       const config = yield* ServerConfig.ServerConfig;
       const lifecycleEvents = yield* ServerLifecycleEvents.ServerLifecycleEvents;
@@ -1757,6 +1759,30 @@ const makeWsRpcLayer = (
           ),
         [WS_METHODS.serverGetBackgroundPolicy]: (_input) =>
           observeRpcEffect(WS_METHODS.serverGetBackgroundPolicy, backgroundPolicy.snapshot, {
+            "rpc.aggregate": "server",
+          }),
+        [WS_METHODS.serverDshStatus]: (_input) =>
+          observeRpcEffect(WS_METHODS.serverDshStatus, dshRuntime.status, {
+            "rpc.aggregate": "server",
+          }),
+        [WS_METHODS.serverDshStart]: (_input) =>
+          observeRpcEffect(
+            WS_METHODS.serverDshStart,
+            dshRuntime.start.pipe(
+              Effect.tap(() => providerRegistry.refresh().pipe(Effect.ignore, Effect.orDie)),
+            ),
+            { "rpc.aggregate": "server" },
+          ),
+        [WS_METHODS.serverDshStop]: (_input) =>
+          observeRpcEffect(
+            WS_METHODS.serverDshStop,
+            dshRuntime.stop.pipe(
+              Effect.tap(() => providerRegistry.refresh().pipe(Effect.ignore, Effect.orDie)),
+            ),
+            { "rpc.aggregate": "server" },
+          ),
+        [WS_METHODS.subscribeDshStatus]: (_input) =>
+          observeRpcStream(WS_METHODS.subscribeDshStatus, dshRuntime.subscribe, {
             "rpc.aggregate": "server",
           }),
         [WS_METHODS.cloudGetRelayClientStatus]: (_input) =>

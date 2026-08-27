@@ -10,6 +10,7 @@ import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
 import * as BackgroundPolicy from "./background/BackgroundPolicy.ts";
 import * as HostPowerMonitor from "./background/HostPowerMonitor.ts";
 import * as ServerConfig from "./config.ts";
+import * as DshRuntime from "./provider/DshRuntime.ts";
 import {
   otlpTracesProxyRouteLayer,
   assetRouteLayer,
@@ -433,6 +434,7 @@ const RuntimeDependenciesLive = RuntimeCoreDependenciesLive.pipe(
   Layer.provideMerge(ExternalLauncher.layer),
   Layer.provideMerge(RemoteOpenTargets.layer),
   Layer.provideMerge(ServerLifecycleEvents.layer),
+  Layer.provideMerge(DshRuntime.layer),
   Layer.provide(NetService.layer),
 );
 

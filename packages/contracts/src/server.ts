@@ -663,3 +663,25 @@ export class ServerSelfUpdateError extends Schema.TaggedErrorClass<ServerSelfUpd
     return i18next.t("Server update failed: {{reason}}", { reason: this.reason });
   }
 }
+
+// ── DSH runtime (one-click harness power toggle) ──────────────────────────
+
+export const DshRuntimeStatus = Schema.Struct({
+  running: Schema.Boolean,
+  pid: Schema.NullOr(PositiveInt),
+  listening: Schema.Boolean,
+  harnessDir: TrimmedNonEmptyString,
+  port: PositiveInt,
+  startedAt: Schema.NullOr(IsoDateTime),
+  lastError: Schema.NullOr(TrimmedNonEmptyString),
+});
+export type DshRuntimeStatus = typeof DshRuntimeStatus.Type;
+
+export class DshRuntimeError extends Schema.TaggedErrorClass<DshRuntimeError>()("DshRuntimeError", {
+  reason: TrimmedNonEmptyString,
+  cause: Schema.optional(Schema.Defect()),
+}) {
+  override get message(): string {
+    return this.reason;
+  }
+}

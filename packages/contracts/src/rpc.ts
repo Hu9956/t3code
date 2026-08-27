@@ -165,6 +165,8 @@ import {
   PreviewAutomationStreamEvent,
 } from "./previewAutomation.ts";
 import {
+  DshRuntimeError,
+  DshRuntimeStatus,
   ServerConfigStreamEvent,
   ServerConfig,
   ServerProviderUpdateError,
@@ -291,6 +293,10 @@ export const WS_METHODS = {
   serverReportHostPowerState: "server.reportHostPowerState",
   serverGetBackgroundPolicy: "server.getBackgroundPolicy",
   serverGetUsageSummary: "server.getUsageSummary",
+  serverDshStatus: "server.dsh.status",
+  serverDshStart: "server.dsh.start",
+  serverDshStop: "server.dsh.stop",
+  subscribeDshStatus: "subscribeDshStatus",
 
   // Cloud environment methods
   cloudGetRelayClientStatus: "cloud.getRelayClientStatus",
@@ -1017,6 +1023,31 @@ export const WsSubscribeResourceTelemetryRpc = Rpc.make(WS_METHODS.subscribeReso
   stream: true,
 });
 
+export const WsServerDshStatusRpc = Rpc.make(WS_METHODS.serverDshStatus, {
+  payload: Schema.Struct({}),
+  success: DshRuntimeStatus,
+  error: Schema.Union([DshRuntimeError, EnvironmentAuthorizationError]),
+});
+
+export const WsServerDshStartRpc = Rpc.make(WS_METHODS.serverDshStart, {
+  payload: Schema.Struct({}),
+  success: DshRuntimeStatus,
+  error: Schema.Union([DshRuntimeError, EnvironmentAuthorizationError]),
+});
+
+export const WsServerDshStopRpc = Rpc.make(WS_METHODS.serverDshStop, {
+  payload: Schema.Struct({}),
+  success: DshRuntimeStatus,
+  error: Schema.Union([DshRuntimeError, EnvironmentAuthorizationError]),
+});
+
+export const WsSubscribeDshStatusRpc = Rpc.make(WS_METHODS.subscribeDshStatus, {
+  payload: Schema.Struct({}),
+  success: DshRuntimeStatus,
+  error: Schema.Union([DshRuntimeError, EnvironmentAuthorizationError]),
+  stream: true,
+});
+
 export const WsRpcGroup = RpcGroup.make(
   WsServerProbeRpc,
   WsServerGetConfigRpc,
@@ -1112,6 +1143,10 @@ export const WsRpcGroup = RpcGroup.make(
   WsSubscribeAuthAccessRpc,
   WsSubscribeBackgroundPolicyRpc,
   WsSubscribeResourceTelemetryRpc,
+  WsServerDshStatusRpc,
+  WsServerDshStartRpc,
+  WsServerDshStopRpc,
+  WsSubscribeDshStatusRpc,
   WsOrchestrationDispatchCommandRpc,
   WsOrchestrationGetWorkflowScriptRpc,
   WsOrchestrationGetTurnDiffRpc,

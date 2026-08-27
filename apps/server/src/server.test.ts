@@ -101,6 +101,7 @@ const collectQueueUntil = Effect.fn("TransferBudget.collectQueueUntil")(function
 
 import * as BackgroundPolicy from "./background/BackgroundPolicy.ts";
 import * as ServerConfig from "./config.ts";
+import * as DshRuntime from "./provider/DshRuntime.ts";
 import { makeRoutesLayer } from "./server.ts";
 import {
   isThreadDetailEvent,
@@ -979,6 +980,7 @@ const buildAppUnderTest = (options?: {
       Layer.provideMerge(ServerSecretStore.layer),
       Layer.provide(workspaceAndProjectServicesLayer),
       Layer.provideMerge(FetchHttpClient.layer),
+      Layer.provide(DshRuntime.layer),
       Layer.provide(layerConfig),
     );
 

@@ -73,6 +73,7 @@ import { stackedThreadToast, toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { AddProviderInstanceDialog } from "./AddProviderInstanceDialog";
 import { ProviderInstanceCard } from "./ProviderInstanceCard";
+import { DshRuntimeControl } from "./DshRuntimeControl";
 import { DRIVER_OPTIONS, getDriverOption } from "./providerDriverMeta";
 import { searchableSetting } from "./settingsSearch";
 import {
@@ -850,64 +851,70 @@ export function EnvironmentProviderSettings({
                 />
               ) : null;
             return (
-              <ProviderInstanceCard
-                key={row.instanceId}
-                instanceId={row.instanceId}
-                instance={row.instance}
-                driverOption={driverOption}
-                liveProvider={liveProvider}
-                isExpanded={openInstanceDetails[row.instanceId] ?? false}
-                onExpandedChange={(open) =>
-                  setOpenInstanceDetails((existing) => ({
-                    ...existing,
-                    [row.instanceId]: open,
-                  }))
-                }
-                onUpdate={(next) => {
-                  const wasEnabled = resolveProviderInstanceEnabled(row.instance);
-                  const isDisabling = next.enabled === false && wasEnabled;
-                  const shouldClearTextGen = isDisabling && textGenInstanceId === row.instanceId;
-                  if (shouldClearTextGen) {
-                    updateProviderInstance(row, next, {
-                      textGenerationModelSelection:
-                        DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection,
-                    });
-                  } else {
-                    updateProviderInstance(row, next);
+              <div key={row.instanceId} className="space-y-2">
+                <ProviderInstanceCard
+                  instanceId={row.instanceId}
+                  instance={row.instance}
+                  driverOption={driverOption}
+                  liveProvider={liveProvider}
+                  isExpanded={openInstanceDetails[row.instanceId] ?? false}
+                  onExpandedChange={(open) =>
+                    setOpenInstanceDetails((existing) => ({
+                      ...existing,
+                      [row.instanceId]: open,
+                    }))
                   }
-                }}
-                onDelete={row.isDefault ? undefined : () => deleteProviderInstance(row.instanceId)}
-                headerAction={headerAction}
-                hiddenModels={modelPreferences.hiddenModels}
-                favoriteModels={favoriteModels}
-                modelOrder={modelPreferences.modelOrder}
-                onHiddenModelsChange={(hiddenModels) =>
-                  updateProviderModelPreferences(row.instanceId, {
-                    ...modelPreferences,
-                    hiddenModels,
-                  })
-                }
-                onFavoriteModelsChange={(favoriteModels) =>
-                  updateProviderFavoriteModels(row.instanceId, favoriteModels)
-                }
-                onModelOrderChange={(modelOrder) =>
-                  updateProviderModelPreferences(row.instanceId, {
-                    ...modelPreferences,
-                    modelOrder,
-                  })
-                }
-                onRunUpdate={
-                  showInlineUpdateButton && updateCandidate
-                    ? () => {
-                        if (!canRunInlineUpdate) {
-                          return;
+                  onUpdate={(next) => {
+                    const wasEnabled = resolveProviderInstanceEnabled(row.instance);
+                    const isDisabling = next.enabled === false && wasEnabled;
+                    const shouldClearTextGen = isDisabling && textGenInstanceId === row.instanceId;
+                    if (shouldClearTextGen) {
+                      updateProviderInstance(row, next, {
+                        textGenerationModelSelection:
+                          DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection,
+                      });
+                    } else {
+                      updateProviderInstance(row, next);
+                    }
+                  }}
+                  onDelete={
+                    row.isDefault ? undefined : () => deleteProviderInstance(row.instanceId)
+                  }
+                  headerAction={headerAction}
+                  hiddenModels={modelPreferences.hiddenModels}
+                  favoriteModels={favoriteModels}
+                  modelOrder={modelPreferences.modelOrder}
+                  onHiddenModelsChange={(hiddenModels) =>
+                    updateProviderModelPreferences(row.instanceId, {
+                      ...modelPreferences,
+                      hiddenModels,
+                    })
+                  }
+                  onFavoriteModelsChange={(favoriteModels) =>
+                    updateProviderFavoriteModels(row.instanceId, favoriteModels)
+                  }
+                  onModelOrderChange={(modelOrder) =>
+                    updateProviderModelPreferences(row.instanceId, {
+                      ...modelPreferences,
+                      modelOrder,
+                    })
+                  }
+                  onRunUpdate={
+                    showInlineUpdateButton && updateCandidate
+                      ? () => {
+                          if (!canRunInlineUpdate) {
+                            return;
+                          }
+                          void runProviderUpdate(updateCandidate);
                         }
-                        void runProviderUpdate(updateCandidate);
-                      }
-                    : undefined
-                }
-                isUpdating={showInlineUpdateButton ? isDriverUpdateRunning : undefined}
-              />
+                      : undefined
+                  }
+                  isUpdating={showInlineUpdateButton ? isDriverUpdateRunning : undefined}
+                />
+                {row.driver === "dsh" ? (
+                  <DshRuntimeControl environmentId={environmentId} liveProvider={liveProvider} />
+                ) : null}
+              </div>
             );
           })}
         </div>

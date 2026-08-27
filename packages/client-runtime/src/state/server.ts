@@ -751,6 +751,31 @@ export function createServerEnvironmentAtoms<R, E>(
       scheduler: configScheduler,
       concurrency: configConcurrency,
     }),
+    dshStatus: createEnvironmentRpcQueryAtomFamily(runtime, {
+      label: "environment-data:server:dsh-status",
+      tag: WS_METHODS.serverDshStatus,
+      staleTimeMs: 2_000,
+    }),
+    dshStart: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:dsh-start",
+      tag: WS_METHODS.serverDshStart,
+      concurrency: {
+        mode: "singleFlight",
+        key: ({ environmentId }) => environmentId,
+      },
+    }),
+    dshStop: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:dsh-stop",
+      tag: WS_METHODS.serverDshStop,
+      concurrency: {
+        mode: "singleFlight",
+        key: ({ environmentId }) => environmentId,
+      },
+    }),
+    dshSubscribe: createEnvironmentRpcSubscriptionAtomFamily(runtime, {
+      label: "environment-data:server:dsh-subscribe",
+      tag: WS_METHODS.subscribeDshStatus,
+    }),
     updateServer,
     upsertKeybinding: createEnvironmentRpcCommand(runtime, {
       label: "environment-data:server:upsert-keybinding",
